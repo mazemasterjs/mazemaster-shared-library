@@ -1,0 +1,9 @@
+{
+  "extends": "@istanbuljs/nyc-config-typescript",
+  "exclude": [
+      "src/Enums.ts",
+      "test/**/*", 
+      "coverage/**/*"
+  ],
+  "all": true
+}

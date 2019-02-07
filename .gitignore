@@ -1,0 +1,23 @@
+# Runtime data
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# don't upload compiled ts files
+bin
+
+# dont upload database files
+data
+
+# don't upload environment vars
+.env
+
+# don't upload test coverage results
+coverage
+.nyc_output

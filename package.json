@@ -1,0 +1,45 @@
+{
+    "name": "mazemaster-shared-library",
+    "version": "1.0.0",
+    "description": "Shared library for MazeMaster",
+    "main": "",
+    "scripts": {
+        "watch": "tsc -w",
+        "test": "mocha --opts src/test/mocha.opts --watch",
+        "coverage": "nyc mocha --opts src/test/mocha.opts",
+        "start": "echo \"Error: project not runnable\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@gitlab.com/mazemaster/mazemaster-shared-library.git"
+    },
+    "keywords": [
+        "MazeMaster",
+        "MazeMaster-Shared-Library",
+        "Shared-Library"
+    ],
+    "author": "James Dean - kreebog@gmail.com",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://gitlab.com/mazemaster/mazemaster-shared-library/issues"
+    },
+    "homepage": "https://gitlab.com/mazemaster/mazemaster-shared-library#readme",
+    "dependencies": {
+        "@types/dotenv": "^6.1.0",
+        "@types/node": "^10.12.20",
+        "@types/seedrandom": "^2.4.27",
+        "seedrandom": "^2.4.4"
+    },
+    "devDependencies": {
+        "@istanbuljs/nyc-config-typescript": "^0.1.0",
+        "@types/chai": "^4.1.7",
+        "@types/mocha": "^5.2.5",
+        "chai": "^4.2.0",
+        "dotenv": "^6.2.0",
+        "mocha": "^5.2.0",
+        "nyc": "^13.1.0",
+        "source-map-support": "^0.5.10",
+        "ts-node": "^8.0.2",
+        "typescript": "^3.2.4"
+    }
+}
