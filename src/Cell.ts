@@ -164,11 +164,11 @@ export class Cell {
                     if (validMove) nPos = new Position(this.pos.row - 1, this.pos.col);
                     break;
                 case DIRS.SOUTH:
-                    validMove = this.pos.row < cells[0].length - 1;
+                    validMove = this.pos.row < cells.length;
                     if (validMove) nPos = new Position(this.pos.row + 1, this.pos.col);
                     break;
                 case DIRS.EAST:
-                    validMove = this.pos.col < cells.length - 1;
+                    validMove = this.pos.col < cells[0].length;
                     if (validMove) nPos = new Position(this.pos.row, this.pos.col + 1);
                     break;
                 case DIRS.WEST:
