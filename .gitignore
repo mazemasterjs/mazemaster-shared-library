@@ -18,6 +18,8 @@ data
 # don't upload environment vars
 .env
 
-# don't upload test coverage results
+# don't upload test / coverage stuff
 coverage
+.scannerwork
+.sonarlint
 .nyc_output

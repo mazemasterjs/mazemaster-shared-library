@@ -1,6 +1,6 @@
-import { Position } from '../Position';
+import { Position } from '../src/Position';
 import { expect } from 'chai';
-import Logger, { LOG_LEVELS } from '../Logger';
+import Logger, { LOG_LEVELS } from '../src/Logger';
 
 // load local config, if available
 require('dotenv').config();

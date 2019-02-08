@@ -5,8 +5,9 @@
     "main": "",
     "scripts": {
         "watch": "tsc -w",
-        "test": "mocha --opts src/test/mocha.opts --watch",
-        "coverage": "nyc mocha --opts src/test/mocha.opts",
+        "test": "mocha",
+        "coverage": "nyc mocha",
+        "sq": "sonar-scanner.bat",
         "start": "echo \"Error: project not runnable\" && exit 1"
     },
     "repository": {

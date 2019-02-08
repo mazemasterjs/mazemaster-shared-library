@@ -1,6 +1,6 @@
-import { Maze } from '../Maze';
+import { Maze } from '../src/Maze';
 import { expect } from 'chai';
-import Logger, { LOG_LEVELS } from '../Logger';
+import Logger, { LOG_LEVELS } from '../src/Logger';
 
 const log = Logger.getInstance();
 log.setLogLevel(LOG_LEVELS.TRACE);
