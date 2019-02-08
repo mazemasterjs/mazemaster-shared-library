@@ -5,5 +5,9 @@
       "test/**/*", 
       "coverage/**/*"
   ],
-  "all": true
+  "all": true,
+  "reporter": [
+    "lcov",
+    "text"
+  ]
 }
