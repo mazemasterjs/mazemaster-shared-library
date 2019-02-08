@@ -3,6 +3,7 @@ import * as Helpers from './Helpers';
 import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
 import { Logger, LOG_LEVELS } from './Logger';
 import { Position } from './Position';
+import { dirname } from 'path';
 
 /**
  * Used to determine mode of functions modifying cell exits
@@ -13,7 +14,6 @@ enum FN_MODES {
 }
 
 let log = Logger.getInstance();
-log.setLogLevel(LOG_LEVELS.TRACE);
 
 /**
  * Represents a single cell in a maze
@@ -90,18 +90,28 @@ export class Cell {
      * @returns boolean
      */
     public addExit(dir: DIRS, cells: Array<Array<Cell>>): boolean {
+        log.trace(
+            __filename,
+            format('addExit(%s)', DIRS[dir]),
+            format('Calling setExit(ADD, %s) from [%s]. Existing exits: %s.', DIRS[dir], this.pos.toString(), this.listExits())
+        );
         return this.setExit(FN_MODES.ADD, dir, cells);
     }
 
     /**
-     * Adds exit to a cell if exit doesn't already exist.
-     * Also adds neighboring exit to valid, adjoining cell.
+     * Removes exit to a cell if it exists.
+     * Also removes neighboring exit from valid, adjoining cell.
      *
      * @param dir
      * @param cells
      * @returns boolean
      */
     public removeExit(dir: DIRS, cells: Array<Array<Cell>>): boolean {
+        log.trace(
+            __filename,
+            format('removeExit(%s)', DIRS[dir]),
+            format('Calling setExit(REMOVE, %s) from [%s]. Existing exits: %s.', DIRS[dir], this.pos.toString(), this.listExits())
+        );
         return this.setExit(FN_MODES.REMOVE, dir, cells);
     }
 
@@ -142,7 +152,7 @@ export class Cell {
         log.trace(
             __filename,
             format('setExit(%s, %s)', modeName, dirName),
-            format('Setting exits in cell [C:%d][R:%d]. Existing exits: %s.', this.pos.col, this.pos.row, this.listExits())
+            format('Setting exits in [%s]. Existing exits: %s.', this.pos.toString(), this.listExits())
         );
 
         if (mode == FN_MODES.ADD ? !(this.exits & dir) : !!(this.exits & dir)) {
@@ -151,49 +161,61 @@ export class Cell {
             switch (dir) {
                 case DIRS.NORTH:
                     validMove = this.pos.row > 0;
-                    nPos = new Position(this.pos.col, this.pos.row - 1);
+                    if (validMove) nPos = new Position(this.pos.row - 1, this.pos.col);
                     break;
                 case DIRS.SOUTH:
-                    validMove = this.pos.row < cells[0].length;
-                    nPos = new Position(this.pos.col, this.pos.row + 1);
+                    validMove = this.pos.row < cells[0].length - 1;
+                    if (validMove) nPos = new Position(this.pos.row + 1, this.pos.col);
                     break;
                 case DIRS.EAST:
-                    validMove = this.pos.col < cells.length;
-                    nPos = new Position(this.pos.col + 1, this.pos.row);
+                    validMove = this.pos.col < cells.length - 1;
+                    if (validMove) nPos = new Position(this.pos.row, this.pos.col + 1);
                     break;
                 case DIRS.WEST:
                     validMove = this.pos.col > 0;
-                    nPos = new Position(this.pos.col - 1, this.pos.row);
+                    if (validMove) nPos = new Position(this.pos.row, this.pos.col - 1);
                     break;
             }
 
             if (validMove) {
-                log.trace(__filename, 'setExit()', format('Valid direction, setting exit in cell [C:%d][R:%d]', nPos.col, nPos.row));
-                log.trace(__filename, 'setExit()', cells[nPos.col][nPos.row].getPosition().toString());
-                let neighbor: Cell = cells[nPos.col][nPos.row];
-
+                log.trace(
+                    __filename,
+                    'setExit()',
+                    format('Valid direction, setting exit from [%s] into [%d, %d]', this.getPosition().toString(), nPos.row, nPos.col)
+                );
                 this.exits = mode == FN_MODES.ADD ? (this.exits += dir) : (this.exits -= dir);
+
+                let neighbor: Cell = cells[nPos.row][nPos.col];
+
                 log.trace(
                     __filename,
                     format('setExit(%s, %s)', modeName, dirName),
-                    format('Exits set in cell [C:%d][R:%d]. Exits: ', this.pos.col, this.pos.row, this.listExits())
+                    format('Exits set in cell [%d, %d]. Exits: ', this.pos.row, this.pos.col, this.listExits())
                 );
 
                 neighbor.exits = mode == FN_MODES.ADD ? (neighbor.exits += this.reverseDir(dir)) : (neighbor.exits -= dir);
                 log.trace(
                     __filename,
                     format('setExit(%s, %s)', modeName, dirName),
-                    format('Adjoining exits set in cell [C:%d][R:%d]. Exits: ', neighbor.pos.row, neighbor.pos.col, neighbor.listExits())
+                    format(
+                        'Reverse exit (%s -> %s) set in adjoining cell [%d, %d]. Exits: %s, Tags: %s',
+                        dirName,
+                        DIRS[this.reverseDir(dir)],
+                        neighbor.pos.row,
+                        neighbor.pos.col,
+                        neighbor.listExits(),
+                        neighbor.listTags()
+                    )
                 );
             } else {
-                log.warn(__filename, format('setExit(%s, %s)', modeName, dirName), format('Invalid adjoining cell location: [C:%d][R:%d]', nPos.col, nPos.row));
+                log.warn(__filename, format('setExit(%s, %s)', modeName, dirName), format('Invalid adjoining cell location: [%d, %d]', nPos.row, nPos.col));
             }
         } else {
             log.warn(
                 __filename,
                 format('setExit(%s, %s)', modeName, dirName),
                 format(
-                    'Invalid action in cell [C:%d][R:%d]. Exit %s. Cell exits: %s',
+                    'Invalid action in cell [%d, %d]. Exit %s. Cell exits: %s',
                     this.pos.row,
                     this.pos.col,
                     mode == FN_MODES.ADD ? 'already exists' : 'not found',
@@ -209,7 +231,7 @@ export class Cell {
      * Returns an array representing the cells grid coordinates (y, x)
      */
     public getPosition(): Position {
-        return new Position(this.pos.col, this.pos.row);
+        return new Position(this.pos.row, this.pos.col);
     }
 
     // checks for an open direction
@@ -255,9 +277,9 @@ export class Cell {
         let trapName = CELL_TRAPS[trap];
         if (this.traps == 0) {
             this.traps = trap;
-            log.trace(__filename, 'setTrap(' + trapName + ')', format('Trap %s set on cell [C:%d][R:%d].', trapName, this.pos.col, this.pos.row));
+            log.trace(__filename, 'setTrap(' + trapName + ')', format('Trap %s set on cell [%d, %d].', trapName, this.pos.row, this.pos.col));
         } else {
-            log.warn(__filename, 'setTrap(' + trapName + ')', format('Trap (%s) already set on cell [C:%d][R:%d].', trapName, this.pos.col, this.pos.row));
+            log.warn(__filename, 'setTrap(' + trapName + ')', format('Trap (%s) already set on cell [%d, %d].', trapName, this.pos.row, this.pos.col));
         }
     }
 
@@ -279,9 +301,9 @@ export class Cell {
                             __filename,
                             'addTag(' + tagName + ')',
                             format(
-                                '[C:%d][R:%d] has %s tag. Forcing NORTH exit through edge. Cell exits: %s',
-                                this.pos.col,
+                                '[%d, %d] has %s tag. Forcing NORTH exit through edge. Cell exits: %s',
                                 this.pos.row,
+                                this.pos.col,
                                 tagName,
                                 this.listExits()
                             )
@@ -296,9 +318,9 @@ export class Cell {
                             __filename,
                             'addTag(' + tagName + ')',
                             format(
-                                '[C:%d][R:%d] has %s tag. Forcing SOUTH exit through edge. Cell exits: %s',
-                                this.pos.col,
+                                '[%d, %d] has %s tag. Forcing SOUTH exit through edge. Cell exits: %s',
                                 this.pos.row,
+                                this.pos.col,
                                 tagName,
                                 this.listExits()
                             )
@@ -310,13 +332,13 @@ export class Cell {
             log.trace(
                 __filename,
                 'addTag(' + tagName + ')',
-                format('Tag %s added to cell [C:%d][R:%d]. Current tags: %s.', tagName, this.pos.col, this.pos.row, this.listTags())
+                format('Tag %s added to cell [%d, %d]. Current tags: %s.', tagName, this.pos.row, this.pos.col, this.listTags())
             );
         } else {
             log.warn(
                 __filename,
                 'addTag(' + tagName + ')',
-                format('Tag %s already exists in cell [C:%d][R:%d]. Current tags: %s.', tagName, this.pos.col, this.pos.row, this.listTags())
+                format('Tag %s already exists in cell [%d, %d]. Current tags: %s.', tagName, this.pos.row, this.pos.col, this.listTags())
             );
         }
     }
@@ -332,13 +354,13 @@ export class Cell {
             log.debug(
                 __filename,
                 'removeTag(' + tagName + ')',
-                format('Tag %s removed from cell [C:%d][R:%d]. Current tags: %s.', tagName, this.pos.col, this.pos.row, this.listTags())
+                format('Tag %s removed from cell [%d, %d]. Current tags: %s.', tagName, this.pos.row, this.pos.col, this.listTags())
             );
         } else {
             log.warn(
                 __filename,
                 'removeTag(' + tagName + ')',
-                format('Tag %s not found in cell [C:%d][R:%d]. Current tags: %s.', tagName, this.pos.col, this.pos.row, this.listTags())
+                format('Tag %s not found in cell [%d, %d]. Current tags: %s.', tagName, this.pos.row, this.pos.col, this.listTags())
             );
         }
     }

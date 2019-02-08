@@ -1,13 +1,14 @@
 import { Maze } from '../src/Maze';
 import { expect } from 'chai';
-import Logger, { LOG_LEVELS } from '../src/Logger';
+import Logger from '../src/Logger';
+import { LOG_LEVELS } from '../src/Logger';
 
-const log = Logger.getInstance();
-log.setLogLevel(LOG_LEVELS.TRACE);
+let log = Logger.getInstance().setLogLevel(LOG_LEVELS.TRACE);
 
-describe('Position Tests', () => {
-    let height = 3;
-    let width = 3;
+// test cases
+describe('Maze Tests', () => {
+    let height = 5;
+    let width = 6;
     let challenge = 1;
     let seed = 'Unit-Test-Maze';
     let maze: Maze;

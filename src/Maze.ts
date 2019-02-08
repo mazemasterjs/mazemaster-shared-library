@@ -77,7 +77,7 @@ export class Maze {
                 let cData = JSON.parse(JSON.stringify(cells[row][col]));
                 let cell: Cell = new Cell(cData);
                 cell.setPosition(new Position(row, col));
-                log.trace(__filename, 'buildCellsArray()', fmt('Adding cell in position [R:%d][C:%d]', row, col));
+                log.trace(__filename, 'buildCellsArray()', fmt('Adding cell in position [%d, %d]', row, col));
                 cols.push(cell);
             }
             newCells.push(cols);
@@ -86,15 +86,24 @@ export class Maze {
     }
 
     public getCell(pos: Position): Cell {
-        if (pos.row < 0 || pos.row > this.cells[0].length || pos.col < 0 || pos.col > this.cells.length) {
-            let error = new Error(fmt('Index Out of Bounds - Invalid cell coordinates given: [R:%d][C:%d].', pos.row, pos.col));
+        if (pos.row < 0 || pos.row >= this.cells[0].length || pos.col < 0 || pos.col >= this.cells.length) {
+            let error = new Error(fmt('Index Out of Bounds - Invalid cell coordinates given: [%d, %d].', pos.row, pos.col));
             log.error(__filename, fmt('getCell(%d, %d)', pos.row, pos.col), 'Invalid cell coordinates given.', error);
             throw error;
         }
 
-        return this.cells[pos.col][pos.row];
+        log.trace(__filename, fmt('getCell(%s)', pos.toString()), 'Returning cell.');
+
+        return this.cells[pos.row][pos.col];
     }
 
+    /**
+     * Calculates and returns neighboring cell in the given direction
+     * TODO: Consider checking neighbor validity here?
+     *
+     * @param cell
+     * @param dir
+     */
     public getNeighbor(cell: Cell, dir: DIRS): Cell {
         // move location of next cell according to random direction
         let row = cell.getPosition().row;
@@ -104,7 +113,14 @@ export class Maze {
         if (dir < DIRS.EAST) row = dir == DIRS.NORTH ? row - 1 : row + 1;
         if (dir > DIRS.SOUTH) col = dir == DIRS.EAST ? col + 1 : col - 1;
 
-        return this.getCell(new Position(col, row));
+        // let's throw a warning if an invalid neighbor is returned since we might want to change this some day
+        if (row < 0 || row >= this.cells[0].length || col < 0 || col >= this.cells.length) {
+            log.warn(__filename, fmt('getNeighbor(%s)', cell.getPosition().toString()), fmt('Invalid Neighbor Position: %d,%d', row, col));
+        } else {
+            log.debug(__filename, fmt('getNeighbor(%s)', cell.getPosition().toString()), fmt('Neighbor Position: %d,%d', row, col));
+        }
+
+        return this.getCell(new Position(row, col));
     }
 
     /**
@@ -170,15 +186,15 @@ export class Maze {
 
         // build the empty cells array
         this.cells = new Array(height);
-        for (let col: number = 0; col < height; col++) {
-            let rows: Array<Cell> = new Array();
-            for (let row: number = 0; row < width; row++) {
+        for (let row: number = 0; row < height; row++) {
+            let cols: Array<Cell> = new Array();
+            for (let col: number = 0; col < width; col++) {
                 let cell: Cell = new Cell();
-                cell.setPosition(new Position(col, row));
-                log.trace(__filename, 'buildCellsArray()', fmt('Adding cell in position [C:%d][R:%d]', col, row));
-                rows.push(cell);
+                cell.setPosition(new Position(row, col));
+                log.trace(__filename, 'buildCellsArray()', fmt('Adding cell in position [%d, %d]', row, col));
+                cols.push(cell);
             }
-            this.cells[col] = rows;
+            this.cells[row] = cols;
         }
 
         log.debug(__filename, 'generate()', fmt('Generated grid of %d empty cells.', height * width));
@@ -187,37 +203,41 @@ export class Maze {
         let startCol: number = Math.floor(Math.random() * width);
         let finishCol: number = Math.floor(Math.random() * width);
 
-        log.debug(__filename, 'generate()', fmt('Adding START ([C:%d][R:%d]) and FINISH ([C:%d][R:%d]) cells.', startCol, 0, finishCol, height - 1));
+        log.debug(__filename, 'generate()', fmt('Adding START ([%d, %d]) and FINISH ([%d, %d]) cells.', 0, startCol, height - 1, finishCol));
 
         // tag start and finish columns (start / finish tags force matching exits on edge)
         this.startCell = new Position(startCol, 0);
 
         this.cells[0][startCol].addTag(CELL_TAGS.START);
+        //        this.cells[0][startCol].addTag(CELL_TAGS.PATH);
 
         this.finishCell = new Position(finishCol, height - 1);
         this.cells[height - 1][finishCol].addTag(CELL_TAGS.FINISH);
+        //      this.cells[height - 1][finishCol].addTag(CELL_TAGS.PATH);
 
         // start the carving routine
+        log.debug(__filename, 'generate()', 'Starting carvePassage() from Start Cell: ' + this.startCell.toString());
         this.carvePassage(this.getCell(this.startCell));
+        log.debug(__filename, 'generate()', 'carvePassage() complete.');
 
         // now solve the maze and tag the path
         recurseDepth = 0;
         this.solveAndTag();
 
         // then add some traps...
-        if (this.challenge >= MIN_TRAPS_CHALLENGE_LEVEL) {
-            this.addTraps();
-        } else {
-            log.debug(
-                __filename,
-                'generate()',
-                fmt(
-                    'Maze Challenge Level (%s) is below the minimum CL allowing traps (%s). Skipping trap generation.',
-                    this.challenge,
-                    MIN_TRAPS_CHALLENGE_LEVEL
-                )
-            );
-        }
+        // if (this.challenge >= MIN_TRAPS_CHALLENGE_LEVEL) {
+        //     this.addTraps();
+        // } else {
+        //     log.debug(
+        //         __filename,
+        //         'generate()',
+        //         fmt(
+        //             'Maze Challenge Level (%s) is below the minimum CL allowing traps (%s). Skipping trap generation.',
+        //             this.challenge,
+        //             MIN_TRAPS_CHALLENGE_LEVEL
+        //         )
+        //     );
+        // }
 
         // render the maze so the text rendering is set
         this.generateTextRender(true);
@@ -235,13 +255,9 @@ export class Maze {
         recurseDepth++;
         if (recurseDepth > maxRecurseDepth) maxRecurseDepth = recurseDepth; // track deepest level of recursion during generation
 
-        log.trace(
-            __filename,
-            'carvePassage()',
-            fmt('Recursion: %d. Carving STARTED for cell [C:%d][R:%d].', recurseDepth, cell.getPosition().col, cell.getPosition().row)
-        );
+        log.trace(__filename, 'carvePassage()', fmt('R%d Carving STARTED from [%s].', recurseDepth, cell.getPosition().toString()));
 
-        // randomly sort an array of bitwise directional values (see also: Enums.Dirs)
+        // randomly sort an array of bitwise directional values (see also: Enums.DIRS)
         let dirs = [1, 2, 4, 8].sort(function(a, b) {
             return 0.5 - Math.random();
         });
@@ -249,17 +265,22 @@ export class Maze {
         // wander through the grid using randomized directions provided in dirs[],
         // carving out cells by adding exits as we go
         for (let n: number = 0; n < dirs.length; n++) {
-            let ny: number = cell.getPosition().row;
-            let nx: number = cell.getPosition().col;
+            let nextRow: number = cell.getPosition().row;
+            let nextCol: number = cell.getPosition().col;
 
-            // move location of next cell according to random direction
-            if (dirs[n] < DIRS.EAST) ny = dirs[n] == DIRS.NORTH ? ny - 1 : ny + 1;
-            if (dirs[n] > DIRS.SOUTH) nx = dirs[n] == DIRS.EAST ? nx + 1 : nx - 1;
+            // move location of next cell in the random direction
+            if (dirs[n] > DIRS.SOUTH) {
+                nextCol = dirs[n] == DIRS.EAST ? nextCol + 1 : nextCol - 1;
+            } else {
+                nextRow = dirs[n] == DIRS.NORTH ? nextRow - 1 : nextRow + 1;
+            }
 
             try {
                 // if the next call has valid grid coordinates, get it and carve into it
-                if (ny >= 0 && ny < this.cells.length && nx >= 0 && nx < this.cells[0].length) {
-                    let nextCell: Cell = this.cells[ny][nx];
+                if (nextRow >= 0 && nextRow < this.cells[0].length && nextCol > 0 && nextCol < this.cells.length) {
+                    log.trace(__filename, 'carvePassage()', fmt('R%d nextCell=[%s, %s].', recurseDepth, nextRow, nextCol));
+                    let nextCell: Cell = this.cells[nextRow][nextCol];
+
                     if (!(nextCell.getTags() & CELL_TAGS.CARVED) && cell.addExit(dirs[n], this.cells)) {
                         // this is a good move, so mark the cell as carved
                         nextCell.addTag(CELL_TAGS.CARVED);
@@ -267,10 +288,12 @@ export class Maze {
                         // and carve into the next cell
                         this.carvePassage(nextCell);
                     }
+                } else {
+                    log.trace(__filename, 'carvePassage()', fmt('R%d Skipping invalid nextCell=[%s, %s].', recurseDepth, nextRow, nextCol));
                 }
             } catch (error) {
                 // somehow still grabbed an invalid cell
-                log.error(__filename, 'carvePassage()', fmt('Error getting cell [C:%d][R:%d].', ny, nx), error);
+                log.error(__filename, 'carvePassage()', fmt('Error getting cell [%d, %d].', nextRow, nextCol), error);
             }
         }
 
@@ -279,7 +302,7 @@ export class Maze {
         log.trace(
             __filename,
             'carvePassage()',
-            fmt('Max Recursion: %d. Carve COMPLETED for cell [C:%d][R:%d].', recurseDepth, cell.getPosition().row, cell.getPosition().col)
+            fmt('Max R%d Carve COMPLETED for cell [%d, %d].', recurseDepth, cell.getPosition().row, cell.getPosition().col)
         );
     }
 
@@ -320,8 +343,7 @@ export class Maze {
                             // only render north walls on first row
                             if (y == 0) {
                                 if (!!(cell.getTags() & CELL_TAGS.START)) {
-                                    row += !!(cell.getExits() & DIRS.NORTH) ? H_DOOR : H_WALL;
-                                    //                                    row += S_DOOR;
+                                    row += S_DOOR;
                                 } else {
                                     row += !!(cell.getExits() & DIRS.NORTH) ? H_DOOR : H_WALL;
                                 }
@@ -358,8 +380,7 @@ export class Maze {
                         case 2:
                             // always render south walls
                             if (!!(cell.getTags() & CELL_TAGS.FINISH)) {
-                                row += !!(cell.getExits() & DIRS.SOUTH) ? H_DOOR : H_WALL;
-                                //                                row += F_DOOR;
+                                row += F_DOOR;
                             } else {
                                 row += !!(cell.getExits() & DIRS.SOUTH) ? H_DOOR : H_WALL;
                             }
@@ -393,8 +414,9 @@ export class Maze {
     }
 
     /**
-     * Finds the best solution path and tags it with TAGS.PATH
-     * Only trace logging in here because it's recursive and very noisy
+     * Solves the maze and tags the solution path TAGS.PATH.
+     * Only using trace logging in here because it's recursive and very noisy...
+     *
      * @param cellPos
      * @param pathId
      */
@@ -403,13 +425,13 @@ export class Maze {
         if (recurseDepth > maxRecurseDepth) maxRecurseDepth = recurseDepth; // track deepest level of recursion during generation
         let cell: Cell;
 
-        log.trace(__filename, fmt('tagSolution(%s)', cellPos.toString()), fmt('R:%d P:%s -- Solve pass started.', recurseDepth, pathId));
+        log.trace(__filename, fmt('tagSolution(%s)', cellPos.toString()), fmt('R:%d P:%s -> Solve pass started.', recurseDepth, pathId));
 
         // Attempt to get the cell - if it errors we can return from this call
         try {
             cell = this.getCell(cellPos);
         } catch (err) {
-            log.warn(__filename, fmt('tagSolution(%s)', cellPos.toString()), fmt('R:%d P:%s -- Invalid cell.', recurseDepth, pathId));
+            log.warn(__filename, fmt('tagSolution(%s)', cellPos.toString()), fmt('R:%d P:%s -> Invalid cell - solve pass ended.', recurseDepth, pathId));
             recurseDepth--;
             return;
         }
@@ -422,12 +444,13 @@ export class Maze {
         let moveMade = false;
 
         if (playerPos.equals(this.finishCell)) {
-            log.trace(__filename, fmt('tagSolution(%s)', cellPos.toString()), fmt('R:%d P:%s -- WINNING PATH!', recurseDepth, pathId));
+            log.trace(__filename, fmt('tagSolution(%s)', cellPos.toString()), fmt('R:%d P:%s -> Solution found!', recurseDepth, pathId));
         } else {
-            // update player location, but don't move it once it finds the finish
-            playerPos.col = cell.getPosition().col;
+            // update player location (global var), but don't move it once it finds the finish
             playerPos.row = cell.getPosition().row;
+            playerPos.col = cell.getPosition().col;
 
+            // loop through all directions until a valid move is found
             dirs.forEach(dir => {
                 let cLoc: Position = cell.getPosition(); // current position
                 let nLoc: Position = new Position(cLoc.row, cLoc.col); // next position
@@ -438,6 +461,7 @@ export class Maze {
                         if (!!(cell.getExits() & DIRS.NORTH) && !(cell.getTags() & CELL_TAGS.START)) nLoc.row -= 1;
                         break;
                     case DIRS.SOUTH:
+                        // finish always has an exit on the south wall, but it's not usable either
                         if (!!(cell.getExits() & DIRS.SOUTH) && !(cell.getTags() & CELL_TAGS.FINISH)) nLoc.row += 1;
                         break;
                     case DIRS.EAST:
@@ -477,7 +501,7 @@ export class Maze {
                 log.trace(
                     __filename,
                     fmt('tagSolution(%s)', cellPos.toString()),
-                    fmt('R:%d P:%s -- DEAD_END: Cannot move from cell %s', recurseDepth, pathId, cell.getPosition().toString())
+                    fmt('R:%d P:%s -- [DEAD END] Cannot move from cell %s', recurseDepth, pathId, cell.getPosition().toString())
                 );
             }
         }
@@ -486,7 +510,7 @@ export class Maze {
             log.trace(
                 __filename,
                 fmt('tagSolution(%s)', cellPos.toString()),
-                fmt('R:%d P:%s -- Adding PATH tag to %s.', recurseDepth, pathId, cell.getPosition().toString())
+                fmt('R:%d P:%s -- Adding [PATH] tag to %s.', recurseDepth, pathId, cell.getPosition().toString())
             );
             this.shortestPathLength++;
 

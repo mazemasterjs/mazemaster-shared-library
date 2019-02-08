@@ -1,5 +1,7 @@
 {
   "extends": "@istanbuljs/nyc-config-typescript",
+  "sourceMap": "true",
+  "produce-source-map": "true",
   "exclude": [
       "src/Enums.ts",
       "test/**/*", 

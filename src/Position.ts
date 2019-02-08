@@ -5,9 +5,9 @@ export class Position implements Position {
     public row: number;
     public col: number;
 
-    constructor(col: number, row: number) {
-        this.col = col;
+    constructor(row: number, col: number) {
         this.row = row;
+        this.col = col;
     }
 
     /**
@@ -16,11 +16,11 @@ export class Position implements Position {
      * @param position
      */
     public equals(position: Position): boolean {
-        return this.col == position.col && this.row == position.row;
+        return this.row == position.row && this.col == position.col;
     }
 
     public toString(): string {
-        return format('col: %s, row: %s', this.col, this.row);
+        return format('%s, %s', this.row, this.col);
     }
 }
 

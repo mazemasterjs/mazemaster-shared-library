@@ -4,7 +4,6 @@
     "description": "Shared library for MazeMaster",
     "main": "",
     "scripts": {
-        "watch": "tsc -w",
         "test": "mocha",
         "coverage": "nyc mocha",
         "sq": "sonar-scanner.bat",
