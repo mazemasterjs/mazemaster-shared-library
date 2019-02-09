@@ -123,15 +123,15 @@ export class Logger {
         }
     }
 
-    public appInfo(file: string, method: string) {
-        let pkg = getPackageInfo();
-        console.log('%s : %s : %s' + (method == '' ? '' : ' : ') + '%s : %s v%s', getTimeStamp(), 'N/A', fileName(__filename), method, pkg.name, pkg.version);
+    /**
+     * Reads and returns application name and version from package.json
+     *
+     * @return name:string, version: string
+     */
+    public getPackageInfo(): { name: string; version: string } {
+        let data = JSON.parse(fs.readFileSync(path.resolve('package.json'), 'utf8'));
+        return { name: data.name, version: data.version };
     }
-}
-
-function getPackageInfo(): { name: string; version: string } {
-    let data = JSON.parse(fs.readFileSync(path.resolve('package.json'), 'utf8'));
-    return { name: data.name, version: data.version };
 }
 
 // returns the current timestamp
@@ -146,5 +146,3 @@ function fileName(file: string) {
 }
 
 export default Logger;
-
-//TODO: Add file logging option

@@ -105,18 +105,17 @@ export class Maze {
      * @param cells
      */
     private buildCellsArray(cells: Array<Array<Cell>>): Array<Array<Cell>> {
-        let newCells = new Array(this.height);
+        let newCells: Array<Array<Cell>> = new Array(this.height);
 
         for (let row: number = 0; row < this.height; row++) {
-            let cols: Array<Cell> = new Array();
+            let cols: Array<Cell> = new Array<Cell>();
             for (let col: number = 0; col < this.width; col++) {
                 let cData = JSON.parse(JSON.stringify(cells[row][col]));
                 let cell: Cell = new Cell(cData);
-                cell.setPosition(new Position(row, col));
                 log.trace(__filename, 'buildCellsArray()', fmt('Adding cell in position [%d, %d]', row, col));
                 cols.push(cell);
             }
-            newCells.push(cols);
+            newCells[row] = cols;
         }
         return newCells;
     }
@@ -295,9 +294,10 @@ export class Maze {
             __filename,
             'generate()',
             fmt(
-                'Generation of maze [%s] complete.' +
+                'Maze generation completed.' +
                     '\r\nMaze Details:  \r\n' +
                     '------------\r\n' +
+                    'ID = %s\r\n' +
                     'Seed = %s\r\n' +
                     'Rows = %d\r\n' +
                     'Challenge Level = %d\r\n' +
@@ -455,7 +455,7 @@ export class Maze {
 
                 // each text-cell is actually three
                 for (let x = 0; x < this.width; x++) {
-                    let cell = this.cells[y][x];
+                    let cell: Cell = this.cells[y][x];
                     switch (subRow) {
                         case 0:
                             // only render north walls on first row

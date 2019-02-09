@@ -3,7 +3,8 @@
   "sourceMap": "true",
   "produce-source-map": "true",
   "exclude": [
-      "src/Enums.ts",
+      "bin/**/*",
+      "node_modules/**/*",
       "test/**/*", 
       "coverage/**/*"
   ],
