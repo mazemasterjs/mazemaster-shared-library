@@ -1,7 +1,7 @@
 import { format } from 'util';
 
-// Position - X, Y Coordinates within the maze grid
-export class Position implements Position {
+// Location - X, Y Coordinates within the maze grid
+export class Location {
     public row: number;
     public col: number;
 
@@ -13,10 +13,10 @@ export class Position implements Position {
     /**
      * Returns true of values of given Pos instance match
      * the values of the current Pos
-     * @param position
+     * @param location
      */
-    public equals(position: Position): boolean {
-        return this.row == position.row && this.col == position.col;
+    public equals(location: Location): boolean {
+        return this.row == location.row && this.col == location.col;
     }
 
     public toString(): string {
@@ -24,4 +24,4 @@ export class Position implements Position {
     }
 }
 
-export default Position;
+export default Location;

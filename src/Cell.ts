@@ -2,8 +2,7 @@ import { format, format as fmt } from 'util';
 import * as Helpers from './Helpers';
 import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
 import { Logger, LOG_LEVELS } from './Logger';
-import { Position } from './Position';
-import { dirname } from 'path';
+import { Location } from './Location';
 
 /**
  * Used to determine mode of functions modifying cell exits
@@ -19,10 +18,10 @@ let log = Logger.getInstance();
  * Represents a single cell in a maze
  */
 export class Cell {
-    private pos: Position;
+    private pos: Location;
     private exits: number;
     private tags: number;
-    private traps: number;
+    private trap: number;
     private visits: number;
     private lastVisit: number;
     private notes: Array<string>;
@@ -32,15 +31,15 @@ export class Cell {
             this.pos = data.pos;
             this.exits = data.exits;
             this.tags = data.tags;
-            this.traps = data.traps;
+            this.trap = data.trap;
             this.visits = data.visits;
             this.lastVisit = data.lastVisit;
             this.notes = data.notes;
         } else {
-            this.pos = new Position(0, 0);
+            this.pos = new Location(0, 0);
             this.exits = DIRS.NONE;
             this.tags = CELL_TAGS.NONE;
-            this.traps = CELL_TRAPS.NONE;
+            this.trap = CELL_TRAPS.NONE;
             this.visits = 0;
             this.lastVisit = 0;
             this.notes = new Array<string>();
@@ -52,7 +51,7 @@ export class Cell {
         log.debug(__filename, 'addNote()', 'Note added to cell: ' + note);
     }
 
-    public getNotes(): string[] {
+    public Notes(): string[] {
         return this.notes;
     }
 
@@ -61,19 +60,19 @@ export class Cell {
         this.lastVisit = moveNumber;
     }
 
-    public getVisitCount(): number {
+    public VisitCount(): number {
         return this.visits;
     }
 
-    public getLastVisitMoveNum(): number {
+    public LastVisitMoveNum(): number {
         return this.lastVisit;
     }
 
-    public getExits(): number {
+    public Exits(): number {
         return this.exits;
     }
 
-    public getExitCount(): number {
+    public ExitCount(): number {
         return Helpers.getSelectedBitNames(DIRS, this.exits).length;
     }
 
@@ -156,24 +155,24 @@ export class Cell {
         );
 
         if (mode == FN_MODES.ADD ? !(this.exits & dir) : !!(this.exits & dir)) {
-            let nPos = new Position(-1, -1); // locate an adjoining cell - must open exit on both sides
+            let nPos = new Location(-1, -1); // locate an adjoining cell - must open exit on both sides
 
             switch (dir) {
                 case DIRS.NORTH:
                     validMove = this.pos.row > 0;
-                    if (validMove) nPos = new Position(this.pos.row - 1, this.pos.col);
+                    if (validMove) nPos = new Location(this.pos.row - 1, this.pos.col);
                     break;
                 case DIRS.SOUTH:
                     validMove = this.pos.row < cells.length;
-                    if (validMove) nPos = new Position(this.pos.row + 1, this.pos.col);
+                    if (validMove) nPos = new Location(this.pos.row + 1, this.pos.col);
                     break;
                 case DIRS.EAST:
                     validMove = this.pos.col < cells[0].length;
-                    if (validMove) nPos = new Position(this.pos.row, this.pos.col + 1);
+                    if (validMove) nPos = new Location(this.pos.row, this.pos.col + 1);
                     break;
                 case DIRS.WEST:
                     validMove = this.pos.col > 0;
-                    if (validMove) nPos = new Position(this.pos.row, this.pos.col - 1);
+                    if (validMove) nPos = new Location(this.pos.row, this.pos.col - 1);
                     break;
             }
 
@@ -181,7 +180,7 @@ export class Cell {
                 log.trace(
                     __filename,
                     'setExit()',
-                    format('Valid direction, setting exit from [%s] into [%d, %d]', this.getPosition().toString(), nPos.row, nPos.col)
+                    format('Valid direction, setting exit from [%s] into [%d, %d]', this.Location.toString(), nPos.row, nPos.col)
                 );
                 this.exits = mode == FN_MODES.ADD ? (this.exits += dir) : (this.exits -= dir);
 
@@ -230,13 +229,8 @@ export class Cell {
     /**
      * Returns an array representing the cells grid coordinates (y, x)
      */
-    public getPosition(): Position {
-        return new Position(this.pos.row, this.pos.col);
-    }
-
-    // checks for an open direction
-    public isDirOpen(dir: DIRS): boolean {
-        return !!(this.getExits() & dir);
+    public get Location(): Location {
+        return new Location(this.pos.row, this.pos.col);
     }
 
     /**
@@ -244,22 +238,48 @@ export class Cell {
      * @param x
      * @param y
      */
-    public setPosition(pos: Position) {
+    public set Location(pos: Location) {
         this.pos = pos;
+    }
+
+    // checks for an open direction
+    public isDirOpen(dir: DIRS): boolean {
+        return !!(this.Exits() & dir);
     }
 
     /**
      * Returns the bitwise integer value representing cell tags
      */
-    public getTags(): number {
+    public get Tags(): number {
         return this.tags;
+    }
+
+    /**
+     * Set the cell's tags to the given value
+     */
+    public set Tags(tags: number) {
+        this.tags = tags;
     }
 
     /**
      * Returns the bitwise integer value representing cell traps
      */
-    public getTraps(): number {
-        return this.traps;
+    public get Trap(): number {
+        return this.trap;
+    }
+
+    /**
+     * Sets the cell's traps to the given value
+     * @param trap: 0 (none) or a value from ENUM.CELL_TRAPS
+     */
+    public set Trap(trap: number) {
+        let trapName = CELL_TRAPS[trap];
+        if (this.trap == 0) {
+            this.trap = trap;
+            log.trace(__filename, 'setTrap(' + trapName + ')', format('Trap %s set on cell [%d, %d].', trapName, this.pos.row, this.pos.col));
+        } else {
+            log.warn(__filename, 'setTrap(' + trapName + ')', format('Trap (%s) already set on cell [%d, %d].', trapName, this.pos.row, this.pos.col));
+        }
     }
 
     /**
@@ -267,20 +287,6 @@ export class Cell {
      */
     public listTags(): string {
         return Helpers.listSelectedBitNames(CELL_TAGS, this.tags);
-    }
-
-    /**
-     * Adds trap to this cell if no trap is already set
-     * @param trap
-     */
-    public setTrap(trap: CELL_TRAPS) {
-        let trapName = CELL_TRAPS[trap];
-        if (this.traps == 0) {
-            this.traps = trap;
-            log.trace(__filename, 'setTrap(' + trapName + ')', format('Trap %s set on cell [%d, %d].', trapName, this.pos.row, this.pos.col));
-        } else {
-            log.warn(__filename, 'setTrap(' + trapName + ')', format('Trap (%s) already set on cell [%d, %d].', trapName, this.pos.row, this.pos.col));
-        }
     }
 
     /**

@@ -4,10 +4,10 @@ import Logger from '../src/Logger';
 import { LOG_LEVELS } from '../src/Logger';
 import { MD5 as hash } from 'object-hash';
 import Cell from '../src/Cell';
-import Position from '../src/Position';
+import Location from '../src/Location';
+import { CELL_TAGS, CELL_TRAPS } from '../src/Enums';
 
 require('dotenv').config();
-Logger.getInstance().setLogLevel(LOG_LEVELS.TRACE);
 
 // test cases
 describe('Maze Tests', () => {
@@ -20,7 +20,7 @@ describe('Maze Tests', () => {
     let note2: string = 'This is another unit test.';
     let maze: Maze;
     let mazeId: string = '25:25:10:Unit-Test-Maze-1';
-    let mazeHash: string = 'a90407b34a552744ad24f50379656bf8';
+    let mazeHash: string = 'ba3914bd89169f8b995c2e484fdf2b67';
 
     it(`Maze.generate() should create a small, simple maze.`, () => {
         let littleMaze: Maze = new Maze().generate(3, 3, seed, 1);
@@ -28,8 +28,11 @@ describe('Maze Tests', () => {
     });
 
     it(`Maze.generate() should create a new maze with ID: '${mazeId}'`, () => {
+        let lastLevel: LOG_LEVELS = Logger.getInstance().LogLevel;
+        Logger.getInstance().LogLevel = LOG_LEVELS.DEBUG;
         maze = new Maze().generate(height, width, seed, challenge);
         expect(maze.Id).to.equal(mazeId);
+        Logger.getInstance().LogLevel = lastLevel;
     });
 
     it(`Maze ID should match pattern 'HEIGHT:WIDTH:CHALLENGE:SEED' (${mazeId})`, () => {
@@ -42,21 +45,46 @@ describe('Maze Tests', () => {
     });
 
     it(`Maze.getCell(-1, -1) should return error`, () => {
-        let cPos = new Position(-1, -1);
+        let cPos = new Location(-1, -1);
         expect(function() {
             maze.getCell(cPos);
         }).to.throw('Invalid cell coordinates given: [-1, -1].');
     });
 
     it(`Maze.getCell(0,0) should return cell`, () => {
-        cell = maze.getCell(new Position(0, 0));
-        expect(cell.getPosition().toString()).to.equal('0, 0');
+        cell = maze.getCell(new Location(0, 0));
+        expect(cell.Location.toString()).to.equal('0, 0');
+    });
+
+    it(`Cell.Tags(0) should reset cell tags.`, () => {
+        cell.Tags = 0;
+        expect(cell.Tags).to.equal(0);
+    });
+
+    it(`Cell.Tags(CARVED + START) should set cell.Tags to 9.`, () => {
+        cell.Tags = CELL_TAGS.CARVED + CELL_TAGS.START;
+        expect(cell.Tags).to.equal(9);
+    });
+
+    it(`Cell.removeTag(START) should set cell.Tags to 8.`, () => {
+        cell.removeTag(CELL_TAGS.START);
+        expect(cell.Tags).to.equal(8);
+    });
+
+    it(`Cell.Traps(0) should set cell.Traps to 0.`, () => {
+        cell.Trap = 0;
+        expect(cell.Trap).to.equal(0);
+    });
+
+    it(`Cell.Traps(CELL_TRAPS.BEARTRAP) should set cell.Traps to 2.`, () => {
+        cell.Trap = CELL_TRAPS.BEARTRAP;
+        expect(cell.Trap).to.equal(2);
     });
 
     it(`Cell.addNote(note) should add notes to the cell's notes array.`, () => {
         cell.addNote(note1);
         cell.addNote(note2);
-        let notes: Array<string> = cell.getNotes();
+        let notes: Array<string> = cell.Notes();
         expect(notes[0] + notes[1]).to.equal(note1 + note2);
     });
 
@@ -64,14 +92,14 @@ describe('Maze Tests', () => {
         cell.addVisit(1);
         cell.addVisit(2);
         cell.addVisit(3);
-        expect(cell.getLastVisitMoveNum()).to.equal(3);
+        expect(cell.LastVisitMoveNum()).to.equal(3);
     });
 
     it(`Cell.getVisitCount() should return the number of cell visits.`, () => {
         cell.addVisit(11);
         cell.addVisit(12);
         cell.addVisit(13);
-        expect(cell.getVisitCount()).to.equal(6);
+        expect(cell.VisitCount()).to.equal(6);
     });
 
     it(`New maze from JSON data should match maze [${mazeId}]`, () => {

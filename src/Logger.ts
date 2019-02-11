@@ -37,13 +37,13 @@ export class Logger {
         return Logger.instance;
     }
 
-    public setLogLevel(level: LOG_LEVELS) {
+    public set LogLevel(level: LOG_LEVELS) {
         this.logLevel = level;
         let method = 'setLogLevel(' + level + ')';
         console.log('%s : %s : %s : %s : Log Level set to %s', getTimeStamp(), 'N/A', fileName(__filename), method, LOG_LEVELS[this.logLevel]);
     }
 
-    public getLogLevel(): LOG_LEVELS {
+    public get LogLevel(): LOG_LEVELS {
         return this.logLevel;
     }
 
@@ -128,7 +128,7 @@ export class Logger {
      *
      * @return name:string, version: string
      */
-    public getPackageInfo(): { name: string; version: string } {
+    public get PackageInfo(): { name: string; version: string } {
         let data = JSON.parse(fs.readFileSync(path.resolve('package.json'), 'utf8'));
         return { name: data.name, version: data.version };
     }
