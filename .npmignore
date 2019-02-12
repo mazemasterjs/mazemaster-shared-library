@@ -18,6 +18,9 @@ src/
 .env
 .npmrc
 .vscode/
+tsconfig.json
+package.ps1
+tslint.json.nycrc
 
 # don't upload testing / coverage stuff
 coverage/
