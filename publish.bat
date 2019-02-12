@@ -11,7 +11,7 @@ if "%1"=="pre" (
     del /q *.js
     del /q *.js.map
 
-    echo "compiling library..."
+    echo "Compiling library..."
     tsc
 
     echo "Copying bin\*.js and bin\*.js.map to root..."
