@@ -1,13 +1,14 @@
 {
     "name": "@mazemasterjs/shared-library",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "Shared library for MazeMasterJS",
     "main": "",
     "scripts": {
         "test": "mocha",
         "coverage": "nyc mocha",
         "sq": "sonar-scanner.bat",
-        "prepublishOnly": "powershell ./package.ps1",
+        "prepublishOnly": "publish.bat pre",
+        "postpublish": "publish.bat post",
         "start": "echo \"Error: project not runnable\" && exit 1"
     },
     "repository": {
