@@ -17,6 +17,7 @@ data
 
 # don't upload environment vars
 .env
+.npmrc
 
 # don't upload test / coverage stuff
 coverage
