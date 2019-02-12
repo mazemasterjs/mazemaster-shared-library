@@ -22,6 +22,7 @@ tsconfig.json
 package.ps1
 tslint.json
 .nycrc
+publish.bat
 
 # don't upload testing / coverage stuff
 coverage/
