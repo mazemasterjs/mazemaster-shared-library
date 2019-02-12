@@ -24,6 +24,7 @@ if "%1"=="post" (
     echo "Deleting .js, .ts, and .js.map files from root."
     del /q *.js
     del /q *.js.map
+    del /q *.ts
 
     echo "Post-publish complete."
 )
