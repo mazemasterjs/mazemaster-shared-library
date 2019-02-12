@@ -11,6 +11,7 @@ node_modules/
 
 # test files
 test/
+bin/test/
 
 # config / env files
 .env
