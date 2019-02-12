@@ -1,6 +1,6 @@
 {
     "name": "@mazemasterjs/shared-library",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Shared library for MazeMasterJS",
     "main": "",
     "scripts": {

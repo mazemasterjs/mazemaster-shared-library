@@ -20,7 +20,8 @@ src/
 .vscode/
 tsconfig.json
 package.ps1
-tslint.json.nycrc
+tslint.json
+.nycrc
 
 # don't upload testing / coverage stuff
 coverage/
