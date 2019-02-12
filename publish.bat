@@ -7,16 +7,13 @@ if "%1"=="pre" (
         rmdir /s /q bin
     )
 
-    echo "Deleting .js and .js.map files from root."
-    del /q *.js
-    del /q *.js.map
-
     echo "Compiling library..."
     tsc
 
-    echo "Copying bin\*.js and bin\*.js.map to root..."
+    echo "Copying bin\*.js, bin\*.js.map, and src\*.ts to root..."
     copy bin\src\*.js .
     copy bin\src\*.js.map .
+    copy src\*.ts .
 
     echo "Pre-publish complete."
 )
@@ -24,7 +21,7 @@ if "%1"=="pre" (
 if "%1"=="post" (
     echo "Post-publish"
 
-    echo "Deleting .js and .js.map files from root."
+    echo "Deleting .js, .ts, and .js.map files from root."
     del /q *.js
     del /q *.js.map
 
