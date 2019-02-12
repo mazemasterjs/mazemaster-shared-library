@@ -1,5 +1,5 @@
 {
-    "name": "mazemaster-shared-library",
+    "name": "shared-library",
     "version": "1.0.0",
     "description": "Shared library for MazeMaster",
     "main": "",
@@ -11,19 +11,19 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+ssh://git@gitlab.com/mazemaster/mazemaster-shared-library.git"
+        "url": "git+ssh://git@gitlab.com/mazemaster/shared-library.git"
     },
     "keywords": [
         "MazeMaster",
-        "MazeMaster-Shared-Library",
+        "shared-Library",
         "Shared-Library"
     ],
     "author": "James Dean - kreebog@gmail.com",
     "license": "MIT",
     "bugs": {
-        "url": "https://gitlab.com/mazemaster/mazemaster-shared-library/issues"
+        "url": "https://gitlab.com/mazemaster/shared-library/issues"
     },
-    "homepage": "https://gitlab.com/mazemaster/mazemaster-shared-library#readme",
+    "homepage": "https://gitlab.com/mazemaster/shared-library#readme",
     "dependencies": {
         "@types/seedrandom": "^2.4.27",
         "seedrandom": "^2.4.4"
