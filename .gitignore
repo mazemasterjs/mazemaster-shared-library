@@ -14,7 +14,7 @@ bin
 
 # config / env
 .env
-
+.vscode
 
 #  test / coverage stuff
 coverage
