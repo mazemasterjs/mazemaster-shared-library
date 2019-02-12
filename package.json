@@ -25,7 +25,6 @@
     },
     "homepage": "https://gitlab.com/mazemaster/shared-library#readme",
     "dependencies": {
-        "@types/seedrandom": "^2.4.27",
         "seedrandom": "^2.4.4"
     },
     "devDependencies": {
@@ -35,6 +34,7 @@
         "@types/mocha": "^5.2.5",
         "@types/node": "^10.12.25",
         "@types/object-hash": "^1.2.0",
+        "@types/seedrandom": "^2.4.27",
         "chai": "^4.2.0",
         "dotenv": "^6.2.0",
         "mocha": "^5.2.0",
