@@ -9,9 +9,10 @@ node_modules/
 # Optional npm cache directory
 .npm
 
-# test files
+# will only publish from the /dist folder
 test/
 bin/
+src/
 
 # config / env files
 .env
