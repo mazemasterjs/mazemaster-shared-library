@@ -1,0 +1,25 @@
+# Runtime data
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+
+# Optional npm cache directory
+.npm
+
+# test files
+test/
+
+# config / env files
+.env
+.npmrc
+.vscode/
+
+# don't upload testing / coverage stuff
+coverage/
+sonar-project.properties
+.scannerwork
+.sonarlint
+.nyc_output

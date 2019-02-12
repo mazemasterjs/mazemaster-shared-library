@@ -9,17 +9,14 @@ node_modules/
 # Optional npm cache directory
 .npm
 
-# don't upload compiled ts files
+# compiled ts files
 bin
 
-# dont upload database files
-data
-
-# don't upload environment vars
+# config / env
 .env
-.npmrc
 
-# don't upload test / coverage stuff
+
+#  test / coverage stuff
 coverage
 .scannerwork
 .sonarlint
