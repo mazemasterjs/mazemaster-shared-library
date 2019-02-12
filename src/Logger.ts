@@ -171,9 +171,9 @@ export class Logger {
     public force(file: string, method: string, message: string) {
         console.log(
             '%s%s : %s : %s' + (method == '' ? '' : ' : ') + '%s : %s',
-            COLORS.RED_UNDERLINE,
+            COLORS.BLUE,
             getTimeStamp(),
-            'TRC',
+            'FRC',
             fileName(file),
             method,
             message,
