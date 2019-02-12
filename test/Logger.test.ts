@@ -67,4 +67,9 @@ describe('Logger Tests', () => {
         log.error(__filename, 'Logger test', 'Test message -> ', new Error('Test Error'));
         expect(null);
     });
+
+    it(`log.force() should not generate an error.`, () => {
+        log.force(__filename, 'Logger test', 'Test message.');
+        expect(null);
+    });
 });

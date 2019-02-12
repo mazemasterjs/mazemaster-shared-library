@@ -37,6 +37,9 @@ export class Logger {
         return Logger.instance;
     }
 
+    /**
+     * Sets current logging level one of the values in LOG_LEVELS
+     */
     public set LogLevel(level: LOG_LEVELS) {
         this.logLevel = level;
         let method = 'setLogLevel(' + level + ')';
@@ -47,6 +50,13 @@ export class Logger {
         return this.logLevel;
     }
 
+    /**
+     * "debug" logging is moderately verbose and generally not appropriate for production environments
+     *
+     * @param file calling file name (__filename)
+     * @param method calling method name
+     * @param message message to display
+     */
     public debug(file: string, method: string, message: string) {
         if (this.logLevel >= LOG_LEVELS.DEBUG) {
             console.log(
@@ -62,6 +72,13 @@ export class Logger {
         }
     }
 
+    /**
+     * "error" logging should used when an unexpected exception occurs - this demands attention
+     *
+     * @param file calling file name (__filename)
+     * @param method calling method name
+     * @param message message to display
+     */
     public error(file: string, method: string, message: string, error: Error) {
         if (this.logLevel >= LOG_LEVELS.ERROR) {
             console.log(
@@ -78,6 +95,13 @@ export class Logger {
         }
     }
 
+    /**
+     * "warn" logging should be used to indicate a problem or handled error that need attention
+     *
+     * @param file calling file name (__filename)
+     * @param method calling method name
+     * @param message message to display
+     */
     public warn(file: string, method: string, message: string) {
         if (this.logLevel >= LOG_LEVELS.WARN) {
             console.log(
@@ -93,6 +117,13 @@ export class Logger {
         }
     }
 
+    /**
+     * "info" logging is useful for logging application-level events, like startup or shutdown
+     *
+     * @param file calling file name (__filename)
+     * @param method calling method name
+     * @param message message to display
+     */
     public info(file: string, method: string, message: string) {
         if (this.logLevel >= LOG_LEVELS.INFO) {
             console.log(
@@ -108,6 +139,13 @@ export class Logger {
         }
     }
 
+    /**
+     * "trace" logging is extremely verbose and should only be used during development
+     *
+     * @param file calling file name (__filename)
+     * @param method calling method name
+     * @param message message to display
+     */
     public trace(file: string, method: string, message: string) {
         if (this.logLevel >= LOG_LEVELS.TRACE) {
             console.log(
@@ -121,6 +159,26 @@ export class Logger {
                 COLORS.NONE
             );
         }
+    }
+
+    /**
+     * "force" is a special log level that ignores the current value of LOG_LEVEL - use sparingly.
+     *
+     * @param file calling file name (__filename)
+     * @param method calling method name
+     * @param message message to display
+     */
+    public force(file: string, method: string, message: string) {
+        console.log(
+            '%s%s : %s : %s' + (method == '' ? '' : ' : ') + '%s : %s',
+            COLORS.RED_UNDERLINE,
+            getTimeStamp(),
+            'TRC',
+            fileName(file),
+            method,
+            message,
+            COLORS.NONE
+        );
     }
 
     /**
