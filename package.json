@@ -7,11 +7,12 @@
         "test": "mocha",
         "coverage": "nyc mocha",
         "sq": "sonar-scanner.bat",
+        "prepublishOnly": "powershell ./package.ps1",
         "start": "echo \"Error: project not runnable\" && exit 1"
     },
     "repository": {
         "type": "git",
-        "url": "git+ssh://git@gitlab.com/mazemaster/shared-library.git"
+        "url": "git+https://github.com/mazemasterjs/shared-library.git"
     },
     "keywords": [
         "MazeMaster",
@@ -21,9 +22,9 @@
     "author": "James Dean - kreebog@gmail.com",
     "license": "MIT",
     "bugs": {
-        "url": "https://gitlab.com/mazemaster/shared-library/issues"
+        "url": "https://github.com/mazemasterjs/shared-library/issues"
     },
-    "homepage": "https://gitlab.com/mazemaster/shared-library#readme",
+    "homepage": "https://github.com/mazemasterjs/shared-library",
     "dependencies": {
         "seedrandom": "^2.4.4"
     },

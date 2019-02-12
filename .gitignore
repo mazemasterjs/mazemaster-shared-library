@@ -11,6 +11,7 @@ node_modules/
 
 # compiled ts files
 bin
+dist
 
 # config / env
 .env
