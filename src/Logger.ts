@@ -21,6 +21,9 @@ export enum LOG_LEVELS {
     TRACE
 }
 
+/**
+ * Provides basic logging features - always outputs to console for cloud/container friendly logs
+ */
 export class Logger {
     private static instance: Logger;
 
