@@ -1,5 +1,5 @@
-import { expect } from 'chai';
-import { Logger, LOG_LEVELS } from '../src/Logger';
+import {expect} from 'chai';
+import {Logger, LOG_LEVELS} from '../src/Logger';
 
 require('dotenv').config();
 let log: Logger;
@@ -19,11 +19,7 @@ describe('Logger Tests', () => {
     it(`log.packageInfo() should read package.json and return app name and version.`, () => {
         let packageInfo = log.PackageInfo;
         log.info(__filename, 'Logger test', 'Application: ' + packageInfo.name + ', Version: ' + packageInfo.version);
-<<<<<<< HEAD
-        expect(packageInfo.name).to.equal('shared-library');
-=======
         expect(packageInfo.name).to.equal('@mazemasterjs/shared-library');
->>>>>>> 58c17d4a6c9959722b0111501db543126b7b25dc
         expect(packageInfo.version).not.to.be.empty;
     });
 
