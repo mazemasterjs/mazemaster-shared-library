@@ -1,11 +1,11 @@
-import { Maze } from '../src/Maze';
-import { expect } from 'chai';
+import {Maze} from '../src/Maze';
+import {expect} from 'chai';
 import Logger from '../src/Logger';
-import { LOG_LEVELS } from '../src/Logger';
-import { MD5 as hash } from 'object-hash';
+import {LOG_LEVELS} from '../src/Logger';
+import {MD5 as hash} from 'object-hash';
 import Cell from '../src/Cell';
 import Location from '../src/Location';
-import { CELL_TAGS, CELL_TRAPS } from '../src/Enums';
+import {CELL_TAGS, CELL_TRAPS, DIRS} from '../src/Enums';
 
 require('dotenv').config();
 
@@ -44,6 +44,11 @@ describe('Maze Tests', () => {
         expect(hash(jsonMaze)).to.equal(mazeHash);
     });
 
+    it(`Maze.Note should set the maze's note.`, () => {
+        maze.Note = note1;
+        expect(maze.Note).to.equal(note1);
+    });
+
     it(`Maze.getCell(-1, -1) should return error`, () => {
         let cPos = new Location(-1, -1);
         expect(function() {
@@ -54,6 +59,20 @@ describe('Maze Tests', () => {
     it(`Maze.getCell(0,0) should return cell`, () => {
         cell = maze.getCell(new Location(0, 0));
         expect(cell.Location.toString()).to.equal('0, 0');
+    });
+
+    it(`cell.Exits for Cell(0, 0) should not include WEST.`, () => {
+        expect(!!(cell.Exits & DIRS.WEST)).to.equal(false);
+    });
+
+    it(`cell.addExit(DIRS.EAST) should add an exit to the EAST.`, () => {
+        cell.addExit(DIRS.EAST, maze.Cells);
+        expect(!!(cell.Exits & DIRS.EAST)).to.equal(true);
+    });
+
+    it(`cell.removeExit(DIRS.EAST) should remove the exit to the EAST.`, () => {
+        cell.removeExit(DIRS.EAST, maze.Cells);
+        expect(!!(cell.Exits & DIRS.EAST)).to.equal(false);
     });
 
     it(`Cell.Tags(0) should reset cell tags.`, () => {

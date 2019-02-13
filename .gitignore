@@ -15,9 +15,10 @@ bin
 # dont upload database files
 data
 
-# don't upload environment vars
+# don't upload config or env vars
 .env
 .npmrc
+.vscode
 
 # don't upload test / coverage stuff
 coverage

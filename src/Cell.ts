@@ -1,8 +1,8 @@
-import { format, format as fmt } from 'util';
+import {format, format as fmt} from 'util';
 import * as Helpers from './Helpers';
-import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
-import { Logger, LOG_LEVELS } from './Logger';
-import { Location } from './Location';
+import {CELL_TAGS, CELL_TRAPS, DIRS} from './Enums';
+import {Logger, LOG_LEVELS} from './Logger';
+import {Location} from './Location';
 
 /**
  * Used to determine mode of functions modifying cell exits
@@ -68,7 +68,7 @@ export class Cell {
         return this.lastVisit;
     }
 
-    public Exits(): number {
+    public get Exits(): number {
         return this.exits;
     }
 
@@ -244,7 +244,7 @@ export class Cell {
 
     // checks for an open direction
     public isDirOpen(dir: DIRS): boolean {
-        return !!(this.Exits() & dir);
+        return !!(this.Exits & dir);
     }
 
     /**

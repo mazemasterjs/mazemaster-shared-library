@@ -19,7 +19,7 @@ describe('Logger Tests', () => {
     it(`log.packageInfo() should read package.json and return app name and version.`, () => {
         let packageInfo = log.PackageInfo;
         log.info(__filename, 'Logger test', 'Application: ' + packageInfo.name + ', Version: ' + packageInfo.version);
-        expect(packageInfo.name).to.equal('mazemaster-shared-library');
+        expect(packageInfo.name).to.equal('shared-library');
         expect(packageInfo.version).not.to.be.empty;
     });
 

@@ -1,9 +1,9 @@
 import seedrandom from 'seedrandom';
-import { format as fmt } from 'util';
+import {format as fmt} from 'util';
 import Cell from './Cell';
-import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
-import Logger, { LOG_LEVELS } from './Logger';
-import { Location } from './Location';
+import {CELL_TAGS, CELL_TRAPS, DIRS} from './Enums';
+import Logger, {LOG_LEVELS} from './Logger';
+import {Location} from './Location';
 
 const log = Logger.getInstance();
 
@@ -225,7 +225,7 @@ export class Maze {
         // implement random seed
         if (seed && seed.length > 0) {
             this.seed = seed;
-            seedrandom(seed, { global: true });
+            seedrandom(seed, {global: true});
         } else {
             log.warn(__filename, 'generate()', 'No seed value found.  This maze will be random.');
         }
@@ -459,14 +459,14 @@ export class Maze {
                                 if (!!(cell.Tags & CELL_TAGS.START)) {
                                     row += S_DOOR;
                                 } else {
-                                    row += !!(cell.Exits() & DIRS.NORTH) ? H_DOOR : H_WALL;
+                                    row += !!(cell.Exits & DIRS.NORTH) ? H_DOOR : H_WALL;
                                 }
                             }
                             break;
                         case 1:
                             // only render west walls on first column
                             if (x == 0) {
-                                row += !!(cell.Exits() & DIRS.WEST) ? V_DOOR : V_WALL;
+                                row += !!(cell.Exits & DIRS.WEST) ? V_DOOR : V_WALL;
                             }
 
                             // render room center - check for cell properties and render appropriately
@@ -488,7 +488,7 @@ export class Maze {
                             row += cellFill;
 
                             // always render east walls (with room center)
-                            row += !!(cell.Exits() & DIRS.EAST) ? V_DOOR : V_WALL;
+                            row += !!(cell.Exits & DIRS.EAST) ? V_DOOR : V_WALL;
 
                             break;
                         case 2:
@@ -496,7 +496,7 @@ export class Maze {
                             if (!!(cell.Tags & CELL_TAGS.FINISH)) {
                                 row += F_DOOR;
                             } else {
-                                row += !!(cell.Exits() & DIRS.SOUTH) ? H_DOOR : H_WALL;
+                                row += !!(cell.Exits & DIRS.SOUTH) ? H_DOOR : H_WALL;
                             }
                             break;
                     }
@@ -565,24 +565,24 @@ export class Maze {
             playerPos.col = cell.Location.col;
 
             // loop through all directions until a valid move is found
-            dirs.forEach(dir => {
+            dirs.forEach((dir) => {
                 let cLoc: Location = cell.Location; // current position
                 let nLoc: Location = new Location(cLoc.row, cLoc.col); // next position
 
                 switch (dir) {
                     case DIRS.NORTH:
                         // start always has an exit on the north wall, but it's not usable
-                        if (!!(cell.Exits() & DIRS.NORTH) && !(cell.Tags & CELL_TAGS.START)) nLoc.row -= 1;
+                        if (!!(cell.Exits & DIRS.NORTH) && !(cell.Tags & CELL_TAGS.START)) nLoc.row -= 1;
                         break;
                     case DIRS.SOUTH:
                         // finish always has an exit on the south wall, but it's not usable either
-                        if (!!(cell.Exits() & DIRS.SOUTH) && !(cell.Tags & CELL_TAGS.FINISH)) nLoc.row += 1;
+                        if (!!(cell.Exits & DIRS.SOUTH) && !(cell.Tags & CELL_TAGS.FINISH)) nLoc.row += 1;
                         break;
                     case DIRS.EAST:
-                        if (!!(cell.Exits() & DIRS.EAST)) nLoc.col += 1;
+                        if (!!(cell.Exits & DIRS.EAST)) nLoc.col += 1;
                         break;
                     case DIRS.WEST:
-                        if (!!(cell.Exits() & DIRS.WEST)) nLoc.col -= 1;
+                        if (!!(cell.Exits & DIRS.WEST)) nLoc.col -= 1;
                         break;
                 }
 
@@ -670,7 +670,7 @@ export class Maze {
                 log.trace(__filename, fnName, 'Trap Roll Passed (' + trapRoll + ' >= ' + trapChance + '), time to set some traps! >:)');
 
                 // traps only allowed if there are open cells on either side to allow jumping
-                let exits = cell.Exits();
+                let exits = cell.Exits;
                 let tags = cell.Tags;
 
                 // bail out if we already have a trap here
