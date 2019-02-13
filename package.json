@@ -1,29 +1,31 @@
 {
-    "name": "shared-library",
-    "version": "1.0.0",
-    "description": "Shared library for MazeMaster",
+    "name": "@mazemasterjs/shared-library",
+    "version": "1.0.11",
+    "description": "Shared library for MazeMasterJS",
     "main": "",
     "scripts": {
         "test": "mocha",
         "coverage": "nyc mocha",
         "sq": "sonar-scanner.bat",
+        "prepublishOnly": "publish.bat pre",
+        "postpublish": "publish.bat post",
         "start": "echo \"Error: project not runnable\" && exit 1"
     },
     "repository": {
         "type": "git",
-        "url": "git+ssh://git@gitlab.com/mazemaster/shared-library.git"
+        "url": "git+https://github.com/mazemasterjs/shared-library.git"
     },
     "keywords": [
         "MazeMaster",
-        "shared-Library",
-        "Shared-Library"
+        "MazeMasterJS",
+        "shared-Library"
     ],
     "author": "James Dean - kreebog@gmail.com",
     "license": "MIT",
     "bugs": {
-        "url": "https://gitlab.com/mazemaster/shared-library/issues"
+        "url": "https://github.com/mazemasterjs/shared-library/issues"
     },
-    "homepage": "https://gitlab.com/mazemaster/shared-library#readme",
+    "homepage": "https://github.com/mazemasterjs/shared-library",
     "dependencies": {
         "@types/seedrandom": "^2.4.27",
         "seedrandom": "^2.4.4"
@@ -33,7 +35,7 @@
         "@types/chai": "^4.1.7",
         "@types/dotenv": "^6.1.0",
         "@types/mocha": "^5.2.5",
-        "@types/node": "^10.12.24",
+        "@types/node": "^10.12.25",
         "@types/object-hash": "^1.2.0",
         "chai": "^4.2.0",
         "dotenv": "^6.2.0",
