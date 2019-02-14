@@ -8,8 +8,7 @@ enum COLORS {
     YELLOW = '\x1b[49m\x1b[35m',
     BLUE = '\x1b[49m\x1b[36m',
     MAGENTA = '\x1b[49m\x1b[35m',
-    WHITE_ON_RED = '\x1b[41m\x1b[37m',
-    RED_UNDERLINE = '\x1b[4m\x1b[37m'
+    WHITE_ON_RED = '\x1b[41m\x1b[37m'
 }
 
 export enum LOG_LEVELS {
@@ -203,7 +202,7 @@ function getTimeStamp(): string {
 
 // strips path and returns just the name (and extension) of the file
 function fileName(file: string) {
-    return typeof file !== 'undefined' ? path.basename(file) : 'FILE_UNKNOWN';
+    return path.basename(file);
 }
 
 export default Logger;

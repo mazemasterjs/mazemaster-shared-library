@@ -20,7 +20,7 @@ describe('Maze Tests', () => {
     let note2: string = 'This is another unit test.';
     let maze: Maze;
     let mazeId: string = '25:25:10:Unit-Test-Maze-1';
-    let mazeHash: string = 'ba3914bd89169f8b995c2e484fdf2b67';
+    let mazeHash: string = '40ceb6b23b66e520d75fe59d1b32ea11';
 
     it(`Maze.generate() should create a small, simple maze.`, () => {
         let littleMaze: Maze = new Maze().generate(3, 3, 1, seed);

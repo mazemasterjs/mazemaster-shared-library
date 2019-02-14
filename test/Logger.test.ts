@@ -1,5 +1,5 @@
-import {expect} from 'chai';
-import {Logger, LOG_LEVELS} from '../src/Logger';
+import { expect } from 'chai';
+import { Logger, LOG_LEVELS } from '../src/Logger';
 
 require('dotenv').config();
 let log: Logger;
@@ -21,6 +21,11 @@ describe('Logger Tests', () => {
         log.info(__filename, 'Logger test', 'Application: ' + packageInfo.name + ', Version: ' + packageInfo.version);
         expect(packageInfo.name).to.equal('@mazemasterjs/shared-library');
         expect(packageInfo.version).not.to.be.empty;
+    });
+
+    it(`log.info() with a fake __filename should not generate an error.`, () => {
+        log.info(__filename + '/fake', 'Logger test', 'Test message.');
+        expect(null);
     });
 
     it(`log.info() should not generate an error.`, () => {
