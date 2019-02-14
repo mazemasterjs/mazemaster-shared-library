@@ -38,9 +38,8 @@ export class Maze {
         if (data !== undefined) {
             this.height = data.height;
             this.width = data.width;
-            this.seed = data.seed;
             this.challenge = data.challenge;
-            this.textRender = data.textRender;
+            this.seed = data.seed;
             this.id = data.id;
             this.startCell = data.startCell;
             this.finishCell = data.finishCell;
@@ -48,12 +47,12 @@ export class Maze {
             this.trapCount = data.trapCount;
             this.note = data.note;
             this.cells = this.buildCellsArray(data.cells);
+            this.textRender = data.textRender;
         } else {
             this.height = 0;
             this.width = 0;
-            this.seed = '';
             this.challenge = 0;
-            this.textRender = '';
+            this.seed = '';
             this.id = '';
             this.startCell = new Location(0, 0);
             this.finishCell = new Location(0, 0);
@@ -61,6 +60,7 @@ export class Maze {
             this.trapCount = 0;
             this.note = '';
             this.cells = new Array<Array<Cell>>();
+            this.textRender = '';
         }
     }
 
