@@ -138,7 +138,7 @@ export class Maze {
      * @param seed - pseudo random number generator seed value.  If empty, maze will be random and unrepeatable
      * @param challengeLevel - The difficulty level of the maze being generated
      */
-    public generate(height: number, width: number, seed: string, challengeLevel: number): this {
+    public generate(height: number, width: number, challengeLevel: number, seed: string): this {
         this.challenge = challengeLevel;
 
         if (this.cells.length > 0) {

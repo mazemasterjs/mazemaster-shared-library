@@ -23,14 +23,14 @@ describe('Maze Tests', () => {
     let mazeHash: string = 'ba3914bd89169f8b995c2e484fdf2b67';
 
     it(`Maze.generate() should create a small, simple maze.`, () => {
-        let littleMaze: Maze = new Maze().generate(3, 3, seed, 1);
+        let littleMaze: Maze = new Maze().generate(3, 3, 1, seed);
         expect(littleMaze.Id).to.equal('3:3:1:' + seed);
     });
 
     it(`Maze.generate() should create a new maze with ID: '${mazeId}'`, () => {
         let lastLevel: LOG_LEVELS = Logger.getInstance().LogLevel;
         Logger.getInstance().LogLevel = LOG_LEVELS.DEBUG;
-        maze = new Maze().generate(height, width, seed, challenge);
+        maze = new Maze().generate(height, width, challenge, seed);
         expect(maze.Id).to.equal(mazeId);
         Logger.getInstance().LogLevel = lastLevel;
     });
