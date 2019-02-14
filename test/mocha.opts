@@ -2,4 +2,4 @@
 --require source-map-support/register
 --watch-extensions ts
 --recursive
-test/Logger.test.ts
+test/*.test.ts
