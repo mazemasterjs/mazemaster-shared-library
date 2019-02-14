@@ -3,7 +3,7 @@
  *
  */
 import * as os from 'os';
-import { format as fmt } from 'util';
+import { format as fmt, isUndefined } from 'util';
 import { Logger, LOG_LEVELS } from './Logger';
 
 export class Config {
@@ -54,27 +54,27 @@ export class Config {
             log.force(__filename, 'getInstance()', 'TRAPS_ON_PATH_MIN_CHALLENGE  -> [ ' + this.instance.TRAPS_ON_PATH_MIN_CHALLENGE + ' ]');
 
             // check if HTTP variables exist and warn if not
-            if (process.env.HTTP_PORT == '' || process.env.HOST_NAME == '') {
+            if (isUndefined(process.env.HTTP_PORT) || isUndefined(process.env.HOST_NAME)) {
                 log.warn(__filename, 'getInstance()', 'HTTP-RELATED ENVIRONMENT VARIABLE(S) NOT SET, USING DEFAULTS');
             }
 
             // check for LOG_LEVEL
-            if (process.env.LOG_LEVEL == '') {
+            if (isUndefined(process.env.LOG_LEVEL)) {
                 log.warn(__filename, 'getInstance()', 'LOG_LEVEL ENVIRONMENT VARIABLE NOT SET, USING DEFAULT: LOG_LEVELS.INFO');
             }
 
             // check if MAZE variables exist and warn if not
             if (
-                process.env.MAZE_MAX_HEIGHT == '' ||
-                process.env.MAZE_MIN_HEIGHT == '' ||
-                process.env.MAZE_MAX_WIDTH == '' ||
-                process.env.MAZE_MIN_WIDTH == ''
+                isUndefined(process.env.MAZE_MAX_HEIGHT) ||
+                isUndefined(process.env.MAZE_MIN_HEIGHT) ||
+                isUndefined(process.env.MAZE_MAX_WIDTH) ||
+                isUndefined(process.env.MAZE_MIN_WIDTH)
             ) {
                 log.warn(__filename, 'getInstance()', 'MAZE MIN/MAX ENVIRONMENT VARIABLE(S) NOT SET, USING DEFAULTS');
             }
 
             // check if TRAP variables exist and warn if not
-            if (process.env.TRAPS_MIN_CHALLENGE == '' || process.env.TRAPS_ON_PATH_MIN_CHALLENGE == '') {
+            if (isUndefined(process.env.TRAPS_MIN_CHALLENGE) || isUndefined(process.env.TRAPS_ON_PATH_MIN_CHALLENGE)) {
                 log.warn(__filename, 'getInstance()', 'TRAP CHALLENGE LEVEL VARIABLE(S) NOT SET, USING DEFAULTS');
             }
         }
