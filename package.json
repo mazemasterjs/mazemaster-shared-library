@@ -4,7 +4,7 @@
     "description": "Shared library for MazeMasterJS",
     "main": "",
     "scripts": {
-        "test": "mocha",
+        "test": "mocha -r dotenv/config",
         "coverage": "nyc mocha",
         "sq": "sonar-scanner.bat",
         "prepublishOnly": "publish.bat pre",

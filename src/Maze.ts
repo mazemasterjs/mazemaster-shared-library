@@ -1,16 +1,13 @@
 import seedrandom from 'seedrandom';
-import {format as fmt} from 'util';
+import { format as fmt } from 'util';
 import Cell from './Cell';
-import {CELL_TAGS, CELL_TRAPS, DIRS} from './Enums';
-import Logger, {LOG_LEVELS} from './Logger';
-import {Location} from './Location';
+import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
+import Logger, { LOG_LEVELS } from './Logger';
+import { Location } from './Location';
+import Config from './Config';
 
 const log = Logger.getInstance();
-
-let MAZE_MAX_CELL_COUNT: number = 2500; // control max maze size to prevent overflow due to recursion errors
-let MAZE_MIN_DIMENSION_SIZE: number = 3; // The smallest allowed maze height & width
-let MAZE_TRAPS_MIN_CL: number = 4; // the minimum maze challenge level that allows traps
-let MAZE_TRAPS_ON_PATH_MIN_CL: number = 6; // the minimum maze challenge level that allows traps on the solution path
+const config = Config.getInstance();
 
 let recurseDepth: number = 0; // tracks the level of recursion during path carving
 let maxRecurseDepth: number = 0; // tracks the deepest level of carve recursion seen
@@ -51,7 +48,6 @@ export class Maze {
             this.trapCount = data.trapCount;
             this.note = data.note;
             this.cells = this.buildCellsArray(data.cells);
-            this.config();
         } else {
             this.height = 0;
             this.width = 0;
@@ -65,37 +61,6 @@ export class Maze {
             this.trapCount = 0;
             this.note = '';
             this.cells = new Array<Array<Cell>>();
-            this.config();
-        }
-    }
-
-    private config() {
-        if (process.env.MAZE_MAX_CELL_COUNT) {
-            MAZE_MAX_CELL_COUNT = parseInt(process.env.MAZE_MAX_CELL_COUNT + '');
-            log.info(__filename, 'constructor', 'MAZE_MAX_CELL_COUNT environment variable found, using value: ' + MAZE_MAX_CELL_COUNT);
-        } else {
-            log.warn(__filename, 'config()', 'MAZE_MAX_CELL_COUNT environment variable not set, using default value: ' + MAZE_MAX_CELL_COUNT);
-        }
-
-        if (process.env.MAZE_MIN_DIMENSION_SIZE) {
-            MAZE_MIN_DIMENSION_SIZE = parseInt(process.env.MAZE_MIN_DIMENSION_SIZE + '');
-            log.info(__filename, 'constructor', 'MAZE_MIN_DIMENSION_SIZE environment variable found, using value: ' + MAZE_MIN_DIMENSION_SIZE);
-        } else {
-            log.warn(__filename, 'config()', 'MAZE_MIN_DIMENSION_SIZE environment variable not set, using default value: ' + MAZE_MIN_DIMENSION_SIZE);
-        }
-
-        if (process.env.MAZE_TRAPS_MIN_CL) {
-            MAZE_TRAPS_MIN_CL = parseInt(process.env.MAZE_TRAPS_MIN_CL + '');
-            log.info(__filename, 'constructor', 'MAZE_TRAPS_MIN_CL environment variable found, using value: ' + MAZE_TRAPS_MIN_CL);
-        } else {
-            log.warn(__filename, 'config()', 'MAZE_TRAPS_MIN_CL environment variable not set, using default value: ' + MAZE_TRAPS_MIN_CL);
-        }
-
-        if (process.env.MAZE_TRAPS_ON_PATH_MIN_CL) {
-            MAZE_TRAPS_ON_PATH_MIN_CL = parseInt(process.env.MAZE_TRAPS_ON_PATH_MIN_CL + '');
-            log.info(__filename, 'constructor', 'MAZE_TRAPS_ON_PATH_MIN_CL environment variable found, using value: ' + MAZE_TRAPS_ON_PATH_MIN_CL);
-        } else {
-            log.warn(__filename, 'config()', 'MAZE_TRAPS_ON_PATH_MIN_CL environment variable not set, using default value: ' + MAZE_TRAPS_ON_PATH_MIN_CL);
         }
     }
 
@@ -193,27 +158,14 @@ export class Maze {
         this.height = height;
         this.width = width;
 
-        if (this.height < MAZE_MIN_DIMENSION_SIZE || this.width < MAZE_MIN_DIMENSION_SIZE) {
-            errors.push(
-                fmt(
-                    'Minimum maze dimensions (%dx%d) not met.  Please increase Height and/or Width and try again.\n\r',
-                    MAZE_MIN_DIMENSION_SIZE,
-                    MAZE_MIN_DIMENSION_SIZE
-                )
-            );
+        // check for valid height
+        if (this.height < config.MAZE_MIN_HEIGHT || this.height > config.MAZE_MAX_HEIGHT) {
+            errors.push(fmt('Maze height must be between %d and %d.\n\r', config.MAZE_MIN_HEIGHT, config.MAZE_MAX_HEIGHT));
         }
 
-        // check for size constraint
-        if (height * width > MAZE_MAX_CELL_COUNT) {
-            errors.push(
-                fmt(
-                    'Max cell count (%d) exceeded.  %d*%d=%d - Please reduce Height and/or Width and try again.',
-                    MAZE_MAX_CELL_COUNT,
-                    height,
-                    width,
-                    height * width
-                )
-            );
+        // check for valid width
+        if (this.width < config.MAZE_MIN_WIDTH || this.height > config.MAZE_MAX_WIDTH) {
+            errors.push(fmt('Maze width must be between %d and %d.\n\r', config.MAZE_MIN_WIDTH, config.MAZE_MAX_WIDTH));
         }
 
         if (errors.toString().length > 0) {
@@ -225,7 +177,7 @@ export class Maze {
         // implement random seed
         if (seed && seed.length > 0) {
             this.seed = seed;
-            seedrandom(seed, {global: true});
+            seedrandom(seed, { global: true });
         } else {
             log.warn(__filename, 'generate()', 'No seed value found.  This maze will be random.');
         }
@@ -273,7 +225,7 @@ export class Maze {
         log.debug(__filename, 'generate()', fmt('Solution complete, shortest path is %d steps.', this.ShortestPathLength));
 
         // then add some traps...
-        if (this.challenge >= MAZE_TRAPS_MIN_CL) {
+        if (this.challenge >= config.TRAPS_MIN_CHALLENGE) {
             this.addTraps();
         } else {
             log.debug(
@@ -282,7 +234,7 @@ export class Maze {
                 fmt(
                     'Maze Challenge Level [%d] is below the trap threshold [%d] set by MIN_TRAPS_CHALLENGE_LEVEL, skipping addTraps().',
                     this.challenge,
-                    MAZE_TRAPS_MIN_CL
+                    config.TRAPS_MIN_CHALLENGE
                 )
             );
         }
@@ -565,7 +517,7 @@ export class Maze {
             playerPos.col = cell.Location.col;
 
             // loop through all directions until a valid move is found
-            dirs.forEach((dir) => {
+            dirs.forEach(dir => {
                 let cLoc: Location = cell.Location; // current position
                 let nLoc: Location = new Location(cLoc.row, cLoc.col); // next position
 
@@ -704,7 +656,7 @@ export class Maze {
                 //   2) Must not be placed on path along maze edges (to avoid blocking path to exit)
                 if (!!(tags & CELL_TAGS.PATH)) {
                     // enforce challenge level settings
-                    if (this.challenge < MAZE_TRAPS_ON_PATH_MIN_CL) {
+                    if (this.challenge < config.TRAPS_ON_PATH_MIN_CHALLENGE) {
                         log.debug(__filename, fnName, fmt('Invalid trap location (No Traps on Path at CL ' + this.challenge + '): ', cell.Location.toString()));
                         continue;
                     }
@@ -822,15 +774,6 @@ export class Maze {
     }
     public set Note(value: string) {
         this.note = value;
-    }
-    public get MinHeight(): number {
-        return MAZE_MIN_DIMENSION_SIZE;
-    }
-    public get MinWidth(): number {
-        return MAZE_MIN_DIMENSION_SIZE;
-    }
-    public get MaxCellCount(): number {
-        return MAZE_MAX_CELL_COUNT;
     }
 }
 

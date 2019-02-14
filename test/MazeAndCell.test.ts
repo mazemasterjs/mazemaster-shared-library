@@ -1,11 +1,11 @@
-import {Maze} from '../src/Maze';
-import {expect} from 'chai';
+import { Maze } from '../src/Maze';
+import { expect } from 'chai';
 import Logger from '../src/Logger';
-import {LOG_LEVELS} from '../src/Logger';
-import {MD5 as hash} from 'object-hash';
+import { LOG_LEVELS } from '../src/Logger';
+import { MD5 as hash } from 'object-hash';
 import Cell from '../src/Cell';
 import Location from '../src/Location';
-import {CELL_TAGS, CELL_TRAPS, DIRS} from '../src/Enums';
+import { CELL_TAGS, CELL_TRAPS, DIRS } from '../src/Enums';
 
 require('dotenv').config();
 
