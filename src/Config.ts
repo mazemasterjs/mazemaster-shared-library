@@ -54,8 +54,8 @@ export class Config {
             log.force(__filename, 'getInstance()', 'TRAPS_ON_PATH_MIN_CHALLENGE  -> [ ' + this.instance.TRAPS_ON_PATH_MIN_CHALLENGE + ' ]');
 
             // check if HTTP variables exist and warn if not
-            if (isUndefined(process.env.HTTP_PORT) || isUndefined(process.env.HOST_NAME)) {
-                log.warn(__filename, 'getInstance()', 'HTTP-RELATED ENVIRONMENT VARIABLE(S) NOT SET, USING DEFAULTS');
+            if (isUndefined(process.env.HTTP_PORT)) {
+                log.warn(__filename, 'getInstance()', 'HTTP-PORT ENVIRONMENT VARIABLE NOT SET, USING DEFAULT: 8080');
             }
 
             // check for LOG_LEVEL
