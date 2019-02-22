@@ -1,5 +1,5 @@
-import { Config } from '../src/Config';
-import { expect } from 'chai';
+import {Config} from '../src/Config';
+import {expect} from 'chai';
 
 // declare config object
 let config: Config;
@@ -20,5 +20,8 @@ describe('Config Tests', () => {
         expect(config.MAZE_MAX_WIDTH).not.be.undefined;
         expect(config.TRAPS_MIN_CHALLENGE).not.be.undefined;
         expect(config.TRAPS_ON_PATH_MIN_CHALLENGE).not.be.undefined;
+        expect(config.APP_NAME).not.be.undefined;
+        expect(config.MAZES_DB_FILE).not.be.undefined;
+        expect(config.MAZES_COLLECTION_NAME).not.be.undefined;
     });
 });
