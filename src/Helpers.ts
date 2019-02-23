@@ -3,9 +3,9 @@
  */
 import fs from 'fs';
 import path from 'path';
-import { format as fmt } from 'util';
-import { DATABASES } from './Enums';
-import { Logger } from './Logger';
+import {format as fmt} from 'util';
+import {DATABASES} from './Enums';
+import {Logger} from '@mazemasterjs/logger';
 import Maze from './Maze';
 
 // static class instances

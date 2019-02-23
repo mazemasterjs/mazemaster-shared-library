@@ -1,9 +1,9 @@
 import seedrandom from 'seedrandom';
-import { format as fmt } from 'util';
+import {format as fmt} from 'util';
 import Cell from './Cell';
-import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
-import Logger, { LOG_LEVELS } from './Logger';
-import { Location } from './Location';
+import {CELL_TAGS, CELL_TRAPS, DIRS} from './Enums';
+import {Logger, LOG_LEVELS} from '@mazemasterjs/logger';
+import {Location} from './Location';
 import Config from './Config';
 
 const log = Logger.getInstance();
@@ -177,7 +177,7 @@ export class Maze {
         // implement random seed
         if (seed && seed.length > 0) {
             this.seed = seed;
-            seedrandom(seed, { global: true });
+            seedrandom(seed, {global: true});
         } else {
             log.warn(__filename, 'generate()', 'No seed value found.  This maze will be random.');
         }
@@ -517,7 +517,7 @@ export class Maze {
             playerPos.col = cell.Location.col;
 
             // loop through all directions until a valid move is found
-            dirs.forEach(dir => {
+            dirs.forEach((dir) => {
                 let cLoc: Location = cell.Location; // current position
                 let nLoc: Location = new Location(cLoc.row, cLoc.col); // next position
 

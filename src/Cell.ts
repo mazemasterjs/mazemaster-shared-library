@@ -1,7 +1,7 @@
 import {format, format as fmt} from 'util';
 import * as Helpers from './Helpers';
 import {CELL_TAGS, CELL_TRAPS, DIRS} from './Enums';
-import {Logger, LOG_LEVELS} from './Logger';
+import {Logger} from '@mazemasterjs/logger';
 import {Location} from './Location';
 
 /**

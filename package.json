@@ -27,6 +27,7 @@
     },
     "homepage": "https://github.com/mazemasterjs/shared-library",
     "dependencies": {
+        "@mazemasterjs/logger": "^1.0.2",
         "@types/seedrandom": "^2.4.27",
         "seedrandom": "^2.4.4"
     },
@@ -35,7 +36,7 @@
         "@types/chai": "^4.1.7",
         "@types/dotenv": "^6.1.0",
         "@types/mocha": "^5.2.6",
-        "@types/node": "^10.12.26",
+        "@types/node": "^10.12.27",
         "@types/object-hash": "^1.2.0",
         "chai": "^4.2.0",
         "dotenv": "^6.2.0",
@@ -44,6 +45,6 @@
         "object-hash": "^1.3.1",
         "source-map-support": "^0.5.10",
         "ts-node": "^8.0.2",
-        "typescript": "^3.3.3"
+        "typescript": "^3.3.3333"
     }
 }

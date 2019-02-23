@@ -4,7 +4,7 @@
  */
 import * as os from 'os';
 import {format as fmt, isUndefined} from 'util';
-import {Logger, LOG_LEVELS} from './Logger';
+import {Logger, LOG_LEVELS} from '@mazemasterjs/logger';
 
 export class Config {
     private static instance: Config;
