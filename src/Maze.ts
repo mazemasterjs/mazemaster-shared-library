@@ -20,6 +20,7 @@ export class Maze {
     private id: string;
     private height: number;
     private width: number;
+    private name: string;
     private seed: string;
     private challenge: number;
     private cells: Array<Array<Cell>>;
@@ -39,6 +40,7 @@ export class Maze {
             this.height = data.height;
             this.width = data.width;
             this.challenge = data.challenge;
+            this.name = data.name;
             this.seed = data.seed;
             this.id = data.id;
             this.startCell = data.startCell;
@@ -52,6 +54,7 @@ export class Maze {
             this.height = 0;
             this.width = 0;
             this.challenge = 0;
+            this.name = '';
             this.seed = '';
             this.id = '';
             this.startCell = new Location(0, 0);
@@ -250,6 +253,7 @@ export class Maze {
                     '\r\nMaze Details:  \r\n' +
                     '------------\r\n' +
                     'ID = %s\r\n' +
+                    'Name = %s\r\n' +
                     'Seed = %s\r\n' +
                     'Rows = %d\r\n' +
                     'Challenge Level = %d\r\n' +
