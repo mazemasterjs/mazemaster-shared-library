@@ -100,3 +100,12 @@ export enum DATABASES {
     SCORES,
     TEAMS
 }
+
+/**
+ * Function Modes - Used by some functions that need a
+ * context in order to operate safely and correctly
+ */
+export enum FN_MODES {
+    ADD = 0,
+    REMOVE
+}

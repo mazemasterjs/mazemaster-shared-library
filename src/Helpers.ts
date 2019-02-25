@@ -1,12 +1,9 @@
 /**
  * Helper Functions for Maze Master JS
  */
-import fs from 'fs';
 import path from 'path';
-import {format as fmt} from 'util';
-import {DATABASES} from './Enums';
+import {DIRS} from './Enums';
 import {Logger} from '@mazemasterjs/logger';
-import Maze from './Maze';
 
 // static class instances
 const log = Logger.getInstance();
@@ -59,4 +56,23 @@ export function getSelectedBitNames(bitwiseEnum: Object, selectedBits: number): 
     if (ret.length == 0) ret.push('NONE');
 
     return ret;
+}
+
+/**
+ * Returns the opposing direction for a given direction
+ * @param dir - The Enums.DIRS direction to reverse
+ */
+export function reverseDir(dir: DIRS): number {
+    switch (dir) {
+        case DIRS.NORTH:
+            return DIRS.SOUTH;
+        case DIRS.SOUTH:
+            return DIRS.NORTH;
+        case DIRS.EAST:
+            return DIRS.WEST;
+        case DIRS.WEST:
+            return DIRS.EAST;
+        default:
+            return 0;
+    }
 }
