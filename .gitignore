@@ -13,17 +13,8 @@ node_modules/
 bin
 dist
 
-<<<<<<< HEAD
-# dont upload database files
-data
-
-# don't upload config or env vars
-.env
-.npmrc
-=======
 # config / env
 .env
->>>>>>> 58c17d4a6c9959722b0111501db543126b7b25dc
 .vscode
 
 #  test / coverage stuff

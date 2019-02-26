@@ -24,4 +24,12 @@ describe('Config Tests', () => {
         expect(config.MAZES_DB_FILE).not.be.undefined;
         expect(config.MAZES_COLLECTION_NAME).not.be.undefined;
     });
+
+    it('SERVICE_DOC should contain sample data.', () => {
+        expect(config.SERVICE_DOC.serviceName).to.equal('example');
+    });
+
+    it('SERVICE_DOC should contain three sample endpoints.', () => {
+        expect(config.SERVICE_DOC.endpoints.length).to.equal(3);
+    });
 });

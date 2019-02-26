@@ -1,0 +1,37 @@
+{
+    "serviceName": "example",
+    "apiName": "example",
+    "baseUrl": "/example/",
+    "endpoints": [
+        {
+            "name": "sample",
+            "description": "A sample endpoint descriptor.",
+            "method": "get",
+            "contentType": "application/json",
+            "url": "sample/sample:",
+            "arguments": [
+                {
+                    "name": "sample",
+                    "description": "A sample argument.",
+                    "type": "string"
+                }
+            ]
+        },
+        {
+            "name": "live",
+            "description": "Liveness probe for K8s monitoring.",
+            "contentType": "application/json",
+            "method": "get",
+            "url": "probes/live/",
+            "arguments": []
+        },
+        {
+            "name": "ready",
+            "description": "Readiness probe for K8s monitoring.",
+            "contentType": "application/json",
+            "method": "get",
+            "url": "probes/ready/",
+            "arguments": []
+        }
+    ]
+}
