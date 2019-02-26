@@ -3,6 +3,7 @@
  *
  */
 import * as os from 'os';
+import fs from 'fs';
 import {format as fmt, isUndefined} from 'util';
 import {Logger, LOG_LEVELS} from '@mazemasterjs/logger';
 
@@ -14,6 +15,11 @@ export class Config {
     public HOST_NAME: string = process.env.HOST_NAME || os.hostname();
     public APP_NAME: string = process.env.APP_NAME || 'NOT_SET';
 
+    // Load JSON documentation (generally stored in /data/service.json)
+    public SERVICE_DOC_FILE: string = process.env.SERVICE_DOC_FILE || '';
+    public SERVICE_DOC: any = null;
+
+    // module config values
     public LOG_LEVEL: LOG_LEVELS = parseInt(process.env.LOG_LEVEL || LOG_LEVELS.TRACE.toString());
     public WORK_DIR: string = __dirname;
 
@@ -43,23 +49,25 @@ export class Config {
         if (!Config.instance) {
             Config.instance = new Config();
 
-            // configure logger
-            let log: Logger = Logger.getInstance();
+            // grab a reference to the logger
+            let log = Logger.getInstance();
             log.LogLevel = this.instance.LOG_LEVEL;
+
             log.force(__filename, 'getInstance()', fmt('Initializing configuration for %s v%s.', log.PackageInfo.name, log.PackageInfo.version));
             log.force(__filename, 'getInstance()', 'HTTP_PORT -> [ ' + this.instance.HTTP_PORT + ' ]');
             log.force(__filename, 'getInstance()', 'HOST_NAME -> [ ' + this.instance.HOST_NAME + ' ]');
             log.force(__filename, 'getInstance()', 'APP_NAME -> [ ' + this.instance.APP_NAME + ' ]');
-            log.force(__filename, 'getInstance()', 'WORK_DIR  -> [ ' + this.instance.WORK_DIR + ' ]');
+            log.force(__filename, 'getInstance()', 'SERVICE_DOC_FILE -> [ ' + this.instance.SERVICE_DOC_FILE + ' ]');
+            log.force(__filename, 'getInstance()', 'WORK_DIR -> [ ' + this.instance.WORK_DIR + ' ]');
             log.force(__filename, 'getInstance()', 'LOG_LEVEL -> [ ' + LOG_LEVELS[this.instance.LOG_LEVEL] + ' ]');
-            log.force(__filename, 'getInstance()', 'MAZE_MAX_HEIGHT  -> [ ' + this.instance.MAZE_MAX_HEIGHT + ' ]');
-            log.force(__filename, 'getInstance()', 'MAZE_MIN_HEIGHT  -> [ ' + this.instance.MAZE_MIN_HEIGHT + ' ]');
-            log.force(__filename, 'getInstance()', 'MAZE_MAX_WIDTH  -> [ ' + this.instance.MAZE_MAX_WIDTH + ' ]');
-            log.force(__filename, 'getInstance()', 'MAZE_MIN_WIDTH  -> [ ' + this.instance.MAZE_MIN_WIDTH + ' ]');
-            log.force(__filename, 'getInstance()', 'TRAPS_MIN_CHALLENGE  -> [ ' + this.instance.TRAPS_MIN_CHALLENGE + ' ]');
-            log.force(__filename, 'getInstance()', 'TRAPS_ON_PATH_MIN_CHALLENGE  -> [ ' + this.instance.TRAPS_ON_PATH_MIN_CHALLENGE + ' ]');
-            log.force(__filename, 'getInstance()', 'MAZES_DB_FILE  -> [ ' + this.instance.MAZES_DB_FILE + ' ]');
-            log.force(__filename, 'getInstance()', 'MAZES_COLLECTION_NAME  -> [ ' + this.instance.MAZES_COLLECTION_NAME + ' ]');
+            log.force(__filename, 'getInstance()', 'MAZE_MAX_HEIGHT -> [ ' + this.instance.MAZE_MAX_HEIGHT + ' ]');
+            log.force(__filename, 'getInstance()', 'MAZE_MIN_HEIGHT -> [ ' + this.instance.MAZE_MIN_HEIGHT + ' ]');
+            log.force(__filename, 'getInstance()', 'MAZE_MAX_WIDTH -> [ ' + this.instance.MAZE_MAX_WIDTH + ' ]');
+            log.force(__filename, 'getInstance()', 'MAZE_MIN_WIDTH -> [ ' + this.instance.MAZE_MIN_WIDTH + ' ]');
+            log.force(__filename, 'getInstance()', 'TRAPS_MIN_CHALLENGE -> [ ' + this.instance.TRAPS_MIN_CHALLENGE + ' ]');
+            log.force(__filename, 'getInstance()', 'TRAPS_ON_PATH_MIN_CHALLENGE -> [ ' + this.instance.TRAPS_ON_PATH_MIN_CHALLENGE + ' ]');
+            log.force(__filename, 'getInstance()', 'MAZES_DB_FILE -> [ ' + this.instance.MAZES_DB_FILE + ' ]');
+            log.force(__filename, 'getInstance()', 'MAZES_COLLECTION_NAME -> [ ' + this.instance.MAZES_COLLECTION_NAME + ' ]');
 
             // check if HTTP variables exist and warn if not
             if (isUndefined(process.env.HTTP_PORT)) {
@@ -69,6 +77,13 @@ export class Config {
             // check if APP_NAME variables exist and warn if not
             if (isUndefined(process.env.APP_NAME)) {
                 log.warn(__filename, 'getInstance()', 'APP_NAME ENVIRONMENT VARIABLE NOT SET, USING DEFAULT: NOT_SET');
+            }
+
+            // check for SERVICE_DOC_FILE
+            if (isUndefined(process.env.SERVICE_DOC_FILE)) {
+                log.warn(__filename, 'getInstance()', 'SERVICE_DOC_FILE ENVIRONMENT VARIABLE NOT SET, ASSUMING NON-SERVICE.');
+            } else {
+                this.instance.SERVICE_DOC = loadServiceDocData(this.instance.SERVICE_DOC_FILE);
             }
 
             // check for LOG_LEVEL
@@ -98,6 +113,27 @@ export class Config {
         }
         return Config.instance;
     }
+}
+
+/**
+ * Attempts to read the service document (JSON) from the given file name/path.
+ *
+ * @param svcDataFile - File name and path to the service document (JSON) data file.
+ */
+function loadServiceDocData(svcDataFile: string): any {
+    let svcDoc: any = null;
+
+    // grab a reference to the logger
+    let log = Logger.getInstance();
+
+    try {
+        svcDoc = JSON.parse(fs.readFileSync(svcDataFile, {encoding: 'utf8'}));
+        log.debug(__filename, 'loadServiceDocData()', 'Read and parsed file -> ' + svcDataFile);
+    } catch (err) {
+        log.error(__filename, 'loadServiceDocData()', 'Unable to read or parse file -> ' + svcDataFile, err);
+    }
+
+    return svcDoc;
 }
 
 export default Config;
