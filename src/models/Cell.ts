@@ -1,6 +1,4 @@
-import {format} from 'util';
 import {CELL_TAGS, CELL_TRAPS, DIRS} from '../Enums';
-import * as Helpers from '../Helpers';
 import {Logger} from '@mazemasterjs/logger';
 import {Location} from '../Location';
 
@@ -93,28 +91,17 @@ export class Cell {
     }
 
     /**
-     * Returns the enum oridinal of the cell's trap (0 if none)
+     * Returns the enum value of the cell's trap (0 if none)
      */
-    public get Trap(): number {
+    public get Trap(): CELL_TRAPS {
         return this.trap;
     }
 
     /**
-     * Sets the cell's traps to the given value
-     * @param trap: 0 (none) or a value from ENUM.CELL_TRAPS
+     * Sets the cells trap value to the given enum value
      */
-    public set Trap(trap: number) {
-        let trapName = CELL_TRAPS[trap];
-        if (this.trap == 0) {
-            this.trap = trap;
-            log.trace(__filename, 'setTrap(' + trapName + ')', format('Trap %s set on cell [%d, %d].', trapName, this.location.row, this.location.col));
-        } else {
-            log.warn(
-                __filename,
-                'setTrap(' + trapName + ')',
-                format('Trap (%s) already set on cell [%d, %d].', trapName, this.location.row, this.location.col)
-            );
-        }
+    public set Trap(trap: CELL_TRAPS) {
+        this.trap = trap;
     }
 }
 
