@@ -19,7 +19,7 @@ export class cellController extends Cell {
      * @param moveNumber
      */
     addVisit(moveNumber: number) {
-        super.Visits = super.Visits++;
+        super.Visits = super.Visits + 1;
         super.LastVisitMoveNum = moveNumber;
     }
 
