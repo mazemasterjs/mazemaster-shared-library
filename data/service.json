@@ -18,6 +18,14 @@
             ]
         },
         {
+            "name": "help",
+            "description": "HTML-based help page describing the services.",
+            "contentType": "application/json",
+            "method": "get",
+            "url": "probes/live/",
+            "arguments": []
+        },
+        {
             "name": "live",
             "description": "Liveness probe for K8s monitoring.",
             "contentType": "application/json",

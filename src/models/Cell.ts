@@ -5,7 +5,11 @@ import {Location} from '../Location';
 let log = Logger.getInstance();
 
 /**
- * Represents a single cell in a maze
+ * Represents a single cell in a maze.
+ *
+ * The Cell (model) class holds cell data, but doesn't perform any actions
+ * aside from providing access to private member variables. This class serves
+ * as a data object that can be passed around, stored, and retrieved easily.
  */
 export class Cell {
     private location: Location;

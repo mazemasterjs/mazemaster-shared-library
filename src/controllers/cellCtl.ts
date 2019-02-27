@@ -7,9 +7,14 @@ import {Location} from '../Location';
 
 const log: Logger = Logger.getInstance();
 
-export class cellController extends Cell {
-    constructor(data?: Cell) {
-        super(data);
+export class cellCtl extends Cell {
+    /**
+     * Wraps the Cell subclass constructor.
+     *
+     * @param cell - Optional instance of a Cell object, if null an unconfigured cell will be instantiated.
+     */
+    constructor(cell?: Cell) {
+        super(cell);
     }
 
     /**
@@ -126,7 +131,7 @@ export class cellController extends Cell {
             if (validMove) {
                 log.trace(__filename, 'setExit()', fmt('Valid direction, setting exit from [%s] into [%d, %d]', super.Location.toString(), nPos.row, nPos.col));
                 super.Exits = mode == FN_MODES.ADD ? (super.Exits += dir) : (super.Exits -= dir);
-                let neighbor: cellController = new cellController(cells[nPos.row][nPos.col]);
+                let neighbor: cellCtl = new cellCtl(cells[nPos.row][nPos.col]);
 
                 log.trace(
                     __filename,
@@ -260,5 +265,19 @@ export class cellController extends Cell {
             );
         }
     }
+
+    /**
+     * Sets the cell's traps to the given value
+     * @param trap: 0 (none) or a value from ENUM.CELL_TRAPS
+     */
+    public setTrap(trap: CELL_TRAPS) {
+        let trapName = CELL_TRAPS[trap];
+        if (super.Trap == 0) {
+            super.Trap = trap;
+            log.trace(__filename, 'setTrap(' + trapName + ')', fmt('Trap %s set on cell [%d, %d].', trapName, super.Location.row, super.Location.col));
+        } else {
+            log.warn(__filename, 'setTrap(' + trapName + ')', fmt('Trap (%s) already set on cell [%d, %d].', trapName, super.Location.row, super.Location.col));
+        }
+    }
 }
-export default cellController;
+export default cellCtl;
