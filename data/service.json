@@ -4,20 +4,6 @@
     "baseUrl": "/example/",
     "endpoints": [
         {
-            "name": "sample",
-            "description": "A sample endpoint descriptor.",
-            "method": "get",
-            "contentType": "application/json",
-            "url": "sample/sample:",
-            "arguments": [
-                {
-                    "name": "sample",
-                    "description": "A sample argument.",
-                    "type": "string"
-                }
-            ]
-        },
-        {
             "name": "help",
             "description": "HTML-based help page describing the services.",
             "contentType": "application/json",
