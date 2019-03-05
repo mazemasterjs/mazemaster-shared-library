@@ -5,6 +5,7 @@
     "main": "",
     "scripts": {
         "test": "mocha -r dotenv/config",
+        "test-dbg": "mocha --debug-brk --inspect -r dotenv/config",
         "coverage": "nyc mocha -r dotenv/config",
         "sq": "sonar-scanner.bat",
         "prepublishOnly": "publish.bat pre",

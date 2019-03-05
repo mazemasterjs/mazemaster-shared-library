@@ -1,9 +1,11 @@
-/**
- * Helper Functions for Maze Master JS
- */
+import {format as fmt} from 'util';
 import path from 'path';
 import {DIRS} from './Enums';
 import {Logger} from '@mazemasterjs/logger';
+
+/**
+ * Helper Functions for Maze Master JS
+ */
 
 // static class instances
 const log = Logger.getInstance();
@@ -17,6 +19,7 @@ const DEFAULT_MAZE_STUB_FILE = path.resolve('data/maze-list.json');
  * @param selectedBits - Number representing the selected bits
  */
 export function listSelectedBitNames(bitwiseEnum: Object, selectedBits: number): string {
+    log.trace(__filename, fmt('listSelectedBitNames(%s, %d)', bitwiseEnum, selectedBits), 'Listing selected bit names from enumeration.');
     let ret: string = '';
 
     for (const dir in bitwiseEnum) {
@@ -30,6 +33,7 @@ export function listSelectedBitNames(bitwiseEnum: Object, selectedBits: number):
     }
 
     if (ret.length == 0) ret = 'NONE';
+    log.trace(__filename, fmt('listSelectedBitNames(%s, %d)', bitwiseEnum, selectedBits), 'Returning selected bit names: ' + ret);
     return ret;
 }
 
@@ -41,6 +45,7 @@ export function listSelectedBitNames(bitwiseEnum: Object, selectedBits: number):
  * @param selectedBits - Number representing the selected bits
  */
 export function getSelectedBitNames(bitwiseEnum: Object, selectedBits: number): Array<string> {
+    log.trace(__filename, fmt('getSelectedBitNames(%s, %d)', bitwiseEnum, selectedBits), 'Creating array of selected bit names for enumeration.');
     let ret: Array<string> = new Array<string>();
 
     for (const dir in bitwiseEnum) {
@@ -54,7 +59,7 @@ export function getSelectedBitNames(bitwiseEnum: Object, selectedBits: number): 
     }
 
     if (ret.length == 0) ret.push('NONE');
-
+    log.trace(__filename, fmt('getSelectedBitNames(%s, %d)', bitwiseEnum, selectedBits), 'Returning array of selected bit names for enumeration.');
     return ret;
 }
 
@@ -63,6 +68,8 @@ export function getSelectedBitNames(bitwiseEnum: Object, selectedBits: number): 
  * @param dir - The Enums.DIRS direction to reverse
  */
 export function reverseDir(dir: DIRS): number {
+    log.trace(__filename, fmt('getSelectedBitNames(%d)', dir), 'Returning reverse of direction ' + DIRS[dir]);
+
     switch (dir) {
         case DIRS.NORTH:
             return DIRS.SOUTH;
@@ -75,4 +82,19 @@ export function reverseDir(dir: DIRS): number {
         default:
             return 0;
     }
+}
+
+/**
+ * Returns an element from the given array if the element has the given key / value.
+ *
+ * @param keyName
+ * @param keyValue
+ */
+export function getElement(elements: Array<Object>, keyName: string, keyValue: string): any {
+    let ret: any = null;
+    log.trace(__filename, fmt('getElement(Object[], %s, %s)', keyName, keyValue), 'Seeking matching element from Array<Object>');
+
+    // elements.forEach(element => {
+    //    if (element
+    // });
 }

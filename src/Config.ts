@@ -3,7 +3,7 @@
  *
  */
 import * as os from 'os';
-import fs from 'fs';
+import {Service} from './Service/Service';
 import {format as fmt, isUndefined} from 'util';
 import {Logger, LOG_LEVELS} from '@mazemasterjs/logger';
 
@@ -17,7 +17,7 @@ export class Config {
 
     // Load JSON documentation (generally stored in /data/service.json)
     public SERVICE_DOC_FILE: string = process.env.SERVICE_DOC_FILE || '';
-    public SERVICE_DOC: any = null;
+    public SERVICE_DOC: Service = new Service(this.SERVICE_DOC_FILE);
 
     // module config values
     public LOG_LEVEL: LOG_LEVELS = parseInt(process.env.LOG_LEVEL || LOG_LEVELS.TRACE.toString());
@@ -83,7 +83,7 @@ export class Config {
             if (isUndefined(process.env.SERVICE_DOC_FILE)) {
                 log.warn(__filename, 'getInstance()', 'SERVICE_DOC_FILE ENVIRONMENT VARIABLE NOT SET, ASSUMING NON-SERVICE.');
             } else {
-                this.instance.SERVICE_DOC = loadServiceDocData(this.instance.SERVICE_DOC_FILE);
+                this.instance.SERVICE_DOC = new Service(process.env.SERVICE_DOC_FILE);
             }
 
             // check for LOG_LEVEL
@@ -113,27 +113,6 @@ export class Config {
         }
         return Config.instance;
     }
-}
-
-/**
- * Attempts to read the service document (JSON) from the given file name/path.
- *
- * @param svcDataFile - File name and path to the service document (JSON) data file.
- */
-function loadServiceDocData(svcDataFile: string): any {
-    let svcDoc: any = null;
-
-    // grab a reference to the logger
-    let log = Logger.getInstance();
-
-    try {
-        svcDoc = JSON.parse(fs.readFileSync(svcDataFile, {encoding: 'utf8'}));
-        log.debug(__filename, 'loadServiceDocData()', 'Read and parsed file -> ' + svcDataFile);
-    } catch (err) {
-        log.error(__filename, 'loadServiceDocData()', 'Unable to read or parse file -> ' + svcDataFile, err);
-    }
-
-    return svcDoc;
 }
 
 export default Config;

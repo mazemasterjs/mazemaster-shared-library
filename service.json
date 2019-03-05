@@ -1,8 +1,27 @@
 {
-    "serviceName": "example",
-    "apiName": "example",
+    "name": "example",
     "baseUrl": "/example/",
     "endpoints": [
+        {
+            "name": "test",
+            "arguments": [
+                {
+                    "name": "test-arg-1",
+                    "description": "This is a sample argument of type integer.",
+                    "type": "integer"
+                },
+                {
+                    "name": "test-arg-2",
+                    "description": "This is a sample argument of type string.",
+                    "type": "integer"
+                },
+                {
+                    "name": "test-arg-3",
+                    "description": "This is a sample argument of type integer.",
+                    "type": "integer"
+                }
+            ]
+        },
         {
             "name": "help",
             "description": "HTML-based help page describing the services.",
