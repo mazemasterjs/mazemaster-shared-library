@@ -12,8 +12,23 @@ describe('Helpers Tests', () => {
         expect(Helpers.listSelectedBitNames(DIRS, DIRS.EAST)).to.equal('EAST');
     });
 
-    Helpers.reverseDir;
-    it(`reverseDir() should return DIRS.NORTH`, () => {
+    it(`reverseDir(DIRS.SOUTH) should return DIRS.NORTH`, () => {
         expect(Helpers.reverseDir(DIRS.SOUTH)).to.equal(DIRS.NORTH);
+    });
+
+    it(`reverseDir(DIRS.NORTH) should return DIRS.SOUTH`, () => {
+        expect(Helpers.reverseDir(DIRS.NORTH)).to.equal(DIRS.SOUTH);
+    });
+
+    it(`reverseDir(DIRS.EAST) should return DIRS.WEST`, () => {
+        expect(Helpers.reverseDir(DIRS.EAST)).to.equal(DIRS.WEST);
+    });
+
+    it(`reverseDir(DIRS.WEST) should return DIRS.EAST`, () => {
+        expect(Helpers.reverseDir(DIRS.WEST)).to.equal(DIRS.EAST);
+    });
+
+    it(`reverseDir(DIRS.NONE) should return DIRS.NONE`, () => {
+        expect(Helpers.reverseDir(DIRS.NONE)).to.equal(DIRS.NONE);
     });
 });

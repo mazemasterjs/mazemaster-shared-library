@@ -40,8 +40,6 @@ export class Service {
             this.baseUrl = svcData.baseUrl;
             this.endpoints = svcData.endpoints;
 
-            console.log('EPA: ' + this.endpoints[0].arguments);
-
             log.debug(__filename, `loadServiceData(${serviceFile})`, `Read and parsed file -> ${serviceFile}, Service Name: ${svcData.name}`);
         } catch (err) {
             log.error(__filename, `loadServiceData(${serviceFile})`, `Unable to read or parse file -> ${serviceFile}`, err);
