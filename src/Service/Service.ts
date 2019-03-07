@@ -2,11 +2,19 @@ import fs from 'fs';
 import {Endpoint} from './Endpoint';
 import {Logger} from '@mazemasterjs/logger';
 
+/**
+ * Service class loads and wraps the service.json file - currently just for self-documentation,
+ * but may be useful for test automation and service discovery at some point in the future.
+ */
 export class Service {
     public name: string;
     public baseUrl: string;
     public endpoints: Array<Endpoint>;
 
+    /**
+     *
+     * @param serviceFile Path and filename of the service.json file to load
+     */
     constructor(serviceFile: string) {
         this.name = '';
         this.baseUrl = '';
