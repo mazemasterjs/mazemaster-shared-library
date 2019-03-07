@@ -115,25 +115,6 @@ export class Cell {
     }
 
     /**
-     * Returns the opposing direction for a given direction
-     * @param dir
-     */
-    private reverseDir(dir: DIRS): number {
-        switch (dir) {
-            case DIRS.NORTH:
-                return DIRS.SOUTH;
-            case DIRS.SOUTH:
-                return DIRS.NORTH;
-            case DIRS.EAST:
-                return DIRS.WEST;
-            case DIRS.WEST:
-                return DIRS.EAST;
-            default:
-                return 0;
-        }
-    }
-
-    /**
      * Adds or Removes cell exits, depending on SET_EXIT_MODES value.
      * Also adds or removes opposite exit from valid, adjoining cell.
      * Only trace logging - this is called frequently by recursive generation
@@ -192,14 +173,14 @@ export class Cell {
                     format('Exits set in cell [%d, %d]. Exits: ', this.pos.row, this.pos.col, this.listExits())
                 );
 
-                neighbor.exits = mode == FN_MODES.ADD ? (neighbor.exits += this.reverseDir(dir)) : (neighbor.exits -= dir);
+                neighbor.exits = mode == FN_MODES.ADD ? (neighbor.exits += Helpers.reverseDir(dir)) : (neighbor.exits -= dir);
                 log.trace(
                     __filename,
                     format('setExit(%s, %s)', modeName, dirName),
                     format(
                         'Reverse exit (%s -> %s) set in adjoining cell [%d, %d]. Exits: %s, Tags: %s',
                         dirName,
-                        DIRS[this.reverseDir(dir)],
+                        DIRS[Helpers.reverseDir(dir)],
                         neighbor.pos.row,
                         neighbor.pos.col,
                         neighbor.listExits(),

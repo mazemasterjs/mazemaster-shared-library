@@ -1,6 +1,5 @@
 import {Config} from '../src/Config';
 import {expect} from 'chai';
-import {Service} from '../src/Service/Service';
 
 // test cases
 describe('Config Tests', () => {

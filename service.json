@@ -4,6 +4,10 @@
     "endpoints": [
         {
             "name": "test",
+            "description": "Test endpoint.",
+            "contentType": "application/json",
+            "method": "get",
+            "url": "test/",
             "arguments": [
                 {
                     "name": "test-arg-1",

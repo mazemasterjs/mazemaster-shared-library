@@ -3,7 +3,7 @@
  *
  */
 import * as os from 'os';
-import {Service} from './Service/Service';
+import {Service} from './Service';
 import {format as fmt, isUndefined} from 'util';
 import {Logger, LOG_LEVELS} from '@mazemasterjs/logger';
 
@@ -17,7 +17,7 @@ export class Config {
 
     // Load JSON documentation (generally stored in /data/service.json)
     public SERVICE_DOC_FILE: string = process.env.SERVICE_DOC_FILE || '';
-    public SERVICE_DOC: Service = new Service(this.SERVICE_DOC_FILE);
+    public SERVICE_DOC: any = undefined;
 
     // module config values
     public LOG_LEVEL: LOG_LEVELS = parseInt(process.env.LOG_LEVEL || LOG_LEVELS.TRACE.toString());
@@ -69,28 +69,33 @@ export class Config {
             log.force(__filename, 'getInstance()', 'MAZES_DB_FILE -> [ ' + this.instance.MAZES_DB_FILE + ' ]');
             log.force(__filename, 'getInstance()', 'MAZES_COLLECTION_NAME -> [ ' + this.instance.MAZES_COLLECTION_NAME + ' ]');
 
+            /* istanbul ignore if */
             // check if HTTP variables exist and warn if not
             if (isUndefined(process.env.HTTP_PORT)) {
                 log.warn(__filename, 'getInstance()', 'HTTP_PORT ENVIRONMENT VARIABLE NOT SET, USING DEFAULT: 8080');
             }
 
+            /* istanbul ignore if */
             // check if APP_NAME variables exist and warn if not
             if (isUndefined(process.env.APP_NAME)) {
                 log.warn(__filename, 'getInstance()', 'APP_NAME ENVIRONMENT VARIABLE NOT SET, USING DEFAULT: NOT_SET');
             }
 
+            /* istanbul ignore else */
             // check for SERVICE_DOC_FILE
-            if (isUndefined(process.env.SERVICE_DOC_FILE)) {
-                log.warn(__filename, 'getInstance()', 'SERVICE_DOC_FILE ENVIRONMENT VARIABLE NOT SET, ASSUMING NON-SERVICE.');
-            } else {
+            if (!isUndefined(process.env.SERVICE_DOC_FILE)) {
                 this.instance.SERVICE_DOC = new Service(process.env.SERVICE_DOC_FILE);
+            } else {
+                log.warn(__filename, 'getInstance()', 'SERVICE_DOC_FILE ENVIRONMENT VARIABLE NOT SET, ASSUMING NON-SERVICE.');
             }
 
+            /* istanbul ignore if */
             // check for LOG_LEVEL
             if (isUndefined(process.env.LOG_LEVEL)) {
                 log.warn(__filename, 'getInstance()', 'LOG_LEVEL ENVIRONMENT VARIABLE NOT SET, USING DEFAULT: LOG_LEVELS.INFO');
             }
 
+            /* istanbul ignore if */
             // check if MAZE variables exist and warn if not
             if (
                 isUndefined(process.env.MAZE_MAX_HEIGHT) ||
@@ -101,11 +106,13 @@ export class Config {
                 log.warn(__filename, 'getInstance()', 'MAZE MIN/MAX ENVIRONMENT VARIABLE(S) NOT SET, USING DEFAULTS');
             }
 
+            /* istanbul ignore if */
             // check if TRAP settings exist and warn if not
             if (isUndefined(process.env.TRAPS_MIN_CHALLENGE) || isUndefined(process.env.TRAPS_ON_PATH_MIN_CHALLENGE)) {
                 log.warn(__filename, 'getInstance()', 'TRAP CHALLENGE LEVEL VARIABLE(S) NOT SET, USING DEFAULTS');
             }
 
+            /* istanbul ignore if */
             // check for maze database / collection settings
             if (isUndefined(process.env.MAZES_DB_FILE) || isUndefined(process.env.MAZES_COLLECTION_NAME)) {
                 log.warn(__filename, 'getInstance()', 'MAZE DATABASE VARIABLE(S) NOT SET, USING DEFAULTS');
