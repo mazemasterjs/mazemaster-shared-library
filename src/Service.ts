@@ -1,10 +1,13 @@
-import fs from 'fs';
+import fs, {exists} from 'fs';
 import {Endpoint} from './Endpoint';
 import {Logger} from '@mazemasterjs/logger';
 import Argument from './Argument';
 
+// grab a reference to the logger
+const log = Logger.getInstance();
+
 /**
- * Service class loads and wraps the service.json file - currently just for self-documentation,
+ * Service class loads and wraps the service.json file - currently just for self-documentastion,
  * but may be useful for test automation and service discovery at some point in the future.
  */
 export class Service {
@@ -42,8 +45,6 @@ export class Service {
      * @param serviceFile - File name and path to the service document (JSON) data file.
      */
     private loadServiceData(serviceFile: string) {
-        // grab a reference to the logger
-        let log = Logger.getInstance();
         let svcData: any;
 
         try {
@@ -83,6 +84,20 @@ export class Service {
 
     public addEndpoint(endpoint: Endpoint) {
         this.endpoints.push(endpoint);
+    }
+
+    public getEndpointByName(name: string): any {
+        for (let pos = 0; pos < this.Endpoints.length; pos++) {
+            let ep: Endpoint = this.Endpoints[pos];
+            log.trace(__filename, `getEndpointByName('${name}')`, 'Checking EP: ' + ep.Name);
+            if (ep.Name == name) {
+                log.debug(__filename, `getEndpointByName('${name}')`, 'Endpoint found, returning.');
+                return ep;
+            }
+        }
+
+        log.warn(__filename, `getEndpointByName('${name})'`, 'Endpoint not found, returning null.');
+        return null;
     }
 }
 

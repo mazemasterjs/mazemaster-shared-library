@@ -1,5 +1,6 @@
 import {expect} from 'chai';
 import {Service} from '../src/Service';
+import Endpoint from 'src/Endpoint';
 
 describe('Service Tests', () => {
     let svc = new Service('service.json');
@@ -66,6 +67,16 @@ describe('Service Tests', () => {
 
     it(`Service.Endpoints[0].Arguments[0].Type should equal ${svcEp0Arg0Type}`, () => {
         expect(svc.Endpoints[0].Arguments[0].Type).to.equal(svcEp0Arg0Type);
+    });
+
+    it(`Service.getEndpointByName('${svcEp0Name}') should return endpoint with name: '${svcEp0Name}'`, () => {
+        let epTest: Endpoint = svc.getEndpointByName(svcEp0Name);
+        expect(epTest.Name).to.equal(svcEp0Name);
+    });
+
+    it(`Service.getEndpointByName('does-not-exist') should return null`, () => {
+        let epTest: Endpoint = svc.getEndpointByName('does-not-exist');
+        expect(epTest).to.be.null;
     });
 });
 
