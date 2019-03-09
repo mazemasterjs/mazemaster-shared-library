@@ -139,9 +139,10 @@ export class Maze {
      * @param height - The height of the maze grid
      * @param width - The width of the maze grid
      * @param seed - pseudo random number generator seed value.  If empty, maze will be random and unrepeatable
+     * @param name - the name of the maze
      * @param challengeLevel - The difficulty level of the maze being generated
      */
-    public generate(height: number, width: number, challengeLevel: number, seed: string): this {
+    public generate(height: number, width: number, challengeLevel: number, name: string, seed: string): this {
         this.challenge = challengeLevel;
 
         if (this.cells.length > 0) {
@@ -157,9 +158,10 @@ export class Maze {
         if (isNaN(height)) errors.push('Height must be numeric.\n\r');
         if (isNaN(width)) errors.push('Width must be numeric.\n\r');
 
-        // set the dimensions
+        // set the dimensions and name
         this.height = height;
         this.width = width;
+        this.name = name;
 
         // check for valid height
         if (this.height < config.MAZE_MIN_HEIGHT || this.height > config.MAZE_MAX_HEIGHT) {
@@ -256,8 +258,8 @@ export class Maze {
                     'Name = %s\r\n' +
                     'Seed = %s\r\n' +
                     'Rows = %d\r\n' +
-                    'Challenge Level = %d\r\n' +
                     'Columns = %d\r\n' +
+                    'Challenge Level = %d\r\n' +
                     'Generation Time = %dms\r\n' +
                     'Max Recursion = %d\r\n' +
                     'Cell Count = %d\r\n' +
@@ -266,6 +268,7 @@ export class Maze {
                     'Text Render:\r\n\r\n%s',
                 this.id,
                 this.seed == '' ? '<<NO SEED>> - Maze is random.' : this.seed,
+                this.name,
                 this.cells.length,
                 this.cells[0].length,
                 this.ChallengeLevel,
@@ -742,6 +745,9 @@ export class Maze {
     }
     public get Width(): number {
         return this.width;
+    }
+    public get Name(): string {
+        return this.name;
     }
     public get Seed(): string {
         return this.seed;

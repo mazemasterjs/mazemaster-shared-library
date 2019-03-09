@@ -13,29 +13,34 @@ describe('Maze Tests', () => {
     let height = 25;
     let width = 25;
     let challenge = 10;
-    let seed = 'Unit-Test-Maze-1';
+    let seed = 'UTMaze1';
+    let name = 'Unit-Test-Maze-1';
     let cell: Cell;
     let note1: string = 'This is a unit test.';
     let note2: string = 'This is another unit test.';
     let maze: Maze;
-    let mazeId: string = '25:25:10:Unit-Test-Maze-1';
-    let mazeHash: string = '069cc2edaa6eadb881b2c8d35b476fdd';
+    let mazeId: string = `${height}:${width}:${challenge}:${seed}`;
+    let mazeHash: string = 'eacfc91bdb83cd5e4308b362d6a1c07f';
 
     it(`Maze.generate() should create a small, simple maze.`, () => {
-        let littleMaze: Maze = new Maze().generate(3, 3, 1, seed);
+        let littleMaze: Maze = new Maze().generate(3, 3, 1, name, seed);
         expect(littleMaze.Id).to.equal('3:3:1:' + seed);
     });
 
     it(`Maze.generate() should create a new maze with ID: '${mazeId}'`, () => {
         let lastLevel: LOG_LEVELS = Logger.getInstance().LogLevel;
         Logger.getInstance().LogLevel = LOG_LEVELS.DEBUG;
-        maze = new Maze().generate(height, width, challenge, seed);
+        maze = new Maze().generate(height, width, challenge, name, seed);
         expect(maze.Id).to.equal(mazeId);
         Logger.getInstance().LogLevel = lastLevel;
     });
 
     it(`Maze ID should match pattern 'HEIGHT:WIDTH:CHALLENGE:SEED' (${mazeId})`, () => {
         expect(maze.Id).to.equal(maze.Height + ':' + maze.Width + ':' + maze.ChallengeLevel + ':' + maze.Seed);
+    });
+
+    it(`Maze name should match provided name (${name})`, () => {
+        expect(maze.Name).to.equal(name);
     });
 
     it(`Maze [${mazeId}] MD5 Hash should match: '${mazeHash}'`, () => {
