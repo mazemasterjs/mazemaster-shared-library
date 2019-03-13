@@ -36,12 +36,12 @@ export class Config {
     public TRAPS_ON_PATH_MIN_CHALLENGE: number = parseInt(process.env.TRAPS_ON_PATH_MIN_CHALLENGE || '6');
 
     // MONGO DB VALUES
-    public MONGO_DB = process.env.MONGO_DB;
-    public MONGO_CONNSTR = process.env.MONGO_CONNSTR;
-    public MONGO_CON_PW = process.env.MONGO_CON_PW;
-    public MONGO_COL_MAZES = process.env.MONGO_COL_MAZES;
-    public MONGO_COL_SCORES = process.env.MONGO_COL_SCORES;
-    public MONGO_COL_TEAMS = process.env.MONGO_COL_TEAMS;
+    public MONGO_DB: string = process.env.MONGO_DB + '';
+    public MONGO_CONNSTR: string = process.env.MONGO_CONNSTR + '';
+    public MONGO_CON_PW: string = process.env.MONGO_CON_PW + '';
+    public MONGO_COL_MAZES: string = process.env.MONGO_COL_MAZES + '';
+    public MONGO_COL_SCORES: string = process.env.MONGO_COL_SCORES + '';
+    public MONGO_COL_TEAMS: string = process.env.MONGO_COL_TEAMS + '';
 
     // must be set to true before health/readiness checks in routes/health.ts will pass
     public READY_TO_ROCK: boolean = false;
