@@ -35,8 +35,13 @@ export class Config {
     // Minimum challenge level that allows trap to be generated on the solution path
     public TRAPS_ON_PATH_MIN_CHALLENGE: number = parseInt(process.env.TRAPS_ON_PATH_MIN_CHALLENGE || '6');
 
-    public MAZES_DB_FILE: string = process.env.MAZES_DB_FILE || './data/mazes.db';
-    public MAZES_COLLECTION_NAME = process.env.MAZES_COLLECTION_NAME || 'mazes';
+    // MONGO DB VALUES
+    public MONGO_DB = process.env.MONGO_DB;
+    public MONGO_CONNSTR = process.env.MONGO_CONNSTR;
+    public MONGO_CON_PW = process.env.MONGO_CON_PW;
+    public MONGO_COL_MAZES = process.env.MONGO_COL_MAZES;
+    public MONGO_COL_SCORES = process.env.MONGO_COL_SCORES;
+    public MONGO_COL_TEAMS = process.env.MONGO_COL_TEAMS;
 
     // must be set to true before health/readiness checks in routes/health.ts will pass
     public READY_TO_ROCK: boolean = false;
@@ -66,8 +71,11 @@ export class Config {
             log.force(__filename, 'getInstance()', 'MAZE_MIN_WIDTH -> [ ' + this.instance.MAZE_MIN_WIDTH + ' ]');
             log.force(__filename, 'getInstance()', 'TRAPS_MIN_CHALLENGE -> [ ' + this.instance.TRAPS_MIN_CHALLENGE + ' ]');
             log.force(__filename, 'getInstance()', 'TRAPS_ON_PATH_MIN_CHALLENGE -> [ ' + this.instance.TRAPS_ON_PATH_MIN_CHALLENGE + ' ]');
-            log.force(__filename, 'getInstance()', 'MAZES_DB_FILE -> [ ' + this.instance.MAZES_DB_FILE + ' ]');
-            log.force(__filename, 'getInstance()', 'MAZES_COLLECTION_NAME -> [ ' + this.instance.MAZES_COLLECTION_NAME + ' ]');
+            log.force(__filename, 'getInstance()', 'MONGO_DB -> [ ' + this.instance.MONGO_DB + ' ]');
+            log.force(__filename, 'getInstance()', 'MONGO_CONNSTR -> [ ' + this.instance.MONGO_CONNSTR + ' ]');
+            log.force(__filename, 'getInstance()', 'MONGO_COL_MAZES -> [ ' + this.instance.MONGO_COL_MAZES + ' ]');
+            log.force(__filename, 'getInstance()', 'MONGO_COL_SCORES -> [ ' + this.instance.MONGO_COL_SCORES + ' ]');
+            log.force(__filename, 'getInstance()', 'MONGO_COL_TEAMS -> [ ' + this.instance.MONGO_COL_TEAMS + ' ]');
 
             /* istanbul ignore if */
             // check if HTTP variables exist and warn if not
@@ -113,9 +121,16 @@ export class Config {
             }
 
             /* istanbul ignore if */
-            // check for maze database / collection settings
-            if (isUndefined(process.env.MAZES_DB_FILE) || isUndefined(process.env.MAZES_COLLECTION_NAME)) {
-                log.warn(__filename, 'getInstance()', 'MAZE DATABASE VARIABLE(S) NOT SET, USING DEFAULTS');
+            // check if MONGODB variables are set
+            if (
+                isUndefined(process.env.MONGO_DB) ||
+                isUndefined(process.env.MONGO_CONNSTR) ||
+                isUndefined(process.env.MONGO_CON_PW) ||
+                isUndefined(process.env.MONGO_COL_MAZES) ||
+                isUndefined(process.env.MONGO_COL_SCORES) ||
+                isUndefined(process.env.MONGO_COL_TEAMS)
+            ) {
+                log.warn(__filename, 'getInstance()', 'ONE OR MORE MONGODB VARIABLE(S) NOT SET');
             }
         }
         return Config.instance;

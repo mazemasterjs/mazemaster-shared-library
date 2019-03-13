@@ -20,7 +20,11 @@ describe('Config Tests', () => {
         expect(config.TRAPS_MIN_CHALLENGE).not.be.undefined;
         expect(config.TRAPS_ON_PATH_MIN_CHALLENGE).not.be.undefined;
         expect(config.APP_NAME).not.be.undefined;
-        expect(config.MAZES_DB_FILE).not.be.undefined;
-        expect(config.MAZES_COLLECTION_NAME).not.be.undefined;
+        expect(config.MONGO_COL_MAZES).not.be.undefined;
+        expect(config.MONGO_COL_SCORES).not.be.undefined;
+        expect(config.MONGO_COL_TEAMS).not.be.undefined;
+        expect(config.MONGO_CONNSTR).not.be.undefined;
+        expect(config.MONGO_CON_PW).not.be.undefined;
+        expect(config.MONGO_DB).not.be.undefined;
     });
 });
