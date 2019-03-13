@@ -267,8 +267,8 @@ export class Maze {
                     'Shortest Path = %d\r\n' +
                     'Text Render:\r\n\r\n%s',
                 this.id,
-                this.seed == '' ? '<<NO SEED>> - Maze is random.' : this.seed,
                 this.name,
+                this.seed == '' ? 'NO_SEED' : this.seed,
                 this.cells.length,
                 this.cells[0].length,
                 this.ChallengeLevel,
