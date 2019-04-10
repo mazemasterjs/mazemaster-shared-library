@@ -1,4 +1,4 @@
-import {MongoClient, Db, Cursor, DeleteWriteOpResultObject, InsertOneWriteOpResult, UpdateWriteOpResult} from 'mongodb';
+import {MongoClient, Cursor, Collection, DeleteWriteOpResultObject, InsertOneWriteOpResult, UpdateWriteOpResult, Db} from 'mongodb';
 import {Config} from './Config';
 import {Logger} from '@mazemasterjs/logger';
 
@@ -8,39 +8,71 @@ export class MongoDBHandler {
     private config: Config = Config.getInstance();
     private log: Logger = Logger.getInstance();
 
+    private static mazes: Collection;
+    private static scores: Collection;
+    private static games: Collection;
+    private static teams: Collection;
+
     // declare mongo classes
-    private mongoDBClient: MongoClient | undefined;
-    private db: Db | undefined;
+    private mongoClient: MongoClient | undefined;
 
     // must use getInstance()
     private constructor() {}
 
     // singleton instance pattern
-    public static getInstance(): MongoDBHandler {
+    public static async getInstance(): Promise<any> {
         if (!MongoDBHandler.instance) {
             Logger.getInstance().debug(__filename, 'getInstance()', 'Instantiating new instance of class.');
-            this.instance = new MongoDBHandler();
-            this.instance.initConnection();
+            let instance = new MongoDBHandler();
+
+            instance.log.debug(__filename, 'initConnection()', 'Awaiting MongoClient.connect()');
+            instance.mongoClient = await MongoClient.connect(Config.getInstance().MONGO_CONNSTR, {useNewUrlParser: true});
+
+            instance.log.debug(__filename, 'initConnection()', 'Pre-fetching and caching collections.');
+            // Cache the collection objects as static member variables - vastly improves performance
+            let db: Db = instance.mongoClient.db(instance.config.MONGO_DB);
+            MongoDBHandler.mazes = db.collection(instance.config.MONGO_COL_MAZES);
+            MongoDBHandler.scores = db.collection(instance.config.MONGO_COL_SCORES);
+            MongoDBHandler.teams = db.collection(instance.config.MONGO_COL_TEAMS);
+
+            instance.log.debug(__filename, 'initConnection()', `MongoClient connected successfully, setting instance.`);
+            MongoDBHandler.instance = instance;
         }
-        return this.instance;
+
+        // return the promise containing our instance (or an error)
+        return new Promise((resolve, reject) => {
+            if (!MongoDBHandler.instance) {
+                reject(new Error('MongoDBHandler.instance is not defined.'));
+            } else {
+                resolve(MongoDBHandler.instance);
+            }
+        });
     }
 
     /**
-     * Initialize the database connection
+     * Gets and returns the database collection with the matching collectionName
+     *
+     * @param collectionName
+     * @return MongDB Collection
+     * @throws Invalid Collection Name error
+     * @throws Undefined / Not Connected error
      */
-    private initConnection() {
-        this.log.debug(__filename, 'initConnection()', 'Initializing MongoDB Client connection');
-        MongoClient.connect(Config.getInstance().MONGO_CONNSTR, {useNewUrlParser: true}, function(err, client) {
-            let config: Config = Config.getInstance();
-            let log: Logger = Logger.getInstance();
-            if (err) {
-                log.error(__filename, 'initConnection()', `Error connecting to ${config.MONGO_CONNSTR} ->`, err);
-            } else {
-                log.debug(__filename, 'initConnection()', `MongoDB Client connection established to ${config.MONGO_CONNSTR}`);
-                MongoDBHandler.instance.mongoDBClient = client;
-                MongoDBHandler.instance.db = MongoDBHandler.instance.mongoDBClient.db(config.MONGO_DB);
+    private getCollection(collectionName: string): Collection {
+        this.log.trace(__filename, `getCollection(${collectionName})`, 'Getting collection.');
+        if (this.mongoClient && this.mongoClient.isConnected()) {
+            switch (collectionName) {
+                case 'mazes':
+                    return MongoDBHandler.mazes;
+                case 'scores':
+                    return MongoDBHandler.scores;
+                case 'teams':
+                    return MongoDBHandler.teams;
+                default:
+                    throw new Error(`Invalid collection name: ${collectionName}`);
             }
-        });
+        } else {
+            throw new Error('mongoClient is ' + (this.mongoClient ? 'undefined' : 'not connected'));
+        }
     }
 
     /**
@@ -50,12 +82,7 @@ export class MongoDBHandler {
      */
     public countDocuments(collectionName: string): Promise<number> {
         this.log.debug(__filename, `countDocuments(${collectionName})`, 'Attempting to get document count.');
-
-        if (this.db) {
-            return this.db.collection(collectionName).countDocuments();
-        } else {
-            throw this.dataAccessFailure(`countDocuments(${collectionName})`);
-        }
+        return this.getCollection(collectionName).countDocuments({});
     }
 
     /**
@@ -65,11 +92,7 @@ export class MongoDBHandler {
      */
     public getAllDocuments(collectionName: string): Cursor<any> {
         this.log.debug(__filename, `getAllDocuments(${collectionName})`, 'Attempting to get all documents in collection.');
-        if (this.db) {
-            return this.db.collection(collectionName).find();
-        } else {
-            throw this.dataAccessFailure(`getAllDocuments(${collectionName})`);
-        }
+        return this.getCollection(collectionName).find();
     }
 
     /**
@@ -78,12 +101,9 @@ export class MongoDBHandler {
      * @param collectionName string
      */
     public getDocument(collectionName: string, docId: string): Promise<any> {
-        this.log.debug(__filename, `getDocument(${collectionName}, ${docId})`, 'Searching for document.');
-        if (this.db) {
-            return this.db.collection(collectionName).findOne({id: docId});
-        } else {
-            throw this.dataAccessFailure(`getDocument(${collectionName},  ${docId})`);
-        }
+        let method = `getDocument(${collectionName}, ${docId})`;
+        this.log.debug(__filename, method, 'Searching for document.');
+        return this.getCollection(collectionName).findOne({id: docId});
     }
 
     /**
@@ -96,18 +116,12 @@ export class MongoDBHandler {
     public updateDocument(collectionName: string, docId: string, doc: any): Promise<UpdateWriteOpResult> {
         let method = `updateDocument(${collectionName}, ${docId}, ${doc})`;
         this.log.debug(__filename, method, 'Attempting to update document.');
-
-        if (this.db) {
-            return this.db
-                .collection(collectionName)
-                .updateOne({id: docId}, doc, {upsert: false})
-                .catch((err) => {
-                    this.log.error(__filename, method, 'Error while updating document -> ', err);
-                    return err;
-                });
-        } else {
-            throw this.dataAccessFailure(method);
-        }
+        return this.getCollection(collectionName)
+            .updateOne({id: docId}, {$set: doc}, {upsert: false})
+            .catch((err) => {
+                this.log.error(__filename, method, 'Error while updating document -> ', err);
+                return err;
+            });
     }
 
     /**
@@ -120,17 +134,11 @@ export class MongoDBHandler {
         let method = `insertDocument(${collectionName}, ${doc})`;
         this.log.debug(__filename, method, 'Attempting to insert document.');
 
-        if (this.db) {
-            return this.db
-                .collection(collectionName)
-                .insertOne(doc)
-                .catch((err) => {
-                    this.log.error(__filename, method, 'Error while inserting document -> ', err);
-                    return err;
-                });
-        } else {
-            throw this.dataAccessFailure(method);
-        }
+        return this.getCollection(collectionName).insertOne(doc);
+        // .catch((err) => {
+        //     this.log.error(__filename, method, 'Error while inserting document -> ', err);
+        //     return err;
+        // });
     }
 
     /**
@@ -142,44 +150,34 @@ export class MongoDBHandler {
     public deleteDocument(collectionName: string, id: string): Promise<DeleteWriteOpResultObject> {
         this.log.debug(__filename, `deleteDocument(${id})`, 'Attempting to delete document.');
 
-        if (this.db) {
-            return this.db
-                .collection(collectionName)
-                .deleteOne({id: id})
-                .catch((err) => {
-                    this.log.error(__filename, 'deleteDocument()', 'Error while deleting document', err);
-                    return err;
-                });
-        } else {
-            throw this.dataAccessFailure(`getAllDocuments(${collectionName})`);
-        }
+        return this.getCollection(collectionName)
+            .deleteOne({id: id})
+            .catch((err) => {
+                this.log.error(__filename, 'deleteDocument()', 'Error while deleting document', err);
+                return err;
+            });
     }
 
     /**
      * Returns true of the db object is defined.
      */
     public isConnected(): boolean {
-        return this.db != undefined;
-    }
-
-    /**
-     * Private function to handle internal db connection errors
-     *
-     * @param method string
-     */
-    private dataAccessFailure(method: string): Error {
-        let msg: string = 'MongoClient.Db is undefined.  Connection failure?';
-        let err: Error = new Error(msg);
-        this.log.error(__filename, method, msg, err);
-        return err;
+        if (this.mongoClient) {
+            return this.mongoClient.isConnected();
+        } else {
+            return false;
+        }
     }
 
     /**
      * Close the database connection.
      */
     public disconnect() {
-        if (this.mongoDBClient) {
-            this.mongoDBClient.close();
+        if (this.mongoClient && this.mongoClient.isConnected()) {
+            this.log.debug(__filename, 'disconnect()', 'Closing MongoClient Connection');
+            this.mongoClient.close();
+        } else {
+            this.log.warn(__filename, 'disconnect()', 'MongoClient is not ' + (this.mongoClient ? 'defined' : 'connected'));
         }
     }
 }
