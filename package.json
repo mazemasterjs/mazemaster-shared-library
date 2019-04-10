@@ -30,7 +30,6 @@
     "dependencies": {
         "@mazemasterjs/logger": "^1.0.3",
         "@types/seedrandom": "^2.4.28",
-        "es6-promise": "^4.2.6",
         "seedrandom": "^2.4.4"
     },
     "devDependencies": {
