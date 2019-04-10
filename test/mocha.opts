@@ -3,4 +3,4 @@
 --watch-extensions ts
 --recursive
 --timeout 5000
-test/MongoDBHandler.test.ts
+test/*.test.ts
