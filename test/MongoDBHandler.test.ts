@@ -15,8 +15,8 @@ describe('MongoDBHandler Tests', () => {
 
     before('Mongo Client should connect', () =>
         MongoDBHandler.getInstance()
-            .then((result) => {
-                mongo = result;
+            .then((instance) => {
+                mongo = instance;
                 expect(mongo.isConnected()).to.be.true;
             })
             .then(() => {
@@ -68,6 +68,12 @@ describe('MongoDBHandler Tests', () => {
         mazeStored = new Maze(mazeRaw);
         return mongo.insertDocument(config.MONGO_COL_MAZES, mazeStored).then((result) => {
             expect(result.insertedCount).to.equal(1);
+        });
+    });
+
+    it(`getDocument should return null if document is not found`, () => {
+        return mongo.getDocument(config.MONGO_COL_MAZES, '0:0:0:FakeName:FakeSeed').then((doc) => {
+            expect(doc).to.be.null;
         });
     });
 

@@ -19,7 +19,15 @@ export class MongoDBHandler {
     // must use getInstance()
     private constructor() {}
 
-    // singleton instance pattern
+    /**
+     * Hacky singleton pattern that returns a promise instead of an instance - there must be a better way!
+     *
+     * Consumers need to .then((instance)=>){} this promise and assign the returned instance to a MongoDBHandler
+     * variable in order to use it.
+     *
+     * @resolve Promise<any>
+     * @reject Error
+     */
     public static async getInstance(): Promise<any> {
         if (!MongoDBHandler.instance) {
             Logger.getInstance().debug(__filename, 'getInstance()', 'Instantiating new instance of class.');
@@ -28,15 +36,18 @@ export class MongoDBHandler {
             instance.log.debug(__filename, 'initConnection()', 'Awaiting MongoClient.connect()');
             instance.mongoClient = await MongoClient.connect(Config.getInstance().MONGO_CONNSTR, {useNewUrlParser: true});
 
-            instance.log.debug(__filename, 'initConnection()', 'Pre-fetching and caching collections.');
+            // set the static instance
+            MongoDBHandler.instance = instance;
+            instance.log.debug(__filename, 'initConnection()', 'Instance set, caching collections...');
+
             // Cache the collection objects as static member variables - vastly improves performance
             let db: Db = instance.mongoClient.db(instance.config.MONGO_DB);
             MongoDBHandler.mazes = db.collection(instance.config.MONGO_COL_MAZES);
             MongoDBHandler.scores = db.collection(instance.config.MONGO_COL_SCORES);
             MongoDBHandler.teams = db.collection(instance.config.MONGO_COL_TEAMS);
 
-            instance.log.debug(__filename, 'initConnection()', `MongoClient connected successfully, setting instance.`);
-            MongoDBHandler.instance = instance;
+            // w00t! Log some success :)
+            instance.log.debug(__filename, 'initConnection()', `Collections cached. MongoDBHandler instance is connected and ready.`);
         }
 
         // return the promise containing our instance (or an error)
@@ -100,10 +111,18 @@ export class MongoDBHandler {
      *
      * @param collectionName string
      */
-    public getDocument(collectionName: string, docId: string): Promise<any> {
+    public async getDocument(collectionName: string, docId: string): Promise<any> {
         let method = `getDocument(${collectionName}, ${docId})`;
-        this.log.debug(__filename, method, 'Searching for document.');
-        return this.getCollection(collectionName).findOne({id: docId});
+        this.log.debug(__filename, method, 'Fetching document...');
+        let doc = await this.getCollection(collectionName)
+            .findOne({id: docId})
+            .then((doc) => {
+                if (!doc) {
+                    this.log.warn(__filename, method, 'Document not found.');
+                }
+                return doc;
+            });
+        return doc;
     }
 
     /**

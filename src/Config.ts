@@ -58,24 +58,24 @@ export class Config {
             let log = Logger.getInstance();
             log.LogLevel = this.instance.LOG_LEVEL;
 
-            log.force(__filename, 'getInstance()', fmt('Initializing configuration for %s v%s.', log.PackageInfo.name, log.PackageInfo.version));
-            log.force(__filename, 'getInstance()', 'HTTP_PORT -> [ ' + this.instance.HTTP_PORT + ' ]');
-            log.force(__filename, 'getInstance()', 'HOST_NAME -> [ ' + this.instance.HOST_NAME + ' ]');
-            log.force(__filename, 'getInstance()', 'APP_NAME -> [ ' + this.instance.APP_NAME + ' ]');
-            log.force(__filename, 'getInstance()', 'SERVICE_DOC_FILE -> [ ' + this.instance.SERVICE_DOC_FILE + ' ]');
-            log.force(__filename, 'getInstance()', 'WORK_DIR -> [ ' + this.instance.WORK_DIR + ' ]');
-            log.force(__filename, 'getInstance()', 'LOG_LEVEL -> [ ' + LOG_LEVELS[this.instance.LOG_LEVEL] + ' ]');
-            log.force(__filename, 'getInstance()', 'MAZE_MAX_HEIGHT -> [ ' + this.instance.MAZE_MAX_HEIGHT + ' ]');
-            log.force(__filename, 'getInstance()', 'MAZE_MIN_HEIGHT -> [ ' + this.instance.MAZE_MIN_HEIGHT + ' ]');
-            log.force(__filename, 'getInstance()', 'MAZE_MAX_WIDTH -> [ ' + this.instance.MAZE_MAX_WIDTH + ' ]');
-            log.force(__filename, 'getInstance()', 'MAZE_MIN_WIDTH -> [ ' + this.instance.MAZE_MIN_WIDTH + ' ]');
-            log.force(__filename, 'getInstance()', 'TRAPS_MIN_CHALLENGE -> [ ' + this.instance.TRAPS_MIN_CHALLENGE + ' ]');
-            log.force(__filename, 'getInstance()', 'TRAPS_ON_PATH_MIN_CHALLENGE -> [ ' + this.instance.TRAPS_ON_PATH_MIN_CHALLENGE + ' ]');
-            log.force(__filename, 'getInstance()', 'MONGO_DB -> [ ' + this.instance.MONGO_DB + ' ]');
-            log.force(__filename, 'getInstance()', 'MONGO_CONNSTR -> [ ' + this.instance.MONGO_CONNSTR + ' ]');
-            log.force(__filename, 'getInstance()', 'MONGO_COL_MAZES -> [ ' + this.instance.MONGO_COL_MAZES + ' ]');
-            log.force(__filename, 'getInstance()', 'MONGO_COL_SCORES -> [ ' + this.instance.MONGO_COL_SCORES + ' ]');
-            log.force(__filename, 'getInstance()', 'MONGO_COL_TEAMS -> [ ' + this.instance.MONGO_COL_TEAMS + ' ]');
+            log.trace(__filename, 'getInstance()', fmt('Initializing configuration for %s v%s.', log.PackageInfo.name, log.PackageInfo.version));
+            log.trace(__filename, 'getInstance()', 'HTTP_PORT -> [ ' + this.instance.HTTP_PORT + ' ]');
+            log.trace(__filename, 'getInstance()', 'HOST_NAME -> [ ' + this.instance.HOST_NAME + ' ]');
+            log.trace(__filename, 'getInstance()', 'APP_NAME -> [ ' + this.instance.APP_NAME + ' ]');
+            log.trace(__filename, 'getInstance()', 'SERVICE_DOC_FILE -> [ ' + this.instance.SERVICE_DOC_FILE + ' ]');
+            log.trace(__filename, 'getInstance()', 'WORK_DIR -> [ ' + this.instance.WORK_DIR + ' ]');
+            log.trace(__filename, 'getInstance()', 'LOG_LEVEL -> [ ' + LOG_LEVELS[this.instance.LOG_LEVEL] + ' ]');
+            log.trace(__filename, 'getInstance()', 'MAZE_MAX_HEIGHT -> [ ' + this.instance.MAZE_MAX_HEIGHT + ' ]');
+            log.trace(__filename, 'getInstance()', 'MAZE_MIN_HEIGHT -> [ ' + this.instance.MAZE_MIN_HEIGHT + ' ]');
+            log.trace(__filename, 'getInstance()', 'MAZE_MAX_WIDTH -> [ ' + this.instance.MAZE_MAX_WIDTH + ' ]');
+            log.trace(__filename, 'getInstance()', 'MAZE_MIN_WIDTH -> [ ' + this.instance.MAZE_MIN_WIDTH + ' ]');
+            log.trace(__filename, 'getInstance()', 'TRAPS_MIN_CHALLENGE -> [ ' + this.instance.TRAPS_MIN_CHALLENGE + ' ]');
+            log.trace(__filename, 'getInstance()', 'TRAPS_ON_PATH_MIN_CHALLENGE -> [ ' + this.instance.TRAPS_ON_PATH_MIN_CHALLENGE + ' ]');
+            log.trace(__filename, 'getInstance()', 'MONGO_DB -> [ ' + this.instance.MONGO_DB + ' ]');
+            log.trace(__filename, 'getInstance()', 'MONGO_CONNSTR -> [ ' + this.instance.MONGO_CONNSTR + ' ]');
+            log.trace(__filename, 'getInstance()', 'MONGO_COL_MAZES -> [ ' + this.instance.MONGO_COL_MAZES + ' ]');
+            log.trace(__filename, 'getInstance()', 'MONGO_COL_SCORES -> [ ' + this.instance.MONGO_COL_SCORES + ' ]');
+            log.trace(__filename, 'getInstance()', 'MONGO_COL_TEAMS -> [ ' + this.instance.MONGO_COL_TEAMS + ' ]');
 
             /* istanbul ignore if */
             // check if HTTP variables exist and warn if not
