@@ -22,6 +22,36 @@ describe('Maze Tests', () => {
     let mazeId: string = `${height}:${width}:${challenge}:${seed}`;
     let mazeHash: string = 'eacfc91bdb83cd5e4308b362d6a1c07f';
 
+    it(`Maze.generate(0, 3, 3, 'unit', 'test') should return error`, () => {
+        expect(function() {
+            let badMaze = new Maze().generate(0, 3, 3, 'unit', 'test');
+        }).to.throw();
+    });
+
+    it(`Maze.generate(3, 0, 3, 'unit', 'test') should return error`, () => {
+        expect(function() {
+            let badMaze = new Maze().generate(3, 0, 3, 'unit', 'test');
+        }).to.throw();
+    });
+
+    it(`Maze.generate(3, 3, 0, 'unit', 'test') should return error`, () => {
+        expect(function() {
+            let badMaze = new Maze().generate(3, 3, 0, 'unit', 'test');
+        }).to.throw();
+    });
+
+    it(`Maze.generate(3, 3, 3, 'u', 'test') should return error`, () => {
+        expect(function() {
+            let badMaze = new Maze().generate(3, 3, 3, 'u', 'test');
+        }).to.throw();
+    });
+
+    it(`Maze.generate(3, 3, 3, 'unit', 't') should return error`, () => {
+        expect(function() {
+            let badMaze = new Maze().generate(3, 3, 3, 'unit', 't');
+        }).to.throw();
+    });
+
     it(`Maze.generate() should create a small, simple maze.`, () => {
         let littleMaze: Maze = new Maze().generate(3, 3, 1, name, seed);
         expect(littleMaze.Id).to.equal('3:3:1:' + seed);
