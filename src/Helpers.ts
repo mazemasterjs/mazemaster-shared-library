@@ -83,18 +83,3 @@ export function reverseDir(dir: DIRS): number {
             return 0;
     }
 }
-
-/**
- * Returns an element from the given array if the element has the given key / value.
- *
- * @param keyName
- * @param keyValue
- */
-export function getElement(elements: Array<Object>, keyName: string, keyValue: string): any {
-    let ret: any = null;
-    log.trace(__filename, fmt('getElement(Object[], %s, %s)', keyName, keyValue), 'Seeking matching element from Array<Object>');
-
-    // elements.forEach(element => {
-    //    if (element
-    // });
-}
