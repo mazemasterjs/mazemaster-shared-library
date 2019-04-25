@@ -1,4 +1,4 @@
-import fs, {exists} from 'fs';
+import fs from 'fs';
 import {Endpoint} from './Endpoint';
 import {Logger} from '@mazemasterjs/logger';
 import Argument from './Argument';

@@ -10,8 +10,9 @@ node_modules/
 .npm
 
 # compiled ts files
-bin
-dist
+*.d.ts
+*.js.map
+*.js
 
 # config / env
 .env

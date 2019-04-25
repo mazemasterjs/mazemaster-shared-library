@@ -1,4 +1,4 @@
-import {format, format as fmt} from 'util';
+import {format} from 'util';
 import * as Helpers from './Helpers';
 import {CELL_TAGS, CELL_TRAPS, DIRS} from './Enums';
 import {Logger} from '@mazemasterjs/logger';

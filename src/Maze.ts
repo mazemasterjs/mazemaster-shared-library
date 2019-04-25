@@ -136,15 +136,13 @@ export class Maze {
 
     /**
      * Generates a new maze based on the given parameters
-     * @param height - The height of the maze grid
-     * @param width - The width of the maze grid
-     * @param seed - pseudo random number generator seed value.  If empty, maze will be random and unrepeatable
-     * @param name - the name of the maze
-     * @param challengeLevel - The difficulty level of the maze being generated
+     * @param height - number: The height of the maze grid
+     * @param width - number: The width of the maze grid
+     * @param challengeLevel - number: The difficulty level (1 to 10) of the maze being generated
+     * @param name - string: the name of the maze
+     * @param seed - string: pseudo random number generator seed value.  If empty, maze will be random and unrepeatable
      */
     public generate(height: number, width: number, challengeLevel: number, name: string, seed: string): this {
-        this.challenge = challengeLevel;
-
         if (this.cells.length > 0) {
             log.warn(__filename, 'generate()', 'This maze has already been generated.');
             return this;
@@ -157,35 +155,48 @@ export class Maze {
         let errors = new Array<string>();
         if (isNaN(height)) errors.push('Height must be numeric.\n\r');
         if (isNaN(width)) errors.push('Width must be numeric.\n\r');
-
-        // set the dimensions and name
-        this.height = height;
-        this.width = width;
-        this.name = name;
+        if (isNaN(challengeLevel)) errors.push('challengeLevel must be numeric.\n\r');
 
         // check for valid height
-        if (this.height < config.MAZE_MIN_HEIGHT || this.height > config.MAZE_MAX_HEIGHT) {
+        if (height < config.MAZE_MIN_HEIGHT || this.height > config.MAZE_MAX_HEIGHT) {
             errors.push(fmt('Maze height must be between %d and %d.\n\r', config.MAZE_MIN_HEIGHT, config.MAZE_MAX_HEIGHT));
         }
 
         // check for valid width
-        if (this.width < config.MAZE_MIN_WIDTH || this.height > config.MAZE_MAX_WIDTH) {
+        if (width < config.MAZE_MIN_WIDTH || this.height > config.MAZE_MAX_WIDTH) {
             errors.push(fmt('Maze width must be between %d and %d.\n\r', config.MAZE_MIN_WIDTH, config.MAZE_MAX_WIDTH));
         }
 
+        // check for valid challenge level
+        if (challengeLevel < 1 || challengeLevel > 10) {
+            errors.push('Maze challengeLevel must be between 1 and 10, inclusive.\n\r');
+        }
+
+        // check for valid name
+        if (name.length < 3 || name.length > 32) {
+            errors.push('Maze name must be at least three and no more than 32 characters long.\n\r');
+        }
+
+        // check for valid seed
+        if (seed.length < 3 || seed.length > 32) {
+            errors.push('Maze seed must be at least three and no more than 32 characters long.\n\r');
+        }
+
+        // throw an error if any of the parameters aren't met
         if (errors.toString().length > 0) {
             let error: Error = new Error(errors.toString());
             log.error(__filename, 'generate()', 'Errors detected.', error);
             throw error;
         }
 
-        // implement random seed
-        if (seed && seed.length > 0) {
-            this.seed = seed;
-            seedrandom(seed, {global: true});
-        } else {
-            log.warn(__filename, 'generate()', 'No seed value found.  This maze will be random.');
-        }
+        // set the dimensions and name
+        this.height = height;
+        this.width = width;
+        this.challenge = challengeLevel;
+        this.name = name;
+        this.seed = seed;
+
+        seedrandom(this.seed, {global: true});
 
         // set maze's ID
         this.id = fmt('%d:%d:%d:%s', this.height, this.width, this.challenge, this.seed);
