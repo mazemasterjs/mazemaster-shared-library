@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import {Service} from '../src/Service';
-import Endpoint from 'src/Endpoint';
+import {Endpoint} from '../src/Endpoint';
 
 describe('Service Tests', () => {
     let svc = new Service('service.json');
