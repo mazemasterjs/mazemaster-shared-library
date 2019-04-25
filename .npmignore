@@ -3,26 +3,20 @@
 *.seed
 *.pid.lock
 
-# Dependency directories
-node_modules/
-
-# Optional npm cache directory
-.npm
-
-# will only publish from the /dist folder
+# ignore test, source, and data
 test/
-bin/
 src/
+data/
 
 # config / env files
+_.env
+.git
 .env
 .npmrc
 .vscode/
 tsconfig.json
-package.ps1
 tslint.json
 .nycrc
-publish.bat
 
 # don't upload testing / coverage stuff
 coverage/
@@ -30,3 +24,6 @@ sonar-project.properties
 .scannerwork
 .sonarlint
 .nyc_output
+
+# ignore sample service.json file
+service.json
