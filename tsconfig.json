@@ -6,11 +6,12 @@
         "removeComments": false,
         "declaration": true,
         "sourceMap": true /* Generates corresponding '.map' file. */,
-        "outDir": "dist/" /* Redirect output structure to the directory. */,
+        "outDir": "" /* Redirect output structure to the directory. */,
         "strict": true /* Enable all strict type-checking options. */,
         "alwaysStrict": true /* Parse in strict mode and emit "use strict" for each source file. */,
         "moduleResolution": "node" /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */,
         "esModuleInterop": true /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
     },
-    "include": ["src/"]
+    "include": ["src"],
+    "exclude": ["node_modules"]
 }
