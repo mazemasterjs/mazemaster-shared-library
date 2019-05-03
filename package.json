@@ -1,6 +1,6 @@
 {
   "name": "@mazemasterjs/shared-library",
-  "version": "1.3.5",
+  "version": "1.3.6",
   "description": "Shared library for MazeMasterJS",
   "scripts": {
     "build": "tsc",
@@ -8,8 +8,7 @@
     "lint": "tslint -p tsconfig.json",
     "scan": "sonar-scanner.bat",
     "test": "mocha -r dotenv/config",
-    "test-dbg": "mocha --debug-brk --inspect -r dotenv/config",
-    "publish": "publish.bat"
+    "test-dbg": "mocha --debug-brk --inspect -r dotenv/config"
   },
   "repository": {
     "type": "git",
