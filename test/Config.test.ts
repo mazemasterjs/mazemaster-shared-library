@@ -1,30 +1,32 @@
-import {Config} from '../src/Config';
-import {expect} from 'chai';
+import { Config } from '../src/Config';
+import { expect } from 'chai';
 
 // test cases
 describe('Config Tests', () => {
-    // declare config object
-    let config: Config = Config.getInstance();
+  // declare config object
+  const config: Config = Config.getInstance();
 
-    it('Config.getInstance() should not return null.', () => {
-        expect(config).not.be.null;
-    });
+  it('Config.getInstance() should not return null.', () => {
+    return expect(config).not.be.null;
+  });
 
-    it('Environment variables should not be undefined.', () => {
-        expect(config.HOST_NAME).not.be.undefined;
-        expect(config.HTTP_PORT).not.be.undefined;
-        expect(config.MAZE_MIN_HEIGHT).not.be.undefined;
-        expect(config.MAZE_MAX_HEIGHT).not.be.undefined;
-        expect(config.MAZE_MIN_WIDTH).not.be.undefined;
-        expect(config.MAZE_MAX_WIDTH).not.be.undefined;
-        expect(config.TRAPS_MIN_CHALLENGE).not.be.undefined;
-        expect(config.TRAPS_ON_PATH_MIN_CHALLENGE).not.be.undefined;
-        expect(config.APP_NAME).not.be.undefined;
-        expect(config.MONGO_COL_MAZES).not.be.undefined;
-        expect(config.MONGO_COL_SCORES).not.be.undefined;
-        expect(config.MONGO_COL_TEAMS).not.be.undefined;
-        expect(config.MONGO_CONNSTR).not.be.undefined;
-        expect(config.MONGO_CON_PW).not.be.undefined;
-        expect(config.MONGO_DB).not.be.undefined;
-    });
+  it('Environment variables should not be undefined.', () => {
+    let missingVar = config.HOST_NAME === undefined;
+    missingVar = config.HOST_NAME === undefined;
+    missingVar = config.HTTP_PORT === undefined;
+    missingVar = config.MAZE_MIN_HEIGHT === undefined;
+    missingVar = config.MAZE_MAX_HEIGHT === undefined;
+    missingVar = config.MAZE_MIN_WIDTH === undefined;
+    missingVar = config.MAZE_MAX_WIDTH === undefined;
+    missingVar = config.TRAPS_MIN_CHALLENGE === undefined;
+    missingVar = config.TRAPS_ON_PATH_MIN_CHALLENGE === undefined;
+    missingVar = config.APP_NAME === undefined;
+    missingVar = config.MONGO_COL_MAZES === undefined;
+    missingVar = config.MONGO_COL_SCORES === undefined;
+    missingVar = config.MONGO_COL_TEAMS === undefined;
+    missingVar = config.MONGO_CONNSTR === undefined;
+    missingVar = config.MONGO_CON_PW === undefined;
+    missingVar = config.MONGO_DB === undefined;
+    expect(missingVar).to.equal(false);
+  });
 });
