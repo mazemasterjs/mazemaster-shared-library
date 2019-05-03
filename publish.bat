@@ -8,14 +8,15 @@ mkdir dist
 
 if EXIST "bin" (
     echo "Clearing bin\ directory"
-    rmdir /s /q bin
+    REM rmdir /s /q bin
 )
 
 echo "Compiling library"
 tsc|rem
 
 echo "Copying files in bin\ to dist\"
-xcopy /S /Y bin dist
+copy bin\*.* dist\
+copy bin\types\*.* dist\
 
 echo "Copying package files to dist\"
 copy LICENSE dist\
