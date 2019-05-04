@@ -66,7 +66,11 @@ describe('IMazeStub Tests', () => {
     expect(game.State).to.equal(GAME_STATES.NEW);
   });
 
+  it(`Player.Location should equal maze.StartCell`, () => {
+    expect(game.Player.Location.equals(game.Maze.StartCell)).to.equal(true);
+  });
+
   after('Generate text render with player position', () => {
-    log.info(__filename, 'after()', '\n\r\n\r' + game.Maze.generateTextRender(true, game.Player.Location));
+    log.debug(__filename, 'after()', '\n\r\n\r' + game.Maze.generateTextRender(true, game.Player.Location));
   });
 });
