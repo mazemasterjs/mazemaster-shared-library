@@ -8,6 +8,7 @@
     "lint": "tslint -p tsconfig.json",
     "scan": "sonar-scanner.bat",
     "test": "mocha -r dotenv/config",
+    "test-watch": "mocha -r dotenv/config --watch",
     "test-dbg": "mocha --debug-brk --inspect -r dotenv/config"
   },
   "repository": {

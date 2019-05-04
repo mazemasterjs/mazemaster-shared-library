@@ -5,6 +5,7 @@ import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
 import { Logger } from '@mazemasterjs/logger';
 import { Location } from './Location';
 import Config from './Config';
+import IMazeStub from './IMazeStub';
 
 const log = Logger.getInstance();
 const config = Config.getInstance();
@@ -110,6 +111,22 @@ export class Maze {
       this.cells = new Array<Array<Cell>>();
       this.textRender = '';
     }
+  }
+
+  /**
+   * Returns only basic maze data - for use
+   * with lists, scores, etc
+   */
+  public getMazeStub(): IMazeStub {
+    return {
+      challenge: this.challenge,
+      height: this.height,
+      id: this.id,
+      name: this.name,
+      seed: this.seed,
+      url: '',
+      width: this.width,
+    };
   }
 
   /**
@@ -286,7 +303,7 @@ export class Maze {
 
     // start the carving routine
     log.debug(__filename, 'generate()', 'Starting carvePassage() from Start Cell: ' + this.startCell.toString());
-    this.carvePassage(this.getCell(this.startCell));
+    this.carvePassage(this.getCell(new Location(this.StartCell.row, this.startCell.col)));
     log.debug(__filename, 'generate()', 'carvePassage() complete.');
 
     // now solve the maze and tag the path
@@ -403,13 +420,6 @@ export class Maze {
               let cellFill = CENTER;
               const tags = cell.Tags;
               const traps = cell.Trap;
-              if (playerPos !== undefined && this.cells[y][x].Location.equals(playerPos)) {
-                if (traps !== 0) {
-                  cellFill = AVATAR_TRAPPED;
-                } else {
-                  cellFill = AVATAR;
-                }
-              }
               if (!!(tags & CELL_TAGS.PATH)) {
                 cellFill = SOLUTION;
               }
@@ -425,6 +435,16 @@ export class Maze {
               if (!!(traps & CELL_TRAPS.TARPIT)) {
                 cellFill = '>t<';
               }
+
+              // override cell fill with avatar location when player position is given
+              if (playerPos !== undefined && this.cells[y][x].Location.equals(playerPos)) {
+                if (traps !== 0) {
+                  cellFill = AVATAR_TRAPPED;
+                } else {
+                  cellFill = AVATAR;
+                }
+              }
+
               row += cellFill;
 
               // always render east walls (with room center)
@@ -462,7 +482,7 @@ export class Maze {
    * and initializes tracking variables
    */
   public solveAndTag() {
-    playerPos = this.startCell;
+    playerPos = new Location(this.startCell.row, this.startCell.col);
     solutionPath = new Array<string>();
     this.tagSolution(playerPos, 0);
   }

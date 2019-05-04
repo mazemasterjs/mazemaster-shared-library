@@ -36,12 +36,24 @@ export class Team {
     return this.name;
   }
 
+  public set Name(teamName: string) {
+    this.name = teamName;
+  }
+
   public get Bots(): Array<Bot> {
     return this.bots;
   }
 
+  public set Bots(bots: Array<Bot>) {
+    this.bots = bots;
+  }
+
   public get Logo(): string {
     return this.logo;
+  }
+
+  public set Logo(imageFileName: string) {
+    this.logo = imageFileName;
   }
 
   public addTrophy(trophyId: TROPHY_IDS) {

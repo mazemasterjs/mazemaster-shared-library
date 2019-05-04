@@ -1,5 +1,3 @@
-import { format as fmt } from 'util';
-// import path from 'path';
 import { DIRS } from './Enums';
 import { Logger } from '@mazemasterjs/logger';
 
@@ -19,12 +17,13 @@ const log = Logger.getInstance();
  * @param selectedBits - Number representing the selected bits
  */
 export function listSelectedBitNames(bitwiseEnum: object, selectedBits: number): string {
+  let ret = '';
+
   log.trace(
     __filename,
-    fmt('listSelectedBitNames(%s, %d)', bitwiseEnum, selectedBits),
+    `listSelectedBitNames(${bitwiseEnum}, ${selectedBits}`,
     'Listing selected bit names from enumeration.',
   );
-  let ret: string = '';
 
   for (const dir in bitwiseEnum) {
     if (Number(dir)) {
@@ -41,7 +40,7 @@ export function listSelectedBitNames(bitwiseEnum: object, selectedBits: number):
   }
   log.trace(
     __filename,
-    fmt('listSelectedBitNames(%s, %d)', bitwiseEnum, selectedBits),
+    `listSelectedBitNames(${bitwiseEnum}, ${selectedBits})`,
     'Returning selected bit names: ' + ret,
   );
   return ret;
@@ -57,7 +56,7 @@ export function listSelectedBitNames(bitwiseEnum: object, selectedBits: number):
 export function getSelectedBitNames(bitwiseEnum: object, selectedBits: number): string[] {
   log.trace(
     __filename,
-    fmt('getSelectedBitNames(%s, %d)', bitwiseEnum, selectedBits),
+    `getSelectedBitNames(${bitwiseEnum}, ${selectedBits})`,
     'Creating array of selected bit names for enumeration.',
   );
   const ret: string[] = new Array<string>();
@@ -77,7 +76,7 @@ export function getSelectedBitNames(bitwiseEnum: object, selectedBits: number): 
   }
   log.trace(
     __filename,
-    fmt('getSelectedBitNames(%s, %d)', bitwiseEnum, selectedBits),
+    `getSelectedBitNames(${bitwiseEnum}, ${selectedBits})`,
     'Returning array of selected bit names for enumeration.',
   );
   return ret;
@@ -88,7 +87,7 @@ export function getSelectedBitNames(bitwiseEnum: object, selectedBits: number): 
  * @param dir - The Enums.DIRS direction to reverse
  */
 export function reverseDir(dir: DIRS): number {
-  log.trace(__filename, fmt('getSelectedBitNames(%d)', dir), 'Returning reverse of direction ' + DIRS[dir]);
+  log.trace(__filename, `getSelectedBitNames(${dir})`, 'Returning reverse of direction ' + DIRS[dir]);
 
   switch (dir) {
     case DIRS.NORTH:

@@ -15,7 +15,7 @@ export class Bot {
 
   constructor(data?: Bot) {
     if (data !== undefined) {
-      this.id = uuid();
+      this.id = data.id;
       this.name = data.name;
       this.weight = data.weight;
       this.coder = data.coder;

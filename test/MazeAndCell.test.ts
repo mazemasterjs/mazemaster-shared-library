@@ -1,3 +1,4 @@
+import { IMazeStub } from '../src/IMazeStub';
 import { Maze } from '../src/Maze';
 import { expect } from 'chai';
 import { LOG_LEVELS, Logger } from '@mazemasterjs/logger';
@@ -22,6 +23,15 @@ describe('Maze Tests', () => {
   let maze: Maze;
   const mazeId: string = `${height}:${width}:${challenge}:${seed}`;
   const mazeHash: string = 'eacfc91bdb83cd5e4308b362d6a1c07f';
+  const expectedMazeStub: IMazeStub = {
+    challenge,
+    height,
+    id: mazeId,
+    name,
+    seed,
+    url: '',
+    width,
+  };
 
   it(`Maze.generate(0, 3, 3, 'unit', 'test') should return error`, () => {
     expect(() => {
@@ -64,6 +74,11 @@ describe('Maze Tests', () => {
     maze = new Maze().generate(height, width, challenge, name, seed);
     expect(maze.Id).to.equal(mazeId);
     Logger.getInstance().LogLevel = lastLevel;
+  });
+
+  it(`Maze.getMazeStub() should match expectedMazeStub`, () => {
+    const stub = maze.getMazeStub();
+    expect(JSON.stringify(stub)).to.equal(JSON.stringify(expectedMazeStub));
   });
 
   it(`Maze ID should match pattern 'HEIGHT:WIDTH:CHALLENGE:SEED' (${mazeId})`, () => {
