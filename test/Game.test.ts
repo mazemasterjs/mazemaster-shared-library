@@ -70,6 +70,45 @@ describe('IMazeStub Tests', () => {
     expect(game.Player.Location.equals(game.Maze.StartCell)).to.equal(true);
   });
 
+  it(`game.Player.State should be PLAYER_STATES.NONE`, () => {
+    expect(game.Player.State).to.equal(PLAYER_STATES.NONE);
+  });
+
+  it(`game.Player.addState(PLAYER_STATES.STANDING) should set player state to STANDING`, () => {
+    game.Player.addState(PLAYER_STATES.STANDING);
+    expect(game.Player.State).to.equal(PLAYER_STATES.STANDING);
+  });
+
+  it(`game.Player.addState(PLAYER_STATES.STUNNED) should set player state to STANDING & STUNNED`, () => {
+    game.Player.addState(PLAYER_STATES.STUNNED);
+    expect(game.Player.State).to.equal(PLAYER_STATES.STANDING + PLAYER_STATES.STUNNED);
+  });
+
+  it(`game.Player.addState(PLAYER_STATES.SITTING) should set player state to SITTING and remove STANDING`, () => {
+    game.Player.addState(PLAYER_STATES.SITTING);
+    expect(game.Player.State).to.equal(PLAYER_STATES.SITTING + PLAYER_STATES.STUNNED);
+  });
+
+  it(`game.Player.addState(PLAYER_STATES.STANDING) should set player state to STUNNED and STANDING, and remove SITTING`, () => {
+    game.Player.addState(PLAYER_STATES.STANDING);
+    expect(game.Player.State).to.equal(PLAYER_STATES.STANDING + PLAYER_STATES.STUNNED);
+  });
+
+  it(`game.Player.addState(PLAYER_STATES.LYING) should set player state to STUNNED and LYING, and remove STANDING`, () => {
+    game.Player.addState(PLAYER_STATES.LYING);
+    expect(game.Player.State).to.equal(PLAYER_STATES.LYING + PLAYER_STATES.STUNNED);
+  });
+
+  it(`game.Player.removeState(PLAYER_STATES.LYING) should set player state to STUNNED`, () => {
+    game.Player.removeState(PLAYER_STATES.LYING);
+    expect(game.Player.State).to.equal(PLAYER_STATES.STUNNED);
+  });
+
+  it(`game.Player.clearStates() should set player state to NONE`, () => {
+    game.Player.clearStates();
+    expect(game.Player.State).to.equal(PLAYER_STATES.NONE);
+  });
+
   after('Generate text render with player position', () => {
     log.debug(__filename, 'after()', '\n\r\n\r' + game.Maze.generateTextRender(true, game.Player.Location));
   });
