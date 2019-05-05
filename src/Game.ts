@@ -1,6 +1,5 @@
-import { GAME_STATES, PLAYER_STATES } from './Enums';
+import { GAME_MODES, GAME_STATES, PLAYER_STATES } from './Enums';
 import { Maze } from './Maze';
-import { Team } from './Team';
 import { Score } from './Score';
 import { Logger } from '@mazemasterjs/logger';
 import { IGameStub } from './IGameStub';
@@ -14,34 +13,52 @@ export class Game {
   private id: string;
   private state: GAME_STATES;
   private maze: Maze;
-  private team: Team;
+  private mode: GAME_MODES;
   private score: Score;
   private player: Player;
   private actions: Array<IAction>;
-  private botId: string;
   private round: number;
+  private teamId: string;
+  private botId: string;
   private lastAccessed: number;
 
-  constructor(maze: Maze, team: Team, player: Player, score: Score, round: number, botId?: string) {
+  constructor(maze: Maze, player: Player, score: Score, round: number, botId: string, teamId: string) {
     this.id = uuid();
     this.state = GAME_STATES.NEW;
     this.maze = maze;
     this.player = player;
-    this.team = team;
-    this.score = new Score();
+    this.score = score;
+    this.score.GameId = this.id;
     this.actions = new Array<IAction>();
     this.lastAccessed = Date.now();
     this.round = round;
-    this.botId = botId === undefined ? '' : botId;
+    this.mode = GAME_MODES.SINGLE_PLAYER;
+    this.teamId = teamId.trim();
+    this.botId = botId.trim();
 
-    if (this.botId !== '') {
-      log.debug(__filename, 'constructor()', 'New TEAM GAME instance created.  Id: ' + this.id);
+    if (teamId + botId === '') {
+      const err = new Error('Either a botId (single-player) or a teamId must be provided.');
+      log.error(__filename, 'constructor()', 'Missing parameter ->', err);
+      throw err;
+    }
+
+    if (this.teamId !== '') {
+      this.mode = GAME_MODES.MULTI_PLAYER;
+      log.debug(__filename, 'constructor()', `Team [ ${this.teamId} ] provided. Game mode set to MULTI_PLAYER.`);
+      if (this.botId !== '') {
+        log.warn(
+          __filename,
+          'constructor()',
+          `Bot [ ${this.botId} ] AND Team [ ${this.teamId} ] provided - individual bot will be ignored.`,
+        );
+      }
     } else {
-      log.debug(__filename, 'constructor()', 'New TEAM-BOT GAME instance created.  Id: ' + this.id);
+      this.mode = GAME_MODES.SINGLE_PLAYER;
+      log.debug(__filename, 'constructor()', `Bot [ ${this.botId} ] provided. Game mode set to SINGLE_PLAYER.`);
     }
   }
 
-  public getRound() {
+  public get Round() {
     this.lastAccessed = Date.now();
     return this.round;
   }
@@ -49,6 +66,9 @@ export class Game {
   /**
    * New game round - resets actions, score, player state, and player location
    */
+  // TODO: This is not fully implemented.  Game Rounds are intended to give players
+  //       the chance to run a maze repeatedly, learning from each run and, hopefully, getting
+  //       better as they go.  Round-specific scores will not persist... should they?
   public nextRound(): number {
     this.lastAccessed = Date.now();
     this.round++;
@@ -79,8 +99,12 @@ export class Game {
     return this.id;
   }
 
-  public get BotId() {
+  public get BotId(): string {
     this.lastAccessed = Date.now();
+    if (this.botId === '') {
+      log.warn(__filename, 'get BotId()', 'Warning: BotId is empty. Game mode is MULTI_PLAYER.');
+    }
+
     return this.botId;
   }
 
@@ -156,19 +180,27 @@ export class Game {
   // no last access check here because this method is used by cache manager
   public getStub(gameServerExtUrl: string): IGameStub {
     return {
+      botId: this.BotId,
       gameId: this.Id,
+      gameMode: this.Mode,
       gameState: this.State,
       mazeStub: this.Maze.getMazeStub(),
       score: this.Score,
-      team: this.Team,
-      url: `${gameServerExtUrl}/game/${this.Id}`,
+      teamId: this.TeamId,
+      url: `${gameServerExtUrl}${this.Id}`,
     };
   }
 
   // useful for testing - forces the Game ID to the given value
   public forceSetId(forcedId: string) {
-    this.id = forcedId;
     this.lastAccessed = Date.now();
+    this.id = forcedId;
+    this.score.GameId = this.id;
+  }
+
+  // returns game mode: single or multiplayer
+  public get Mode(): GAME_MODES {
+    return this.mode;
   }
 
   public get State() {
@@ -186,9 +218,12 @@ export class Game {
     return this.maze;
   }
 
-  public get Team(): Team {
+  public get TeamId(): string {
     this.lastAccessed = Date.now();
-    return this.team;
+    if (this.teamId === '') {
+      log.warn(__filename, 'get TeamId()', 'Warning: TeamId is empty. Game mode is SINGLE_PLAYER');
+    }
+    return this.teamId;
   }
 
   public get Score(): Score {

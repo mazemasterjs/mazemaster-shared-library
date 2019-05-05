@@ -1,4 +1,5 @@
 import uuid from 'uuid';
+import { IBot } from './IBot';
 
 /**
  * An individual, maze-running bot.
@@ -13,7 +14,7 @@ export class Bot {
   private weight: number;
   private coder: string;
 
-  constructor(data?: Bot) {
+  constructor(data?: IBot) {
     if (data !== undefined) {
       this.id = data.id;
       this.name = data.name;

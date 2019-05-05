@@ -1,3 +1,4 @@
+import { IEngram } from './IEngram';
 // An engram contains a snapshot of sensory data correlating to the
 // player's position within the maze.  Each sense is a string.
 //
@@ -6,28 +7,6 @@
 // sound = "You hear the sound of dripping water coming from the South."
 
 export class Engram {
-  private sight: string;
-  private sound: string;
-  private smell: string;
-  private touch: string;
-  private taste: string;
-
-  constructor(data?: Engram) {
-    if (data) {
-      this.sight = data.sight;
-      this.sound = data.sound;
-      this.smell = data.smell;
-      this.touch = data.touch;
-      this.taste = data.taste;
-    } else {
-      this.sight = '';
-      this.sound = '';
-      this.smell = '';
-      this.touch = '';
-      this.taste = '';
-    }
-  }
-
   public get Sight(): string {
     return this.sight;
   }
@@ -66,5 +45,27 @@ export class Engram {
 
   public set Taste(taste: string) {
     this.taste = taste;
+  }
+
+  private sight: string;
+  private sound: string;
+  private smell: string;
+  private touch: string;
+  private taste: string;
+
+  constructor(data?: IEngram) {
+    if (data) {
+      this.sight = data.sight;
+      this.sound = data.sound;
+      this.smell = data.smell;
+      this.touch = data.touch;
+      this.taste = data.taste;
+    } else {
+      this.sight = '';
+      this.sound = '';
+      this.smell = '';
+      this.touch = '';
+      this.taste = '';
+    }
   }
 }

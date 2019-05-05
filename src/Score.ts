@@ -1,3 +1,4 @@
+import uuid from 'uuid/v4';
 import { GAME_RESULTS } from './Enums';
 
 export class Score {
@@ -7,7 +8,7 @@ export class Score {
   private gameId: string;
   private botId: string;
   private gameRound: number;
-  private scoreKey: string;
+  private id: string;
   private lastUpdated: number;
   private gameResult: GAME_RESULTS;
   private moveCount: number;
@@ -16,33 +17,25 @@ export class Score {
 
   constructor(data?: Score) {
     if (data !== undefined) {
+      this.id = data.id;
       this.mazeId = data.mazeId;
       this.teamId = data.teamId;
       this.gameId = data.gameId;
       this.gameRound = data.gameRound;
       this.lastUpdated = data.lastUpdated;
       this.botId = data.botId;
-
-      // generate the score key from maze, team, game, and round
-      this.scoreKey = this.generateScoreKey();
-
-      // set the current score values
       this.gameResult = data.gameResult;
       this.moveCount = data.moveCount;
       this.bonusPoints = data.bonusPoints;
       this.backtrackCount = data.backtrackCount;
     } else {
+      this.id = uuid();
       this.mazeId = '';
       this.teamId = '';
       this.gameId = '';
       this.gameRound = 1;
       this.lastUpdated = -1;
       this.botId = '';
-
-      // generate the score key from maze, team, game, and round
-      this.scoreKey = 'SCORE_KEY_NOT_SET';
-
-      // set the current score values
       this.gameResult = GAME_RESULTS.IN_PROGRESS;
       this.moveCount = 0;
       this.bonusPoints = 0;
@@ -63,7 +56,6 @@ export class Score {
    */
   public set BotId(botId: string) {
     this.botId = botId;
-    this.scoreKey = this.generateScoreKey();
   }
 
   /**
@@ -103,7 +95,6 @@ export class Score {
    */
   public set MazeId(value: string) {
     this.mazeId = value;
-    this.scoreKey = this.generateScoreKey();
   }
 
   /**
@@ -119,7 +110,6 @@ export class Score {
    */
   public set TeamId(value: string) {
     this.teamId = value;
-    this.scoreKey = this.generateScoreKey();
   }
 
   /**
@@ -135,7 +125,6 @@ export class Score {
    */
   public set GameId(value: string) {
     this.gameId = value;
-    this.scoreKey = this.generateScoreKey();
   }
 
   /**
@@ -149,9 +138,8 @@ export class Score {
    * Set's the GameRound to the given value
    * @param number - the Game Round (Note: Not currently used)
    */
-  public set GameRound(value: number) {
-    this.gameRound = value;
-    this.scoreKey = this.generateScoreKey();
+  public set GameRound(round: number) {
+    this.gameRound = round;
   }
 
   /**
@@ -175,6 +163,7 @@ export class Score {
    * @param number - the number of moves to add to player's move count
    *
    */
+  // TODO: This is probably deprecated...
   public addMoves(moves: number) {
     this.lastUpdated = Date.now();
     this.moveCount = this.moveCount + moves;
@@ -211,18 +200,7 @@ export class Score {
     this.gameResult = value;
   }
 
-  /**
-   * @returns string - The primary key for this store document in the format of "mazeId:teamId_botId:gameId:gameRound"
-   */
-  public get ScoreKey(): string {
-    return this.scoreKey;
-  }
-
-  /**
-   * Generate the score key from object data in the format of ""mazeId:teamId_botId:gameId:gameRound"
-   */
-  private generateScoreKey(): string {
-    this.lastUpdated = Date.now();
-    return `${this.mazeId}:${this.teamId}_${this.botId}:${this.gameId}:${this.gameRound}`;
+  public get Id(): string {
+    return this.id;
   }
 }

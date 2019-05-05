@@ -1,13 +1,15 @@
-import { GAME_STATES } from './Enums';
+import { GAME_MODES, GAME_STATES } from './Enums';
 import { IMazeStub } from './IMazeStub';
-import { Team } from './Team';
 import { Score } from './Score';
 
+// games require at least a team (multi-player) or bot (single-player) assigned, but can have both
 export interface IGameStub {
+  botId: string;
   gameId: string;
+  gameMode: GAME_MODES;
   gameState: GAME_STATES;
   mazeStub: IMazeStub;
   score: Score;
-  team: Team;
+  teamId: string;
   url: string;
 }

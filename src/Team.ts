@@ -4,27 +4,30 @@
 import uuid from 'uuid/v4';
 import { Bot } from './Bot';
 import { TROPHY_IDS } from './Enums';
+import { IBot } from './IBot';
 
 export class Team {
   private name: string;
   private id: string;
   private logo: string;
-  private trophies: Map<number, number>;
+  private trophies: Map<TROPHY_IDS, number>;
   private bots: Array<Bot>;
 
   constructor(data?: Team) {
     if (data !== undefined) {
       this.name = data.name;
-      this.bots = data.bots;
+      this.bots = new Array<Bot>();
+      this.loadBotsArray(data.bots);
       this.id = data.id;
       this.logo = data.logo;
-      this.trophies = new Map(data.trophies);
+      this.trophies = new Map<TROPHY_IDS, number>();
+      this.loadTrophies(data.trophies);
     } else {
       this.name = '';
       this.id = uuid();
       this.bots = new Array<Bot>();
       this.logo = '';
-      this.trophies = new Map();
+      this.trophies = new Map<TROPHY_IDS, number>();
     }
   }
 
@@ -81,9 +84,22 @@ export class Team {
   }
 
   /**
-   * @returns a Map<number, number> containing awarded TrophyIds(key) and Counts (val)
+   * @returns a Map<Enums.TROPHY_IDS, number> containing awarded TrophyIds(key) and Counts (val)
    */
-  public getTrophies(): Map<number, number> {
+  public get Trophies(): Map<TROPHY_IDS, number> {
     return this.trophies;
+  }
+
+  private loadBotsArray(bots: Array<Bot>) {
+    for (const bot of bots) {
+      const newIBot: IBot = JSON.parse(JSON.stringify(bot));
+      this.bots.push(new Bot(newIBot));
+    }
+  }
+
+  private loadTrophies(trophies: Map<TROPHY_IDS, number>) {
+    for (const [key, value] of Object.entries(trophies)) {
+      this.trophies.set(parseInt(key, 10), value);
+    }
   }
 }
