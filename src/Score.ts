@@ -1,5 +1,6 @@
 import uuid from 'uuid/v4';
 import { GAME_RESULTS } from './Enums';
+import { IScore } from './IScore';
 
 export class Score {
   // Primary Key = mazeId:teamId_botId:gameId:gameRound
@@ -15,7 +16,7 @@ export class Score {
   private backtrackCount: number;
   private bonusPoints: number;
 
-  constructor(data?: Score) {
+  constructor(data?: IScore) {
     if (data !== undefined) {
       this.id = data.id;
       this.mazeId = data.mazeId;
@@ -183,6 +184,15 @@ export class Score {
   public set BonusPoints(value: number) {
     this.lastUpdated = Date.now();
     this.bonusPoints = value;
+  }
+
+  /**
+   * Sets the total number of bonus points to the given value.
+   * @param number - bonus point value to apply
+   */
+  public set addBonusPoints(value: number) {
+    this.lastUpdated = Date.now();
+    this.bonusPoints += value;
   }
 
   /**

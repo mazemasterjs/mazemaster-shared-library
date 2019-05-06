@@ -5,12 +5,13 @@ import uuid from 'uuid/v4';
 import { Bot } from './Bot';
 import { TROPHY_IDS } from './Enums';
 import { IBot } from './IBot';
+import { ITrophyStub } from './ITrophyStub';
 
 export class Team {
   private name: string;
   private id: string;
   private logo: string;
-  private trophies: Map<TROPHY_IDS, number>;
+  private trophies: Array<ITrophyStub>;
   private bots: Array<Bot>;
 
   constructor(data?: Team) {
@@ -20,14 +21,13 @@ export class Team {
       this.loadBotsArray(data.bots);
       this.id = data.id;
       this.logo = data.logo;
-      this.trophies = new Map<TROPHY_IDS, number>();
-      this.loadTrophies(data.trophies);
+      this.trophies = data.trophies;
     } else {
       this.name = '';
       this.id = uuid();
       this.bots = new Array<Bot>();
       this.logo = '';
-      this.trophies = new Map<TROPHY_IDS, number>();
+      this.trophies = new Array<ITrophyStub>();
     }
   }
 
@@ -59,13 +59,30 @@ export class Team {
     this.logo = imageFileName;
   }
 
+  /**
+   * Increase count of existing trophy or add a new trophy
+   * if count trophy is not found.
+   *
+   * @param trophyId
+   */
   public addTrophy(trophyId: TROPHY_IDS) {
-    for (let [tId, tCnt] of this.trophies) {
-      if (tId === trophyId) {
-        tCnt = tCnt + 1;
+    // first check for existing trophy and increment count
+    for (const trophy of this.trophies) {
+      if (trophy.id === trophyId) {
+        trophy.count++;
+        return;
       }
     }
-    this.trophies.set(trophyId, 1);
+
+    // trophy wasn't found, so we have to add it with a
+    // count of 1
+    const tStub: ITrophyStub = {
+      count: 1,
+      id: trophyId,
+      name: TROPHY_IDS[trophyId],
+    };
+
+    this.trophies.push(tStub);
   }
 
   /**
@@ -75,9 +92,9 @@ export class Team {
    * @param trophyId (Enums.TROPHY_IDS) - The Id of the trophy to get a count of
    */
   public getTrophyCount(trophyId: TROPHY_IDS): number {
-    for (const [tId, tCnt] of this.trophies) {
-      if (tId === trophyId) {
-        return tCnt;
+    for (const trophy of this.trophies) {
+      if (trophy.id === trophyId) {
+        return trophy.count;
       }
     }
     return 0;
@@ -86,7 +103,7 @@ export class Team {
   /**
    * @returns a Map<Enums.TROPHY_IDS, number> containing awarded TrophyIds(key) and Counts (val)
    */
-  public get Trophies(): Map<TROPHY_IDS, number> {
+  public get Trophies(): Array<ITrophyStub> {
     return this.trophies;
   }
 
@@ -94,12 +111,6 @@ export class Team {
     for (const bot of bots) {
       const newIBot: IBot = JSON.parse(JSON.stringify(bot));
       this.bots.push(new Bot(newIBot));
-    }
-  }
-
-  private loadTrophies(trophies: Map<TROPHY_IDS, number>) {
-    for (const [key, value] of Object.entries(trophies)) {
-      this.trophies.set(parseInt(key, 10), value);
     }
   }
 }

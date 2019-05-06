@@ -3,6 +3,7 @@ import { IBot } from '../src/IBot';
 import { Bot } from '../src/Bot';
 import { expect } from 'chai';
 import { TROPHY_IDS } from '../src/Enums';
+import ITrophyStub from '../src/ITrophyStub';
 
 /**
  * Test cases for Team object
@@ -11,7 +12,15 @@ import { TROPHY_IDS } from '../src/Enums';
  */
 describe('Team Tests', () => {
   // team needs trophies
-  const trophies = new Map<TROPHY_IDS, number>().set(TROPHY_IDS.DAZED_AND_CONFUSED, 1);
+  const tStub: ITrophyStub = {
+    count: 1,
+    id: TROPHY_IDS.DAZED_AND_CONFUSED,
+    name: TROPHY_IDS[TROPHY_IDS.DAZED_AND_CONFUSED],
+  };
+
+  // add the trophies to an array
+  const trophies = new Array<ITrophyStub>();
+  trophies.push(tStub);
 
   // team needs a bot
   const botData: IBot = {
@@ -50,10 +59,19 @@ describe('Team Tests', () => {
     expect(team.Id).to.equal(teamData.id);
   });
 
-  // TODO: Replace trophies with something other than Map<n,n>
-  //   it(`team.getTrophies() should be DAZED_AND_CONFUSED with count of 1`, () => {
-  //     expect(team.Trophies.get(TROPHY_IDS.DAZED_AND_CONFUSED)).to.equal(1);
-  //   });
+  it(`team.getTrophyCount(DAZED_AND_CONFUSED) should have a count of 1`, () => {
+    expect(team.getTrophyCount(TROPHY_IDS.DAZED_AND_CONFUSED)).to.equal(1);
+  });
+
+  it(`team.addTrophy(DAZED_AND_CONFUSED) increase trophy count to 2`, () => {
+    team.addTrophy(tStub.id);
+    expect(team.getTrophyCount(TROPHY_IDS.DAZED_AND_CONFUSED)).to.equal(2);
+  });
+
+  it(`team.addTrophy(DOUBLE_BACKER) add trophy with count 1`, () => {
+    team.addTrophy(TROPHY_IDS.DOUBLE_BACKER);
+    expect(team.getTrophyCount(TROPHY_IDS.DOUBLE_BACKER)).to.equal(1);
+  });
 
   it(`team.Bots should have length of 2`, () => {
     expect(team.Bots.length).to.equal(2);

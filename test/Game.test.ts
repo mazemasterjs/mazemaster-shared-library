@@ -11,6 +11,7 @@ import { expect } from 'chai';
 import { GAME_MODES, GAME_RESULTS, GAME_STATES, PLAYER_STATES, TROPHY_IDS } from '../src/Enums';
 import { IAction } from '../src/IAction';
 import { Engram } from '../src/Engram';
+import ITrophyStub from '../src/ITrophyStub';
 
 // test cases
 describe('Game, Team, Player, Score Tests', () => {
@@ -33,6 +34,7 @@ describe('Game, Team, Player, Score Tests', () => {
   const teamName = 'GameTestTeamName';
   const teamLogo = 'GameTestTeamLogo.png';
 
+  // need an engram to test with
   const engram = new Engram();
   engram.Sight = 'You see';
   engram.Sound = 'You hear';
@@ -40,11 +42,25 @@ describe('Game, Team, Player, Score Tests', () => {
   engram.Taste = 'You taste';
   engram.Touch = 'You feel';
 
+  // and some other things for action
   const outcome = ['You fell down.', 'You stood up.'];
   const cohesion = [1, 1, 1, 1, 1];
-  const trophies = new Map<number, number>();
-  trophies.set(TROPHY_IDS.LOOPER, 1);
-  trophies.set(TROPHY_IDS.SCRIBBLER, 1);
+  const trophies = new Array<ITrophyStub>();
+
+  // the team needs some trophies
+  const tStub1: ITrophyStub = {
+    count: 1,
+    id: TROPHY_IDS.DAZED_AND_CONFUSED,
+    name: TROPHY_IDS[TROPHY_IDS.DAZED_AND_CONFUSED],
+  };
+  trophies.push(tStub1);
+
+  const tStub2: ITrophyStub = {
+    count: 5,
+    id: TROPHY_IDS.DOUBLE_BACKER,
+    name: TROPHY_IDS[TROPHY_IDS.DOUBLE_BACKER],
+  };
+  trophies.push(tStub2);
 
   before(`Game-related objects created without error.`, () => {
     maze = new Maze().generate(height, width, challenge, name, seed);
@@ -236,9 +252,27 @@ describe('Game, Team, Player, Score Tests', () => {
     return expect(game.Score.BacktrackCount).to.equal(0);
   });
 
-  it(`game.Score.addBacktrack() should increment Score.BacktrackCount to 1`, () => {
+  it(`game.Score.AddBacktrack should be increase BacktrackCount to 1`, () => {
     game.Score.addBacktrack();
     return expect(game.Score.BacktrackCount).to.equal(1);
+  });
+
+  it(`game.Score.BonusPoints should be 0`, () => {
+    return expect(game.Score.BonusPoints).to.equal(0);
+  });
+
+  it(`game.Score.BonusPoints = 100 should be increase BonusPoints to 100`, () => {
+    game.Score.BonusPoints = 100;
+    return expect(game.Score.BonusPoints).to.equal(100);
+  });
+
+  it(`game.Score.addBonusPoints(10) should be increase BonusPoints to 110`, () => {
+    game.Score.addBonusPoints = 10;
+    return expect(game.Score.BonusPoints).to.equal(110);
+  });
+
+  it(`game.Score.LastUpdated should return a number`, () => {
+    return expect(game.Score.LastUpdated).to.be.a('number');
   });
 
   /**

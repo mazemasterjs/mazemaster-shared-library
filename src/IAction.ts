@@ -1,7 +1,8 @@
-import { PLAYER_STATES, TROPHY_IDS } from './Enums';
+import { PLAYER_STATES } from './Enums';
 import { Engram } from './Engram';
 import { Score } from './Score';
 import { Location } from './Location';
+import ITrophyStub from './ITrophyStub';
 
 export interface IAction {
   action: string;
@@ -12,6 +13,6 @@ export interface IAction {
   score: Score;
   playerState: PLAYER_STATES;
   outcome: Array<string>;
-  trophies: Map<TROPHY_IDS, number>;
+  trophies: Array<ITrophyStub>;
   botCohesion: Array<number>;
 }
