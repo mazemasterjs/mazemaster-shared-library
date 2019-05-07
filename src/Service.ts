@@ -32,10 +32,11 @@ export class Service {
 
     if (!fs.existsSync(serviceFile)) {
       const err = new Error(`FILE NOT FOUND: ${serviceFile}`);
-      Logger.getInstance().warn(__filename, `constructor(${serviceFile})`, err.message);
-    } else {
-      this.loadServiceData(serviceFile);
+      Logger.getInstance().error(__filename, `constructor(${serviceFile})`, '', err);
+      throw err;
     }
+
+    this.loadServiceData(serviceFile);
   }
 
   public addEndpoint(endpoint: Endpoint) {
