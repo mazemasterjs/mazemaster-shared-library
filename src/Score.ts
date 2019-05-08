@@ -3,7 +3,6 @@ import { GAME_RESULTS } from './Enums';
 import { IScore } from './IScore';
 
 export class Score {
-  // Primary Key = mazeId:teamId_botId:gameId:gameRound
   private mazeId: string;
   private teamId: string;
   private gameId: string;
