@@ -1,54 +1,54 @@
 {
-    "name": "example",
-    "baseUrl": "/example/",
-    "endpoints": [
+  "name": "example",
+  "baseUrl": "/example/",
+  "endpoints": [
+    {
+      "name": "test",
+      "description": "Test endpoint.",
+      "contentType": "application/json",
+      "method": "get",
+      "url": "test/",
+      "arguments": [
         {
-            "name": "test",
-            "description": "Test endpoint.",
-            "contentType": "application/json",
-            "method": "get",
-            "url": "test/",
-            "arguments": [
-                {
-                    "name": "test-arg-1",
-                    "description": "This is a sample argument of type integer.",
-                    "type": "integer"
-                },
-                {
-                    "name": "test-arg-2",
-                    "description": "This is a sample argument of type string.",
-                    "type": "integer"
-                },
-                {
-                    "name": "test-arg-3",
-                    "description": "This is a sample argument of type integer.",
-                    "type": "integer"
-                }
-            ]
+          "name": "test-arg-1",
+          "description": "This is a sample argument of type integer.",
+          "type": "integer"
         },
         {
-            "name": "help",
-            "description": "HTML-based help page describing the services.",
-            "contentType": "application/json",
-            "method": "get",
-            "url": "probes/live/",
-            "arguments": []
+          "name": "test-arg-2",
+          "description": "This is a sample argument of type string.",
+          "type": "integer"
         },
         {
-            "name": "live",
-            "description": "Liveness probe for K8s monitoring.",
-            "contentType": "application/json",
-            "method": "get",
-            "url": "probes/live/",
-            "arguments": []
-        },
-        {
-            "name": "ready",
-            "description": "Readiness probe for K8s monitoring.",
-            "contentType": "application/json",
-            "method": "get",
-            "url": "probes/ready/",
-            "arguments": []
+          "name": "test-arg-3",
+          "description": "This is a sample argument of type integer.",
+          "type": "integer"
         }
-    ]
+      ]
+    },
+    {
+      "name": "service",
+      "description": "Service documentation (this document).",
+      "contentType": "application/json",
+      "method": "get",
+      "url": "service",
+      "arguments": []
+    },
+    {
+      "name": "live",
+      "description": "Liveness probe for K8s monitoring.",
+      "contentType": "application/json",
+      "method": "get",
+      "url": "probes/live/",
+      "arguments": []
+    },
+    {
+      "name": "ready",
+      "description": "Readiness probe for K8s monitoring.",
+      "contentType": "application/json",
+      "method": "get",
+      "url": "probes/ready/",
+      "arguments": []
+    }
+  ]
 }

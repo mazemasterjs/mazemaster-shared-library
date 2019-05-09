@@ -213,3 +213,5 @@ export class Score {
     return this.id;
   }
 }
+
+export default Score;
