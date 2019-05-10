@@ -6,6 +6,10 @@
 # Dependency directories
 node_modules/
 
+# build directories
+bin/
+dist/
+
 # Optional npm cache directory
 .npm
 
