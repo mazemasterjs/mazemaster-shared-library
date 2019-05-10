@@ -87,21 +87,51 @@ export class Config {
         log.warn(__filename, 'getInstance()', 'TRAP CHALLENGE LEVEL VARIABLE(S) NOT SET, USING DEFAULTS');
       }
 
+      // check if MONGO variables are set
+      let missingVars = '';
+
       /* istanbul ignore if */
-      // check if MONGODB variables are set
-      if (
-        isUndefined(process.env.MONGO_DB) ||
-        isUndefined(process.env.MONGO_CONNSTR) ||
-        isUndefined(process.env.MONGO_CON_PW) ||
-        isUndefined(process.env.MONGO_COL_MAZES) ||
-        isUndefined(process.env.MONGO_COL_SCORES) ||
-        isUndefined(process.env.MONGO_COL_TEAMS)
-      ) {
-        log.warn(__filename, 'getInstance()', 'ONE OR MORE MONGODB VARIABLE(S) NOT SET');
+      if (isUndefined(process.env.MONGO_DB)) {
+        missingVars += 'MONGO_DB\r\n';
+      }
+
+      /* istanbul ignore if */
+      if (isUndefined(process.env.MONGO_CONNSTR)) {
+        missingVars += 'MONGO_CONNSTR\r\n';
+      }
+
+      /* istanbul ignore if */
+      if (isUndefined(process.env.MONGO_CURSOR_LIMIT)) {
+        missingVars += 'MONGO_CURSOR_LIMIT\r\n';
+      }
+
+      /* istanbul ignore if */
+      if (isUndefined(process.env.MONGO_COL_MAZES)) {
+        missingVars += 'MONGO_COL_MAZES\r\n';
+      }
+
+      /* istanbul ignore if */
+      if (isUndefined(process.env.MONGO_COL_SCORES)) {
+        missingVars += 'MONGO_COL_SCORES\r\n';
+      }
+
+      /* istanbul ignore if */
+      if (isUndefined(process.env.MONGO_COL_TEAMS)) {
+        missingVars += 'MONGO_COL_TEAMS\r\n';
+      }
+
+      /* istanbul ignore if */
+      if (missingVars !== '') {
+        log.warn(
+          __filename,
+          'getInstance()',
+          '!! CHECK CONFIG !! MONGO ENVIRONMENT VARIABLE(S) NOT SET !! \r\n' + missingVars,
+        );
       }
     }
     return Config.instance;
   }
+
   private static instance: Config;
 
   // General environment variables / global config values
@@ -132,7 +162,7 @@ export class Config {
   // MONGO DB VALUES
   public MONGO_DB: string = process.env.MONGO_DB + '';
   public MONGO_CONNSTR: string = process.env.MONGO_CONNSTR + '';
-  public MONGO_CON_PW: string = process.env.MONGO_CON_PW + '';
+  public MONGO_CURSOR_LIMIT: number = parseInt(process.env.MONGO_CURSOR_LIMIT || '10', 10);
   public MONGO_COL_MAZES: string = process.env.MONGO_COL_MAZES + '';
   public MONGO_COL_SCORES: string = process.env.MONGO_COL_SCORES + '';
   public MONGO_COL_TEAMS: string = process.env.MONGO_COL_TEAMS + '';

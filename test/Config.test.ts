@@ -25,7 +25,7 @@ describe('Config Tests', () => {
     missingVar = config.MONGO_COL_SCORES === undefined;
     missingVar = config.MONGO_COL_TEAMS === undefined;
     missingVar = config.MONGO_CONNSTR === undefined;
-    missingVar = config.MONGO_CON_PW === undefined;
+    missingVar = config.MONGO_CURSOR_LIMIT === undefined;
     missingVar = config.MONGO_DB === undefined;
     expect(missingVar).to.equal(false);
   });

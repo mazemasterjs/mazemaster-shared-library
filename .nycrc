@@ -6,6 +6,7 @@
       "bin/**/*",
       "node_modules/**/*",
       "test/**/*", 
+      "dist/**/*",
       "coverage/**/*"
   ],
   "all": true,
