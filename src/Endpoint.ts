@@ -7,6 +7,7 @@ import { Argument } from './Argument';
  */
 export class Endpoint {
   private name: string;
+  private title: string;
   private description: string;
   private method: string;
   private contentType: string;
@@ -19,6 +20,7 @@ export class Endpoint {
    */
   constructor(data: any) {
     this.name = data.name;
+    this.title = data.title;
     this.description = data.description;
     this.method = data.method;
     this.contentType = data.contentType;
@@ -28,6 +30,10 @@ export class Endpoint {
 
   public get Name(): string {
     return this.name;
+  }
+
+  public get Title(): string {
+    return this.title;
   }
 
   public get Description(): string {
