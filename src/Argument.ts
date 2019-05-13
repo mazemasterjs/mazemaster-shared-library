@@ -4,6 +4,7 @@
  */
 export class Argument {
     private name: string;
+    private title: string;
     private description: string;
     private type: string;
 
@@ -13,12 +14,17 @@ export class Argument {
      */
     constructor(data: any) {
         this.name = data.name;
+        this.title = data.title;
         this.description = data.description;
         this.type = data.type;
     }
 
     public get Name(): string {
         return this.name;
+    }
+
+    public get Title(): string {
+        return this.title;
     }
 
     public get Description(): string {
