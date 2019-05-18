@@ -1,6 +1,8 @@
 import { Bot } from '../src/Bot';
 import { IBot } from '../src/IBot';
 import { expect } from 'chai';
+import ITrophyStub from '../src/ITrophyStub';
+import { TROPHY_IDS } from '../src/Enums';
 
 // test cases
 describe('Bot Tests', () => {
@@ -9,14 +11,29 @@ describe('Bot Tests', () => {
   bot.Name = 'Name';
   bot.Weight = 50;
 
+  const invalidBotData = JSON.stringify({
+    coder: 'Coder',
+    id: 'fake-bot-id',
+    name: 'Name',
+    trophies: 'I can haz trophy?',
+    weight: 33,
+  });
+
   const botData: IBot = {
     coder: 'Coder',
     id: 'fake-bot-id',
     name: 'Name',
+    trophies: new Array<ITrophyStub>(),
     weight: 33,
   };
 
   const botLoad = new Bot(botData);
+
+  it(`should error when using bad bot data `, () => {
+    expect(() => {
+      new Bot(JSON.parse(invalidBotData)).getTrophyCount(TROPHY_IDS.DAZED_AND_CONFUSED);
+    }).to.throw();
+  });
 
   it(`bot.Id should not be empty`, () => {
     return expect(bot.Id).to.not.be.empty;

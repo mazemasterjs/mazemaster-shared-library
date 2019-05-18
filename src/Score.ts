@@ -20,9 +20,10 @@ export class Score {
 
   constructor(data?: IScore) {
     if (data !== undefined) {
+      // validate that the any-type data matches the interface
       if (!this.isValid(data)) {
         const err = new Error(
-          'Invalid object data provided. See @mazemasterjs/shared-library/IScore for data requirements.',
+          'Invalid object data provided. See @mazemasterjs/shared-library/IScore for interface requirements.',
         );
         log.error(__filename, 'constructor(data?: IScore)', 'Error instantiating object ->', err);
         throw err;
