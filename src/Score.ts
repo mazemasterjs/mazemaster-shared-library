@@ -1,6 +1,9 @@
 import uuid from 'uuid/v4';
 import { GAME_RESULTS } from './Enums';
 import { IScore } from './IScore';
+import Logger from '@mazemasterjs/logger';
+
+const log = Logger.getInstance();
 
 export class Score {
   private mazeId: string;
@@ -17,6 +20,14 @@ export class Score {
 
   constructor(data?: IScore) {
     if (data !== undefined) {
+      if (!this.isValid(data)) {
+        const err = new Error(
+          'Invalid object data provided. See @mazemasterjs/shared-library/IScore for data requirements.',
+        );
+        log.error(__filename, 'constructor(data?: IScore)', 'Error instantiating object ->', err);
+        throw err;
+      }
+
       this.id = data.id;
       this.mazeId = data.mazeId;
       this.teamId = data.teamId;
@@ -41,6 +52,62 @@ export class Score {
       this.bonusPoints = 0;
       this.backtrackCount = 0;
     }
+  }
+
+  /**
+   * Increments the players move count by one.
+   */
+  public addMove() {
+    this.lastUpdated = Date.now();
+    this.moveCount++;
+  }
+
+  /**
+   * Increments the player move count by the given number.
+   * In some situations, the game server may need to increment by more than one.
+   * @param number - the number of moves to add to player's move count
+   *
+   */
+  // TODO: This is probably deprecated...
+  public addMoves(moves: number) {
+    this.lastUpdated = Date.now();
+    this.moveCount = this.moveCount + moves;
+  }
+
+  /**
+   * Increment the Backtrack Counter by 1
+   */
+  public addBacktrack() {
+    this.backtrackCount++;
+    this.lastUpdated = Date.now();
+  }
+
+  /**
+   * Have to manually validate provided data object since it
+   * it could be provided by a JSON document body or loaded
+   * as a JSON document from the database.
+   */
+  private isValid(data: any): boolean {
+    const valid =
+      typeof data.id === 'string' &&
+      typeof data.mazeId === 'string' &&
+      typeof data.teamId === 'string' &&
+      typeof data.gameId === 'string' &&
+      typeof data.gameRound === 'number' &&
+      typeof data.lastUpdated === 'number' &&
+      typeof data.botId === 'string' &&
+      typeof data.gameResult === 'number' &&
+      typeof data.moveCount === 'number' &&
+      typeof data.bonusPoints === 'number' &&
+      typeof data.backtrackCount === 'number';
+
+    if (!valid) {
+      log.warn(__filename, `isValid(${JSON.stringify(data)})`, 'Data validation failed.');
+    } else {
+      log.trace(__filename, 'isValid(data:any)', 'Data validated.');
+    }
+
+    return valid;
   }
 
   /**
@@ -71,14 +138,6 @@ export class Score {
    */
   public get BacktrackCount(): number {
     return this.backtrackCount;
-  }
-
-  /**
-   * Increment the Backtrack Counter by 1
-   */
-  public addBacktrack() {
-    this.backtrackCount++;
-    this.lastUpdated = Date.now();
   }
 
   /**
@@ -147,26 +206,6 @@ export class Score {
    */
   public get MoveCount(): number {
     return this.moveCount;
-  }
-
-  /**
-   * Increments the players move count by one.
-   */
-  public addMove() {
-    this.lastUpdated = Date.now();
-    this.moveCount++;
-  }
-
-  /**
-   * Increments the player move count by the given number.
-   * In some situations, the game server may need to increment by more than one.
-   * @param number - the number of moves to add to player's move count
-   *
-   */
-  // TODO: This is probably deprecated...
-  public addMoves(moves: number) {
-    this.lastUpdated = Date.now();
-    this.moveCount = this.moveCount + moves;
   }
 
   /**
