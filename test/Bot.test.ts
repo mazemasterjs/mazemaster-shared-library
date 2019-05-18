@@ -51,6 +51,15 @@ describe('Bot Tests', () => {
     expect(bot.Weight).to.equal(50);
   });
 
+  it(`bot.addTrophy(DOUBLE_BACKER) should add a trophy with count 1`, () => {
+    bot.addTrophy(TROPHY_IDS.DOUBLE_BACKER);
+    expect(bot.getTrophyCount(TROPHY_IDS.DOUBLE_BACKER)).to.equal(1);
+  });
+
+  it(`bot.Trophies().length should should equal 1`, () => {
+    expect(bot.Trophies.length).to.equal(1);
+  });
+
   // Now test bot loaded from interface data
 
   it(`botLoad.Id should equal 'fake-bot-id'`, () => {
@@ -67,5 +76,14 @@ describe('Bot Tests', () => {
 
   it(`botLoad.Weight should should equal 33`, () => {
     expect(botLoad.Weight).to.equal(33);
+  });
+
+  it(`botLoad.addTrophy(DOUBLE_BACKER) add trophy with count 1`, () => {
+    botLoad.addTrophy(TROPHY_IDS.DOUBLE_BACKER);
+    expect(botLoad.getTrophyCount(TROPHY_IDS.DOUBLE_BACKER)).to.equal(1);
+  });
+
+  it(`botLoad.Trophies().length should should equal 1`, () => {
+    expect(botLoad.Trophies.length).to.equal(1);
   });
 });
