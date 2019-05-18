@@ -1,3 +1,4 @@
+import { ITrophyStub } from './ITrophyStub';
 /**
  * Interface for Bot Class
  */
@@ -6,4 +7,5 @@ export interface IBot {
   name: string;
   coder: string;
   weight: number;
+  trophies: Array<ITrophyStub>;
 }

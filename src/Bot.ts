@@ -1,5 +1,6 @@
 import uuid from 'uuid';
 import { IBot } from './IBot';
+import { ITrophyStub } from './ITrophyStub';
 
 /**
  * An individual, maze-running bot.
@@ -13,6 +14,7 @@ export class Bot {
   private name: string;
   private weight: number;
   private coder: string;
+  private trophies: Array<ITrophyStub>;
 
   constructor(data?: IBot) {
     if (data !== undefined) {
@@ -20,11 +22,13 @@ export class Bot {
       this.name = data.name;
       this.weight = data.weight;
       this.coder = data.coder;
+      this.trophies = data.trophies;
     } else {
       this.id = uuid();
       this.name = '';
       this.weight = 100;
       this.coder = '';
+      this.trophies = new Array<ITrophyStub>();
     }
   }
 
