@@ -1,3 +1,12 @@
-# MazeMaster-Shared-Library
+# shared-library
 
-Shared Library for MazeMaster
+Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-library.
+
+## Change Notes
+
+### v1.6.1
+
+- lastUpdated field added to maze
+- isValid() method added that validates field existence and datatypes before json-based instantiation
+- Added checks for valid enumeration values to isValid()
+- Unit tests added to cover lastUpdated and isValid

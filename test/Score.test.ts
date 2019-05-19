@@ -10,7 +10,7 @@ import { IScore } from '../src/IScore';
  */
 describe('Score Tests', () => {
   const invalidScoreData =
-    '{"backtrackCount":3,"bonusPoints":4,"botId":"test-bot-id-1","gameId":"test-game-id-1","gameResult":"5","gameRound":1,"id":"test-score-id-1","lastUpdated":123456789,"mazeId":"test-maze-id-1","moveCount":2,"teamId":"test-team-id-1"}';
+    '{"backtrackCount":3,"bonusPoints":4,"botId":"test-bot-id-1","gameId":"test-game-id-1","gameResult":999,"gameRound":1,"id":"test-score-id-1","lastUpdated":123456789,"mazeId":"test-maze-id-1","moveCount":2,"teamId":"test-team-id-1"}';
 
   const scoreData: IScore = {
     backtrackCount: 3,

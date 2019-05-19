@@ -137,20 +137,20 @@ export class Score {
       typeof data.backtrackCount === 'number';
 
     if (!valid) {
+      log.warn(__filename, 'isValid(data:any)', 'At least one of the supplied values is not of the expected type.');
+    }
+
+    if (!GAME_RESULTS[data.gameResult]) {
       log.warn(
         __filename,
         'isValid(data:any)',
-        'At least one of the supplied values is not of the expected data type.',
+        `gameResult value (${data.gameResult}) not found within Enums.GAME_RESULTS`,
       );
-    }
-
-    if (GAME_RESULTS[data.gameResult] === null) {
-      log.warn(__filename, 'isValid(data:any)', 'gameResults value not found within Enums.GAME_RESULTS');
       valid = false;
     }
 
-    if (GAME_MODES[data.gameMode] === null) {
-      log.warn(__filename, 'isValid(data:any)', 'gameMode value not found within Enums.GAME_MODES');
+    if (!GAME_MODES[data.gameMode]) {
+      log.warn(__filename, 'isValid(data:any)', `gameMode value (${data.gameMode}) not found within Enums.GAME_MODES`);
       valid = false;
     }
 
