@@ -1,5 +1,5 @@
 import uuid from 'uuid/v4';
-import { GAME_RESULTS } from './Enums';
+import { GAME_MODES, GAME_RESULTS } from './Enums';
 import { IScore } from './IScore';
 import Logger from '@mazemasterjs/logger';
 
@@ -8,7 +8,7 @@ const log = Logger.getInstance();
 export class Score {
   private mazeId: string;
   private teamId: string;
-  private gameId: string;
+  private gameId: string; // multiple scores can be saved under the same gameId - one for each game round
   private botId: string;
   private gameRound: number;
   private id: string;
@@ -17,6 +17,7 @@ export class Score {
   private moveCount: number;
   private backtrackCount: number;
   private bonusPoints: number;
+  private gameMode: GAME_MODES;
 
   constructor(data?: IScore) {
     if (data !== undefined) {
@@ -40,6 +41,7 @@ export class Score {
       this.moveCount = data.moveCount;
       this.bonusPoints = data.bonusPoints;
       this.backtrackCount = data.backtrackCount;
+      this.gameMode = data.gameMode;
     } else {
       this.id = uuid();
       this.mazeId = '';
@@ -52,6 +54,7 @@ export class Score {
       this.moveCount = 0;
       this.bonusPoints = 0;
       this.backtrackCount = 0;
+      this.gameMode = GAME_MODES.SINGLE_PLAYER;
     }
   }
 
@@ -119,7 +122,7 @@ export class Score {
    * as a JSON document from the database.
    */
   private isValid(data: any): boolean {
-    const valid =
+    let valid =
       typeof data.id === 'string' &&
       typeof data.mazeId === 'string' &&
       typeof data.teamId === 'string' &&
@@ -130,7 +133,26 @@ export class Score {
       typeof data.gameResult === 'number' &&
       typeof data.moveCount === 'number' &&
       typeof data.bonusPoints === 'number' &&
+      typeof data.gameMode === 'number' &&
       typeof data.backtrackCount === 'number';
+
+    if (!valid) {
+      log.warn(
+        __filename,
+        'isValid(data:any)',
+        'At least one of the supplied values is not of the expected data type.',
+      );
+    }
+
+    if (GAME_RESULTS[data.gameResult] === null) {
+      log.warn(__filename, 'isValid(data:any)', 'gameResults value not found within Enums.GAME_RESULTS');
+      valid = false;
+    }
+
+    if (GAME_MODES[data.gameMode] === null) {
+      log.warn(__filename, 'isValid(data:any)', 'gameMode value not found within Enums.GAME_MODES');
+      valid = false;
+    }
 
     if (!valid) {
       log.warn(__filename, `isValid(${JSON.stringify(data)})`, 'Data validation failed.');
@@ -139,6 +161,20 @@ export class Score {
     }
 
     return valid;
+  }
+
+  /**
+   * Return the current value of gameMode
+   */
+  public get GameMode(): GAME_MODES {
+    return this.gameMode;
+  }
+
+  /**
+   * Set gameMode value to the given value
+   */
+  public set GameMode(mode: GAME_MODES) {
+    this.gameMode = mode;
   }
 
   /**

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { GAME_RESULTS } from '../src/Enums';
+import { GAME_MODES, GAME_RESULTS } from '../src/Enums';
 import { Score } from '../src/Score';
 import { IScore } from '../src/IScore';
 
@@ -17,6 +17,7 @@ describe('Score Tests', () => {
     bonusPoints: 4,
     botId: 'fake-bot-id',
     gameId: 'fake-game-id',
+    gameMode: GAME_MODES.SINGLE_PLAYER,
     gameResult: GAME_RESULTS.DEATH_LAVA,
     gameRound: 1,
     id: 'fake-score-id',
@@ -52,6 +53,19 @@ describe('Score Tests', () => {
 
   it(`score.GameResult should equal ${scoreData.gameResult}`, () => {
     expect(score.GameResult).to.equal(scoreData.gameResult);
+  });
+
+  it(`score.GameMode should equal ${scoreData.gameMode}`, () => {
+    expect(score.GameMode).to.equal(scoreData.gameMode);
+  });
+
+  it(`score.GameMode = MULTI_PLAYER should change GameMode to MULTI_PLAYER`, () => {
+    score.GameMode = GAME_MODES.MULTI_PLAYER;
+    expect(score.GameMode).to.equal(GAME_MODES.MULTI_PLAYER);
+  });
+
+  it(`score.getTotalScore() should return ... `, () => {
+    expect(score.getTotalScore()).to.equal(0);
   });
 
   // ... Just a few tests here - the rest of this is covered in Game.test.ts
