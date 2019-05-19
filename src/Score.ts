@@ -84,6 +84,36 @@ export class Score {
   }
 
   /**
+   * Calculate and return the total game score.  All games start with 1000
+   * points.  Then:
+   *
+   * Add bonusPoints (awarded when trophies are added)
+   * Subtract moveCount
+   * Subtract backtrackCount * 2
+   *
+   * gameResults generally reflected via trophies, but special cases:
+   * - ABANDONED: Score reset to zero
+   * - OUT_OF_TIME: Score reset to zero
+   *
+   *
+   * @returns number - the total score for the game
+   */
+  public getTotalScore(): number {
+    if (this.gameResult === GAME_RESULTS.ABANDONED || this.gameResult === GAME_RESULTS.OUT_OF_TIME) {
+      return 0;
+    } else {
+      // all game start with 1000 points
+      let total = 1000;
+
+      total += this.bonusPoints;
+      total -= this.moveCount;
+      total -= this.backtrackCount * 2;
+
+      return total;
+    }
+  }
+
+  /**
    * Have to manually validate provided data object since it
    * it could be provided by a JSON document body or loaded
    * as a JSON document from the database.
