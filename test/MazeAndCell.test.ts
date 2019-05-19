@@ -17,6 +17,7 @@ describe('Maze Tests', () => {
   const challenge = 10;
   const seed = 'UTMaze1';
   const name = 'Unit-Test-Maze-1';
+  const timestamp = Date.now();
   let cell: Cell;
   const note1: string = 'This is a unit test.';
   const note2: string = 'This is another unit test.';
@@ -27,6 +28,7 @@ describe('Maze Tests', () => {
     challenge,
     height,
     id: mazeId,
+    lastUpdated: timestamp,
     name,
     seed,
     url: '',
@@ -78,6 +80,7 @@ describe('Maze Tests', () => {
 
   it(`Maze.getMazeStub() should match expectedMazeStub`, () => {
     const stub = maze.getMazeStub();
+    stub.lastUpdated = timestamp; // force timestamp (set on Maze instantiation) to match
     expect(JSON.stringify(stub)).to.equal(JSON.stringify(expectedMazeStub));
   });
 
@@ -90,13 +93,37 @@ describe('Maze Tests', () => {
   });
 
   it(`Maze [${mazeId}] MD5 Hash should match: '${mazeHash}'`, () => {
-    const jsonMaze = JSON.stringify(maze);
+    const mazeObj = JSON.parse(JSON.stringify(maze));
+    delete mazeObj.lastUpdated;
+    const jsonMaze = JSON.stringify(mazeObj);
+
     expect(hash(jsonMaze)).to.equal(mazeHash);
   });
 
   it(`Maze.Note should set the maze's note.`, () => {
     maze.Note = note1;
     expect(maze.Note).to.equal(note1);
+  });
+
+  it(`Maze.LastUpdated = timestamp should set maze.lastUpdated to timestamp `, () => {
+    maze.LastUpdated = timestamp;
+    expect(maze.LastUpdated).to.equal(timestamp);
+  });
+
+  it(`New maze from invalid JSON data should return error`, () => {
+    expect(() => {
+      const oldJson: string = JSON.stringify(maze);
+      const oldMazeData = JSON.parse(oldJson);
+      delete oldMazeData.width;
+      new Maze(oldMazeData).Note = 'Should not get here.';
+    }).to.throw();
+  });
+
+  it(`New maze from JSON data should match maze [${mazeId}]`, () => {
+    const oldJson: string = JSON.stringify(maze);
+    const newMaze: Maze = new Maze(JSON.parse(oldJson));
+    const newJson = JSON.stringify(newMaze);
+    expect(newJson).to.equal(oldJson);
   });
 
   it(`Maze.getCell(-1, -1) should return error`, () => {
@@ -169,12 +196,5 @@ describe('Maze Tests', () => {
     cell.addVisit(12);
     cell.addVisit(13);
     expect(cell.VisitCount()).to.equal(6);
-  });
-
-  it(`New maze from JSON data should match maze [${mazeId}]`, () => {
-    const oldJson: string = JSON.stringify(maze);
-    const newMaze: Maze = new Maze(JSON.parse(oldJson));
-    const newJson = JSON.stringify(newMaze);
-    expect(newJson).to.equal(oldJson);
   });
 });
