@@ -65,7 +65,7 @@ describe('Score Tests', () => {
   });
 
   it(`score.getTotalScore() should return ... `, () => {
-    expect(score.getTotalScore()).to.equal(0);
+    expect(score.getTotalScore()).to.equal(996);
   });
 
   // ... Just a few tests here - the rest of this is covered in Game.test.ts
