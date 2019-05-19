@@ -9,6 +9,7 @@ export interface IMazeStub {
   seed: string;
   url: string;
   width: number;
+  lastUpdated: number;
 }
 
 export default IMazeStub;

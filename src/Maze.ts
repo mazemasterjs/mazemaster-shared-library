@@ -18,6 +18,76 @@ let solutionPath: string[]; // used for the maze solver
 let playerPos: Location; // used for the maze solver
 
 export class Maze {
+  private id: string;
+  private height: number;
+  private width: number;
+  private name: string;
+  private seed: string;
+  private challenge: number;
+  private cells: Cell[][];
+  private textRender: string;
+  private startCell: Location;
+  private finishCell: Location;
+  private shortestPathLength: number;
+  private trapCount: number;
+  private note: string;
+  private lastUpdated: number;
+
+  /**
+   * Instantiates or new or pre-loaded Maze object
+   * @param data - JSON Object containing stubbed maze data
+   */
+  constructor(data?: Maze) {
+    if (data !== undefined) {
+      // validate that the any-type data matches the interface
+      if (!this.isValid(data)) {
+        const err = new Error(
+          'Invalid object data provided. See @mazemasterjs/shared-library/Maze for interface requirements.',
+        );
+        log.error(__filename, 'constructor(data?: Maze)', 'Error instantiating object ->', err);
+        throw err;
+      }
+
+      this.height = data.height;
+      this.width = data.width;
+      this.challenge = data.challenge;
+      this.name = data.name;
+      this.seed = data.seed;
+      this.id = data.id;
+      this.startCell = data.startCell;
+      this.finishCell = data.finishCell;
+      this.shortestPathLength = data.shortestPathLength;
+      this.trapCount = data.trapCount;
+      this.note = data.note;
+      this.cells = this.buildCellsArray(data.cells);
+      this.textRender = data.textRender;
+      this.lastUpdated = data.lastUpdated;
+    } else {
+      this.height = 0;
+      this.width = 0;
+      this.challenge = 0;
+      this.name = '';
+      this.seed = '';
+      this.id = '';
+      this.startCell = new Location(0, 0);
+      this.finishCell = new Location(0, 0);
+      this.shortestPathLength = 0;
+      this.trapCount = 0;
+      this.note = '';
+      this.cells = new Array<Array<Cell>>();
+      this.textRender = '';
+      this.lastUpdated = Date.now();
+    }
+  }
+
+  public get LastUpdated(): number {
+    return this.lastUpdated;
+  }
+
+  public set LastUpdated(timestamp: number) {
+    this.lastUpdated = timestamp;
+  }
+
   public get Height(): number {
     return this.height;
   }
@@ -63,55 +133,6 @@ export class Maze {
   public set Note(value: string) {
     this.note = value;
   }
-  private id: string;
-  private height: number;
-  private width: number;
-  private name: string;
-  private seed: string;
-  private challenge: number;
-  private cells: Cell[][];
-  private textRender: string;
-  private startCell: Location;
-  private finishCell: Location;
-  private shortestPathLength: number;
-  private trapCount: number;
-  private note: string;
-
-  /**
-   * Instantiates or new or pre-loaded Maze object
-   * @param data - JSON Object containing stubbed maze data
-   */
-  constructor(data?: Maze) {
-    if (data !== undefined) {
-      this.height = data.height;
-      this.width = data.width;
-      this.challenge = data.challenge;
-      this.name = data.name;
-      this.seed = data.seed;
-      this.id = data.id;
-      this.startCell = data.startCell;
-      this.finishCell = data.finishCell;
-      this.shortestPathLength = data.shortestPathLength;
-      this.trapCount = data.trapCount;
-      this.note = data.note;
-      this.cells = this.buildCellsArray(data.cells);
-      this.textRender = data.textRender;
-    } else {
-      this.height = 0;
-      this.width = 0;
-      this.challenge = 0;
-      this.name = '';
-      this.seed = '';
-      this.id = '';
-      this.startCell = new Location(0, 0);
-      this.finishCell = new Location(0, 0);
-      this.shortestPathLength = 0;
-      this.trapCount = 0;
-      this.note = '';
-      this.cells = new Array<Array<Cell>>();
-      this.textRender = '';
-    }
-  }
 
   /**
    * Returns only basic maze data - for use
@@ -122,6 +143,7 @@ export class Maze {
       challenge: this.challenge,
       height: this.height,
       id: this.id,
+      lastUpdated: this.lastUpdated,
       name: this.name,
       seed: this.seed,
       url: '',
@@ -953,6 +975,33 @@ export class Maze {
         Math.round((trapCount / (this.height * this.width)) * 100),
       ),
     );
+  }
+
+  private isValid(data: any): boolean {
+    let valid =
+      typeof data.id === 'string' &&
+      typeof data.height === 'number' &&
+      typeof data.width === 'number' &&
+      typeof data.name === 'string' &&
+      typeof data.seed === 'string' &&
+      typeof data.challenge === 'number' &&
+      typeof data.cells === 'object' &&
+      typeof data.textRender === 'string' &&
+      typeof data.startCell === 'object' &&
+      typeof data.finishCell === 'object' &&
+      typeof data.shortestPathLength === 'number' &&
+      typeof data.trapCount === 'number' &&
+      typeof data.note === 'string' &&
+      typeof data.lastUpdated === 'number';
+
+    if (!valid) {
+      log.warn(
+        __filename,
+        'isValid(data:any)',
+        'At least one of the supplied values is not of the expected data type.',
+      );
+    }
+    return valid;
   }
 }
 
