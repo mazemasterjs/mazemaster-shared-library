@@ -978,7 +978,7 @@ export class Maze {
   }
 
   private isValid(data: any): boolean {
-    let valid =
+    const valid =
       typeof data.id === 'string' &&
       typeof data.height === 'number' &&
       typeof data.width === 'number' &&
