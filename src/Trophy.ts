@@ -17,19 +17,12 @@ export class Trophy {
   private lastUpdated: number;
 
   constructor(data: Trophy) {
-    // validate that the any-type data matches the interface
-    if (!this.isValid(data)) {
-      const err = new Error('Invalid object data provided. See @mazemasterjs/shared-library/Trophy for data requirements.');
-      log.error(__filename, 'constructor(data?: Trophy)', 'Error instantiating object ->', err);
-      throw err;
-    }
-
-    this.id = data.id;
-    this.name = data.name;
-    this.description = data.description;
-    this.bonusAward = data.bonusAward;
-    this.count = data.count;
-    this.lastUpdated = data.lastUpdated;
+    this.id = this.validate('id', data.id, 'string');
+    this.name = this.validate('name', data.name, 'string');
+    this.description = this.validate('description', data.description, 'string');
+    this.bonusAward = this.validate('bonusAward', data.bonusAward, 'number');
+    this.count = this.validate('count', data.count, 'number');
+    this.lastUpdated = this.validate('lastUpdated', data.lastUpdated, 'number');
   }
 
   public get Id(): string {
@@ -59,27 +52,21 @@ export class Trophy {
   }
 
   /**
-   * Have to manually validate provided data object since it
-   * it could be provided by a JSON document body or loaded
-   * as a JSON document from the database.
+   * Validate that the given value is of the expected type.
+   *
+   * @param field string - the field name being validated
+   * @param val any - the field value to check for proper typing
+   * @param type string - the type name to check for for
+   *
+   * @returns any - Returns the given val if validation succeeds
+   * @throws Error - Will throw a 'Type Error' if the typing is incrrect
    */
-
-  private isValid(data: any): boolean {
-    const valid =
-      typeof data.id === 'string' &&
-      typeof data.name === 'string' &&
-      typeof data.description === 'string' &&
-      typeof data.bonusAward === 'number' &&
-      typeof data.count === 'number' &&
-      typeof data.lastUpdated === 'number';
-
-    if (!valid) {
-      log.warn(__filename, `isValid(${JSON.stringify(data)})`, 'Data validation failed.');
-    } else {
-      log.debug(__filename, 'isValid(data:any)', 'Data validated.');
+  private validate(field: string, val: any, type: string): any {
+    if (typeof val !== type) {
+      const err: Error = new Error(`${field}:${val} is not of type ${type}`);
+      log.error(__filename, `isValid(${field}, ${val}, ${type})`, 'Type Error ->', err);
+      throw err;
     }
-
-    return valid;
   }
 }
 
