@@ -63,10 +63,13 @@ export class Trophy {
    */
   private validate(field: string, val: any, type: string): any {
     if (typeof val !== type) {
-      const err: Error = new Error(`${field}:${val} is not of type ${type}`);
-      log.error(__filename, `isValid(${field}, ${val}, ${type})`, 'Type Error ->', err);
+      const err: Error = new Error(`${field} field is not of type ${type}.`);
+      log.error(__filename, `validate(${field}, ${val}, ${type})`, 'Type Error ->', err);
       throw err;
     }
+
+    log.debug(__filename, `validate(${field}, ${val}, ${type})`, `Type validated.`);
+    return val;
   }
 }
 
