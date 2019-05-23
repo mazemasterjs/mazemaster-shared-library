@@ -79,12 +79,12 @@ describe('Team Tests', () => {
   });
 
   it(`team.addTrophy(DAZED_AND_CONFUSED) increase trophy count to 2`, () => {
-    team.addTrophy(tStub.id);
+    team.grantTrophy(tStub.id);
     expect(team.getTrophyCount(TROPHY_IDS.DAZED_AND_CONFUSED)).to.equal(2);
   });
 
   it(`team.addTrophy(DOUBLE_BACKER) add trophy with count 1`, () => {
-    team.addTrophy(TROPHY_IDS.DOUBLE_BACKER);
+    team.grantTrophy(TROPHY_IDS.DOUBLE_BACKER);
     expect(team.getTrophyCount(TROPHY_IDS.DOUBLE_BACKER)).to.equal(1);
   });
 

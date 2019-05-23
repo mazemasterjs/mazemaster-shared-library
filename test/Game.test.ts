@@ -76,7 +76,7 @@ describe('Game, Team, Player, Score Tests', () => {
     team.Name = teamName;
     team.Logo = teamLogo;
     team.Bots.push(bot);
-    team.addTrophy(TROPHY_IDS.DAZED_AND_CONFUSED);
+    team.grantTrophy(TROPHY_IDS.DAZED_AND_CONFUSED);
 
     // create a score for the game
     score = new Score();

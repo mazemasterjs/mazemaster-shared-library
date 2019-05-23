@@ -52,7 +52,7 @@ describe('Bot Tests', () => {
   });
 
   it(`bot.addTrophy(DOUBLE_BACKER) should add a trophy with count 1`, () => {
-    bot.addTrophy(TROPHY_IDS.DOUBLE_BACKER);
+    bot.grantTrophy(TROPHY_IDS.DOUBLE_BACKER);
     expect(bot.getTrophyCount(TROPHY_IDS.DOUBLE_BACKER)).to.equal(1);
   });
 
@@ -79,7 +79,7 @@ describe('Bot Tests', () => {
   });
 
   it(`botLoad.addTrophy(DOUBLE_BACKER) add trophy with count 1`, () => {
-    botLoad.addTrophy(TROPHY_IDS.DOUBLE_BACKER);
+    botLoad.grantTrophy(TROPHY_IDS.DOUBLE_BACKER);
     expect(botLoad.getTrophyCount(TROPHY_IDS.DOUBLE_BACKER)).to.equal(1);
   });
 

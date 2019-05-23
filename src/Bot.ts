@@ -3,6 +3,7 @@ import { IBot } from './IBot';
 import { ITrophyStub } from './ITrophyStub';
 import { TROPHY_IDS } from './Enums';
 import { Logger } from '@mazemasterjs/logger';
+import * as helpers from './Helpers';
 
 /**
  * An individual, maze-running bot.
@@ -25,9 +26,7 @@ export class Bot {
     if (data !== undefined) {
       // validate that the any-type data matches the interface
       if (!this.isValid(data)) {
-        const err = new Error(
-          'Invalid object data provided. See @mazemasterjs/shared-library/IBot for interface requirements.',
-        );
+        const err = new Error('Invalid object data provided. See @mazemasterjs/shared-library/IBot for interface requirements.');
         log.error(__filename, 'constructor(data?: IBot)', 'Error instantiating object ->', err);
         throw err;
       }
@@ -52,24 +51,8 @@ export class Bot {
    *
    * @param trophyId
    */
-  public addTrophy(trophyId: TROPHY_IDS) {
-    // first check for existing trophy and increment count
-    for (const trophy of this.trophies) {
-      if (trophy.id === trophyId) {
-        trophy.count++;
-        return;
-      }
-    }
-
-    // trophy wasn't found, so we have to add it with a
-    // count of 1
-    const tStub: ITrophyStub = {
-      count: 1,
-      id: trophyId,
-      name: TROPHY_IDS[trophyId],
-    };
-
-    this.trophies.push(tStub);
+  public grantTrophy(trophyId: TROPHY_IDS) {
+    this.trophies = helpers.grantTrophy(trophyId, this.trophies);
   }
 
   /**
@@ -79,12 +62,7 @@ export class Bot {
    * @param trophyId (Enums.TROPHY_IDS) - The Id of the trophy to get a count of
    */
   public getTrophyCount(trophyId: TROPHY_IDS): number {
-    for (const trophy of this.trophies) {
-      if (trophy.id === trophyId) {
-        return trophy.count;
-      }
-    }
-    return 0;
+    return helpers.getTrophyCount(trophyId, this.trophies);
   }
 
   /**

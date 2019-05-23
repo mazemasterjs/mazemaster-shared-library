@@ -50,7 +50,11 @@ export class Trophy {
   public set Count(count: number) {
     this.count = count;
   }
+  public get LastUpdated(): number {
+    return this.lastUpdated;
+  }
   public addCount() {
+    this.lastUpdated = Date.now();
     this.count++;
   }
 
