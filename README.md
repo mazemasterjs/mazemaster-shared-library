@@ -4,6 +4,12 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Notes
 
+### v1.6.3
+
+- Trophy.ts now validates data when instantiated from JSON
+- Factored duplicated functions (addTrophy and getTrophyCount) from Bot and Team into Helpers
+- Added test cases for trophies
+
 ### v1.6.1
 
 - Service() serviceFile parameter is now optional, if undefined, an empty service will be returned
