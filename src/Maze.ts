@@ -6,6 +6,7 @@ import { Logger } from '@mazemasterjs/logger';
 import { Location } from './Location';
 import Config from './Config';
 import IMazeStub from './IMazeStub';
+import { ObjectBase } from './ObjectBase';
 
 const log = Logger.getInstance();
 const config = Config.getInstance();
@@ -17,13 +18,13 @@ let startGenTime: number = 0; // used to determine time spent generating a maze
 let solutionPath: string[]; // used for the maze solver
 let playerPos: Location; // used for the maze solver
 
-export class Maze {
+export class Maze extends ObjectBase {
   private id: string;
   private height: number;
   private width: number;
+  private challenge: number;
   private name: string;
   private seed: string;
-  private challenge: number;
   private cells: Cell[][];
   private textRender: string;
   private startCell: Location;
@@ -38,44 +39,37 @@ export class Maze {
    * @param data - JSON Object containing stubbed maze data
    */
   constructor(data?: Maze) {
-    if (data !== undefined) {
-      // validate that the any-type data matches the interface
-      if (!this.isValid(data)) {
-        const err = new Error(
-          'Invalid object data provided. See @mazemasterjs/shared-library/Maze for interface requirements.',
-        );
-        log.error(__filename, 'constructor(data?: Maze)', 'Error instantiating object ->', err);
-        throw err;
-      }
+    super();
 
-      this.height = data.height;
-      this.width = data.width;
-      this.challenge = data.challenge;
-      this.name = data.name;
-      this.seed = data.seed;
-      this.id = data.id;
-      this.startCell = data.startCell;
-      this.finishCell = data.finishCell;
-      this.shortestPathLength = data.shortestPathLength;
-      this.trapCount = data.trapCount;
-      this.note = data.note;
-      this.cells = this.buildCellsArray(data.cells);
-      this.textRender = data.textRender;
-      this.lastUpdated = data.lastUpdated;
+    if (data !== undefined) {
+      this.id = this.validate('id', data.id, 'string');
+      this.height = this.validate('height', data.height, 'number');
+      this.width = this.validate('width', data.width, 'number');
+      this.challenge = this.validate('challenge', data.challenge, 'number');
+      this.name = this.validate('name', data.name, 'string');
+      this.seed = this.validate('seed', data.seed, 'string');
+      this.cells = this.buildCellsArray(this.validate('cells', data.cells, 'object'));
+      this.textRender = this.validate('textRender', data.textRender, 'string');
+      this.startCell = this.validate('startCell', data.startCell, 'object');
+      this.finishCell = this.validate('finishCell', data.finishCell, 'object');
+      this.shortestPathLength = this.validate('shortestPathLength', data.shortestPathLength, 'number');
+      this.trapCount = this.validate('trapCount', data.trapCount, 'number');
+      this.note = this.validate('note', data.note, 'string');
+      this.lastUpdated = this.validate('lastUpdated', data.lastUpdated, 'number');
     } else {
+      this.id = '';
       this.height = 0;
       this.width = 0;
       this.challenge = 0;
       this.name = '';
       this.seed = '';
-      this.id = '';
+      this.cells = new Array<Array<Cell>>();
+      this.textRender = '';
       this.startCell = new Location(0, 0);
       this.finishCell = new Location(0, 0);
       this.shortestPathLength = 0;
       this.trapCount = 0;
       this.note = '';
-      this.cells = new Array<Array<Cell>>();
-      this.textRender = '';
       this.lastUpdated = Date.now();
     }
   }
@@ -160,12 +154,7 @@ export class Maze {
   public getCell(pos: Location): Cell {
     if (pos.row < 0 || pos.row >= this.cells.length || pos.col < 0 || pos.col > this.cells[0].length) {
       const error = new Error(fmt('Invalid cell coordinates given: [%d, %d].', pos.row, pos.col));
-      log.error(
-        __filename,
-        fmt('getCell(%d, %d)', pos.row, pos.col),
-        'Cell range out of bounds, throwing error.',
-        error,
-      );
+      log.error(__filename, fmt('getCell(%d, %d)', pos.row, pos.col), 'Cell range out of bounds, throwing error.', error);
       throw error;
     }
 
@@ -198,17 +187,9 @@ export class Maze {
 
     // let's throw a warning if an invalid neighbor is returned since we might want to change this some day
     if (row < 0 || row >= this.cells.length || col < 0 || col >= this.cells[0].length) {
-      log.trace(
-        __filename,
-        fmt('getNeighbor(%s, %s)', cell.Location.toString(), DIRS[dir]),
-        fmt('Invalid neighbor position: %d,%d', row, col),
-      );
+      log.trace(__filename, fmt('getNeighbor(%s, %s)', cell.Location.toString(), DIRS[dir]), fmt('Invalid neighbor position: %d,%d', row, col));
     } else {
-      log.trace(
-        __filename,
-        fmt('getNeighbor(%s, %s)', cell.Location.toString(), DIRS[dir]),
-        fmt('Neighbor: %d,%d', row, col),
-      );
+      log.trace(__filename, fmt('getNeighbor(%s, %s)', cell.Location.toString(), DIRS[dir]), fmt('Neighbor: %d,%d', row, col));
     }
 
     return this.getCell(new Location(row, col));
@@ -228,11 +209,7 @@ export class Maze {
       return this;
     }
 
-    log.info(
-      __filename,
-      'generate()',
-      fmt('Generating new %d (height) x %d (width) maze with seed "%s"', height, width, seed),
-    );
+    log.info(__filename, 'generate()', fmt('Generating new %d (height) x %d (width) maze with seed "%s"', height, width, seed));
     startGenTime = Date.now();
 
     // validate height and width and collect errors
@@ -310,11 +287,7 @@ export class Maze {
     const startCol: number = Math.floor(Math.random() * width);
     const finishCol: number = Math.floor(Math.random() * width);
 
-    log.debug(
-      __filename,
-      'generate()',
-      fmt('Adding START ([%d, %d]) and FINISH ([%d, %d]) cells.', 0, startCol, height - 1, finishCol),
-    );
+    log.debug(__filename, 'generate()', fmt('Adding START ([%d, %d]) and FINISH ([%d, %d]) cells.', 0, startCol, height - 1, finishCol));
 
     // tag start and finish columns (start / finish tags force matching exits on edge)
     this.startCell = new Location(0, startCol);
@@ -541,11 +514,7 @@ export class Maze {
       maxRecurseDepth = recurseDepth;
     } // track deepest level of recursion during generation
 
-    log.trace(
-      __filename,
-      'carvePassage()',
-      fmt('R%d Carving STARTED from [%s].', recurseDepth, cell.Location.toString()),
-    );
+    log.trace(__filename, 'carvePassage()', fmt('R%d Carving STARTED from [%s].', recurseDepth, cell.Location.toString()));
 
     // randomly sort an array of bitwise directional values (see also: Enums.DIRS)
     const dirs = [1, 2, 4, 8].sort((a, b) => {
@@ -569,11 +538,7 @@ export class Maze {
       try {
         // if the next call has valid grid coordinates, get it and try to carve into it
         if (nextRow >= 0 && nextRow < this.cells.length && nextCol >= 0 && nextCol < this.cells[0].length) {
-          log.trace(
-            __filename,
-            'carvePassage()',
-            fmt('R%d Next step, %s to [%s, %s].', recurseDepth, DIRS[dir], nextRow, nextCol),
-          );
+          log.trace(__filename, 'carvePassage()', fmt('R%d Next step, %s to [%s, %s].', recurseDepth, DIRS[dir], nextRow, nextCol));
           const nextCell: Cell = this.cells[nextRow][nextCol];
 
           if (!(nextCell.Tags & CELL_TAGS.CARVED)) {
@@ -588,14 +553,7 @@ export class Maze {
               log.trace(
                 __filename,
                 'carvePassage()',
-                fmt(
-                  'R%d Skipping step %s - exit already set from [%s] to [%d, %d].',
-                  recurseDepth,
-                  DIRS[dir],
-                  cell.Location.toString(),
-                  nextRow,
-                  nextCol,
-                ),
+                fmt('R%d Skipping step %s - exit already set from [%s] to [%d, %d].', recurseDepth, DIRS[dir], cell.Location.toString(), nextRow, nextCol),
               );
             }
           } else {
@@ -616,14 +574,7 @@ export class Maze {
           log.trace(
             __filename,
             'carvePassage()',
-            fmt(
-              'R%d Invalid direction, skipping step %s from [%s] to [%d, %d].',
-              recurseDepth,
-              DIRS[dir],
-              cell.Location.toString(),
-              nextRow,
-              nextCol,
-            ),
+            fmt('R%d Invalid direction, skipping step %s from [%s] to [%d, %d].', recurseDepth, DIRS[dir], cell.Location.toString(), nextRow, nextCol),
           );
         }
       } catch (error) {
@@ -634,11 +585,7 @@ export class Maze {
 
     // exiting the function relieves one level of recursion
     recurseDepth--;
-    log.trace(
-      __filename,
-      'carvePassage()',
-      fmt('Max R%d Carve COMPLETED for cell [%d, %d].', recurseDepth, cell.Location.row, cell.Location.col),
-    );
+    log.trace(__filename, 'carvePassage()', fmt('Max R%d Carve COMPLETED for cell [%d, %d].', recurseDepth, cell.Location.row, cell.Location.col));
   }
 
   /**
@@ -655,21 +602,13 @@ export class Maze {
     } // track deepest level of recursion during generation
     let cell: Cell;
 
-    log.trace(
-      __filename,
-      fmt('tagSolution(%s)', cellPos.toString()),
-      fmt('R:%d P:%s -> Solve pass started.', recurseDepth, pathId),
-    );
+    log.trace(__filename, fmt('tagSolution(%s)', cellPos.toString()), fmt('R:%d P:%s -> Solve pass started.', recurseDepth, pathId));
 
     // Attempt to get the cell - if it errors we can return from this call
     try {
       cell = this.getCell(cellPos);
     } catch (err) {
-      log.warn(
-        __filename,
-        fmt('tagSolution(%s)', cellPos.toString()),
-        fmt('R:%d P:%s -> Invalid cell - solve pass ended.', recurseDepth, pathId),
-      );
+      log.warn(__filename, fmt('tagSolution(%s)', cellPos.toString()), fmt('R:%d P:%s -> Invalid cell - solve pass ended.', recurseDepth, pathId));
       recurseDepth--;
       return;
     }
@@ -682,11 +621,7 @@ export class Maze {
     let moveMade = false;
 
     if (playerPos.equals(this.finishCell)) {
-      log.trace(
-        __filename,
-        fmt('tagSolution(%s)', cellPos.toString()),
-        fmt('R:%d P:%s -> Solution found!', recurseDepth, pathId),
-      );
+      log.trace(__filename, fmt('tagSolution(%s)', cellPos.toString()), fmt('R:%d P:%s -> Solution found!', recurseDepth, pathId));
     } else {
       // update player location (global var), but don't move it once it finds the finish
       playerPos.row = cell.Location.row;
@@ -736,13 +671,7 @@ export class Maze {
             log.trace(
               __filename,
               fmt('tagSolution(%s)', cellPos.toString()),
-              fmt(
-                'R:%d P:%s -- Moving %s [CONTINUING PATH] to cell %s.',
-                recurseDepth,
-                pathId,
-                DIRS[dir],
-                nLoc.toString(),
-              ),
+              fmt('R:%d P:%s -- Moving %s [CONTINUING PATH] to cell %s.', recurseDepth, pathId, DIRS[dir], nLoc.toString()),
             );
           }
 
@@ -777,11 +706,7 @@ export class Maze {
     }
 
     recurseDepth--;
-    log.trace(
-      __filename,
-      fmt('tagSolution(%s)', cellPos.toString()),
-      fmt('R:%d P:%s -- Path complete.', recurseDepth, pathId),
-    );
+    log.trace(__filename, fmt('tagSolution(%s)', cellPos.toString()), fmt('R:%d P:%s -- Path complete.', recurseDepth, pathId));
   } // end tagSolution()
 
   // test if cell has a trap
@@ -823,11 +748,7 @@ export class Maze {
           continue;
         }
 
-        log.trace(
-          __filename,
-          fnName,
-          'Trap Roll Passed (' + trapRoll + ' >= ' + trapChance + '), time to set some traps! >:)',
-        );
+        log.trace(__filename, fnName, 'Trap Roll Passed (' + trapRoll + ' >= ' + trapChance + '), time to set some traps! >:)');
 
         // traps only allowed if there are open cells on either side to allow jumping
         const exits = cell.Exits;
@@ -865,27 +786,15 @@ export class Maze {
         if (!!(tags & CELL_TAGS.PATH)) {
           // enforce challenge level settings
           if (this.challenge < config.TRAPS_ON_PATH_MIN_CHALLENGE) {
-            log.debug(
-              __filename,
-              fnName,
-              fmt('Invalid trap location (No Traps on Path at CL ' + this.challenge + '): ', cell.Location.toString()),
-            );
+            log.debug(__filename, fnName, fmt('Invalid trap location (No Traps on Path at CL ' + this.challenge + '): ', cell.Location.toString()));
             continue;
           }
 
           // avoid blocking solution path along edges
-          if (
-            cell.Location.col === this.width - 1 ||
-            cell.Location.col === 0 ||
-            (cell.Location.row === this.height - 1 || cell.Location.row === 0)
-          ) {
+          if (cell.Location.col === this.width - 1 || cell.Location.col === 0 || (cell.Location.row === this.height - 1 || cell.Location.row === 0)) {
             // and avoid T-Junctions, but allow dead-ends (four-way junctions not possible on edge)
             if (cell.ExitCount() > 2) {
-              log.trace(
-                __filename,
-                fnName,
-                fmt('Invalid trap location (On Edge & On Path): ', cell.Location.toString()),
-              );
+              log.trace(__filename, fnName, fmt('Invalid trap location (On Edge & On Path): ', cell.Location.toString()));
               continue;
             }
           }
@@ -893,41 +802,25 @@ export class Maze {
 
         // don't double-up on traps - check north
         if (y > 0 && !!(exits & DIRS.NORTH) && this.hasTrap(this.getNeighbor(cell, DIRS.NORTH))) {
-          log.trace(
-            __filename,
-            fnName,
-            fmt('Invalid trap location (Adjacent Trap - North): ', cell.Location.toString()),
-          );
+          log.trace(__filename, fnName, fmt('Invalid trap location (Adjacent Trap - North): ', cell.Location.toString()));
           continue;
         }
 
         // don't double-up on traps - check south
         if (y < this.height - 1 && !!(exits & DIRS.SOUTH) && this.hasTrap(this.getNeighbor(cell, DIRS.SOUTH))) {
-          log.trace(
-            __filename,
-            fnName,
-            fmt('Invalid trap location (Adjacent Trap - South): ', cell.Location.toString()),
-          );
+          log.trace(__filename, fnName, fmt('Invalid trap location (Adjacent Trap - South): ', cell.Location.toString()));
           continue;
         }
 
         // don't double-up on traps - check east
         if (x < this.width - 1 && !!(exits & DIRS.EAST) && this.hasTrap(this.getNeighbor(cell, DIRS.EAST))) {
-          log.trace(
-            __filename,
-            fnName,
-            fmt('Invalid trap location (Adjacent Trap - East): ', cell.Location.toString()),
-          );
+          log.trace(__filename, fnName, fmt('Invalid trap location (Adjacent Trap - East): ', cell.Location.toString()));
           continue;
         }
 
         // don't double-up on traps - check east
         if (x > 0 && !!(exits & DIRS.WEST) && this.hasTrap(this.getNeighbor(cell, DIRS.WEST))) {
-          log.trace(
-            __filename,
-            fnName,
-            fmt('Invalid trap location (Adjacent Trap - West): ', cell.Location.toString()),
-          );
+          log.trace(__filename, fnName, fmt('Invalid trap location (Adjacent Trap - West): ', cell.Location.toString()));
           continue;
         }
 
@@ -966,42 +859,7 @@ export class Maze {
       }
     }
     this.trapCount = trapCount;
-    log.debug(
-      __filename,
-      fnName,
-      fmt(
-        'addTraps() complete. Trap count: %d (%d%)',
-        trapCount,
-        Math.round((trapCount / (this.height * this.width)) * 100),
-      ),
-    );
-  }
-
-  private isValid(data: any): boolean {
-    const valid =
-      typeof data.id === 'string' &&
-      typeof data.height === 'number' &&
-      typeof data.width === 'number' &&
-      typeof data.name === 'string' &&
-      typeof data.seed === 'string' &&
-      typeof data.challenge === 'number' &&
-      typeof data.cells === 'object' &&
-      typeof data.textRender === 'string' &&
-      typeof data.startCell === 'object' &&
-      typeof data.finishCell === 'object' &&
-      typeof data.shortestPathLength === 'number' &&
-      typeof data.trapCount === 'number' &&
-      typeof data.note === 'string' &&
-      typeof data.lastUpdated === 'number';
-
-    if (!valid) {
-      log.warn(
-        __filename,
-        'isValid(data:any)',
-        'At least one of the supplied values is not of the expected data type.',
-      );
-    }
-    return valid;
+    log.debug(__filename, fnName, fmt('addTraps() complete. Trap count: %d (%d%)', trapCount, Math.round((trapCount / (this.height * this.width)) * 100)));
   }
 }
 
