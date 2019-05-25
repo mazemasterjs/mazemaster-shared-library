@@ -22,11 +22,11 @@ export class Bot extends ObjectBase {
     super();
 
     if (data !== undefined) {
-      this.id = this.validate('id', data.id, 'string');
-      this.name = this.validate('name', data.name, 'string');
-      this.weight = this.validate('name', data.weight, 'number');
-      this.coder = this.validate('name', data.coder, 'string');
-      this.trophies = this.validate('trophies', data.trophies, 'object');
+      this.id = this.validateField('id', data.id, 'string');
+      this.name = this.validateField('name', data.name, 'string');
+      this.weight = this.validateField('name', data.weight, 'number');
+      this.coder = this.validateField('name', data.coder, 'string');
+      this.trophies = this.validateField('trophies', data.trophies, 'object');
     } else {
       this.id = uuid();
       this.name = '';

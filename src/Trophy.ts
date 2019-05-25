@@ -18,12 +18,12 @@ export class Trophy extends ObjectBase {
   constructor(data: Trophy) {
     super();
 
-    this.id = this.validate('id', data.id, 'string');
-    this.name = this.validate('name', data.name, 'string');
-    this.description = this.validate('description', data.description, 'string');
-    this.bonusAward = this.validate('bonusAward', data.bonusAward, 'number');
-    this.count = this.validate('count', data.count, 'number');
-    this.lastUpdated = this.validate('lastUpdated', data.lastUpdated, 'number');
+    this.id = this.validateField('id', data.id, 'string');
+    this.name = this.validateField('name', data.name, 'string');
+    this.description = this.validateField('description', data.description, 'string');
+    this.bonusAward = this.validateField('bonusAward', data.bonusAward, 'number');
+    this.count = this.validateField('count', data.count, 'number');
+    this.lastUpdated = this.validateField('lastUpdated', data.lastUpdated, 'number');
   }
 
   public get Id(): string {

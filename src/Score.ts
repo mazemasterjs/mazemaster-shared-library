@@ -24,18 +24,18 @@ export class Score extends ObjectBase {
     super();
 
     if (data !== undefined) {
-      this.id = this.validate('id', data.id, 'string');
-      this.mazeId = this.validate('mazeId', data.mazeId, 'string');
-      this.teamId = this.validate('teamId', data.teamId, 'string');
-      this.gameId = this.validate('teamId', data.gameId, 'string');
-      this.gameRound = this.validate('teamId', data.gameRound, 'number');
-      this.lastUpdated = this.validate('lastUpdated', data.lastUpdated, 'number');
-      this.botId = this.validate('botId', data.botId, 'string');
-      this.gameResult = this.validate('gameResult', data.gameResult, 'number');
-      this.moveCount = this.validate('moveCount', data.moveCount, 'number');
-      this.bonusPoints = this.validate('bonusPoints', data.bonusPoints, 'number');
-      this.backtrackCount = this.validate('backtrackCount', data.backtrackCount, 'number');
-      this.gameMode = this.validate('gameMode', data.gameMode, 'number');
+      this.id = this.validateField('id', data.id, 'string');
+      this.mazeId = this.validateField('mazeId', data.mazeId, 'string');
+      this.teamId = this.validateField('teamId', data.teamId, 'string');
+      this.gameId = this.validateField('teamId', data.gameId, 'string');
+      this.gameRound = this.validateField('teamId', data.gameRound, 'number');
+      this.lastUpdated = this.validateField('lastUpdated', data.lastUpdated, 'number');
+      this.botId = this.validateField('botId', data.botId, 'string');
+      this.gameResult = this.validateField('gameResult', data.gameResult, 'number');
+      this.moveCount = this.validateField('moveCount', data.moveCount, 'number');
+      this.bonusPoints = this.validateField('bonusPoints', data.bonusPoints, 'number');
+      this.backtrackCount = this.validateField('backtrackCount', data.backtrackCount, 'number');
+      this.gameMode = this.validateField('gameMode', data.gameMode, 'number');
       this.validateEnums();
     } else {
       this.id = uuid();

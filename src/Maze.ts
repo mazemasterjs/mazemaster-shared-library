@@ -5,8 +5,8 @@ import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
 import { Logger } from '@mazemasterjs/logger';
 import { Location } from './Location';
 import IMazeStub from './IMazeStub';
-import { ObjectBase } from './ObjectBase';
 import { getEnvVar } from './Helpers';
+import { MazeBase } from './MazeBase';
 
 const log = Logger.getInstance();
 
@@ -25,114 +25,18 @@ const MAZE_MIN_WIDTH: number = getEnvVar('MAZE_MIN_WIDTH', 'number');
 const TRAPS_MIN_CHALLENGE: number = getEnvVar('TRAPS_MIN_CHALLENGE', 'number');
 const TRAPS_ON_PATH_MIN_CHALLENGE: number = getEnvVar('TRAPS_ON_PATH_MIN_CHALLENGE', 'number');
 
-export class Maze extends ObjectBase {
-  private id: string;
-  private height: number;
-  private width: number;
-  private challenge: number;
-  private name: string;
-  private seed: string;
-  private cells: Cell[][];
-  private textRender: string;
-  private startCell: Location;
-  private finishCell: Location;
-  private shortestPathLength: number;
-  private trapCount: number;
-  private note: string;
-  private lastUpdated: number;
-
+export class Maze extends MazeBase {
   /**
    * Instantiates or new or pre-loaded Maze object
    * @param data - JSON Object containing stubbed maze data
    */
-  constructor(data?: Maze) {
+  constructor(data?: any) {
     super();
 
+    // load MazeBase from data, if provided
     if (data !== undefined) {
-      this.id = this.validate('id', data.id, 'string');
-      this.height = this.validate('height', data.height, 'number');
-      this.width = this.validate('width', data.width, 'number');
-      this.challenge = this.validate('challenge', data.challenge, 'number');
-      this.name = this.validate('name', data.name, 'string');
-      this.seed = this.validate('seed', data.seed, 'string');
-      this.cells = this.buildCellsArray(this.validate('cells', data.cells, 'object'));
-      this.textRender = this.validate('textRender', data.textRender, 'string');
-      this.startCell = this.validate('startCell', data.startCell, 'object');
-      this.finishCell = this.validate('finishCell', data.finishCell, 'object');
-      this.shortestPathLength = this.validate('shortestPathLength', data.shortestPathLength, 'number');
-      this.trapCount = this.validate('trapCount', data.trapCount, 'number');
-      this.note = this.validate('note', data.note, 'string');
-      this.lastUpdated = this.validate('lastUpdated', data.lastUpdated, 'number');
-    } else {
-      this.id = '';
-      this.height = 0;
-      this.width = 0;
-      this.challenge = 0;
-      this.name = '';
-      this.seed = '';
-      this.cells = new Array<Array<Cell>>();
-      this.textRender = '';
-      this.startCell = new Location(0, 0);
-      this.finishCell = new Location(0, 0);
-      this.shortestPathLength = 0;
-      this.trapCount = 0;
-      this.note = '';
-      this.lastUpdated = Date.now();
+      super.loadData(data);
     }
-  }
-
-  public get LastUpdated(): number {
-    return this.lastUpdated;
-  }
-
-  public set LastUpdated(timestamp: number) {
-    this.lastUpdated = timestamp;
-  }
-
-  public get Height(): number {
-    return this.height;
-  }
-  public get Width(): number {
-    return this.width;
-  }
-  public get Name(): string {
-    return this.name;
-  }
-  public get Seed(): string {
-    return this.seed;
-  }
-  public get ChallengeLevel(): number {
-    return this.challenge;
-  }
-  public get Cells(): Cell[][] {
-    return this.cells;
-  }
-  public get CellCount(): number {
-    return this.cells.length * this.cells[0].length;
-  }
-  public get TextRender(): string {
-    return this.textRender;
-  }
-  public get Id(): string {
-    return this.id;
-  }
-  public get StartCell(): Location {
-    return this.startCell;
-  }
-  public get FinishCell(): Location {
-    return this.finishCell;
-  }
-  public get ShortestPathLength(): number {
-    return this.shortestPathLength;
-  }
-  public get TrapCount(): number {
-    return this.trapCount;
-  }
-  public get Note(): string {
-    return this.note;
-  }
-  public set Note(value: string) {
-    this.note = value;
   }
 
   /**
@@ -141,14 +45,14 @@ export class Maze extends ObjectBase {
    */
   public getMazeStub(): IMazeStub {
     return {
-      challenge: this.challenge,
-      height: this.height,
       id: this.id,
-      lastUpdated: this.lastUpdated,
+      height: this.height,
+      width: this.width,
+      challenge: this.challenge,
       name: this.name,
       seed: this.seed,
-      url: '',
-      width: this.width,
+      note: this.note,
+      lastUpdated: this.lastUpdated,
     };
   }
 
@@ -487,27 +391,6 @@ export class Maze extends ObjectBase {
     playerPos = new Location(this.startCell.row, this.startCell.col);
     solutionPath = new Array<string>();
     this.tagSolution(playerPos, 0);
-  }
-
-  /**
-   * Rebuild the maze array from the given data to instantiate
-   * each individual Cell object
-   * @param cells
-   */
-  private buildCellsArray(cells: Array<Array<Cell>>): Array<Array<Cell>> {
-    const newCells: Array<Array<Cell>> = new Array(this.height);
-
-    for (let row: number = 0; row < this.height; row++) {
-      const cols: Array<Cell> = new Array<Cell>();
-      for (let col: number = 0; col < this.width; col++) {
-        const cData = JSON.parse(JSON.stringify(cells[row][col]));
-        const cell: Cell = new Cell(cData);
-        log.trace(__filename, 'buildCellsArray()', fmt('Adding cell in position [%d, %d]', row, col));
-        cols.push(cell);
-      }
-      newCells[row] = cols;
-    }
-    return newCells;
   }
 
   /**

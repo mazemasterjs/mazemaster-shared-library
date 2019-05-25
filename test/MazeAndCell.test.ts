@@ -22,14 +22,14 @@ describe(__filename + ' - Maze Tests', () => {
   const mazeId: string = `${height}:${width}:${challenge}:${seed}`;
   const mazeHash: string = '9a460f32757a2fc763076e0dde526292';
   const expectedMazeStub: IMazeStub = {
-    challenge,
-    height,
     id: mazeId,
-    lastUpdated: timestamp,
+    height,
+    width,
+    challenge,
     name,
     seed,
-    url: '',
-    width,
+    note: '',
+    lastUpdated: timestamp,
   };
 
   it(`Maze.generate(0, 3, 3, 'unit', 'test') should return error`, () => {

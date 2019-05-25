@@ -19,9 +19,9 @@ export class Team extends ObjectBase {
     super();
 
     if (data !== undefined) {
-      this.id = this.validate('id', data.id, 'string');
-      this.name = this.validate('name', data.name, 'string');
-      this.logo = this.validate('logo', data.logo, 'string');
+      this.id = this.validateField('id', data.id, 'string');
+      this.name = this.validateField('name', data.name, 'string');
+      this.logo = this.validateField('logo', data.logo, 'string');
       this.bots = this.loadBotsArray(data.bots);
       this.trophies = data.trophies;
     } else {

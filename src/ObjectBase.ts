@@ -1,6 +1,7 @@
 import Logger from '@mazemasterjs/logger';
 import { TROPHY_IDS } from './Enums';
 import { ITrophyStub } from './ITrophyStub';
+import { isArray } from 'util';
 
 const log = Logger.getInstance();
 
@@ -21,15 +22,24 @@ export abstract class ObjectBase {
    * @returns any - Returns the given val if validation succeeds
    * @throws Error - Will throw a 'Type Error' if the typing is incrrect
    */
-  protected validate(field: string, val: any, type: string): any {
-    const valType = typeof val;
+  protected validateField(field: string, val: any, type: string): any {
+    let valType;
+
+    if (type === 'array') {
+      if (isArray(val)) {
+        valType = 'array';
+      }
+    } else {
+      valType = typeof val;
+    }
+
     if (valType !== type) {
       const err = new Error(`${field} field is ${valType}, expected ${type}.`);
-      log.error(__filename, `validate(${field}, ${val}, ${type})`, 'Type Error ->', err);
+      log.error(__filename, `validateField(${field}, ${val}, ${type})`, 'Type Error ->', err);
       throw err;
     }
 
-    log.debug(__filename, `validate(${field}, ${val}, ${type})`, `${field} field is ${valType}, as expected.`);
+    log.debug(__filename, `validateField(${field}, ${val}, ${type})`, `${field} field is ${valType}, as expected.`);
     return val;
   }
 

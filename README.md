@@ -4,6 +4,13 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Notes
 
+### v1.7.1
+
+- Separated basic Maze content (properties & accessors) and extended functionality (generate, solve, etc) into two classes: BaseMaze and Maze (not so sure this was a great idea...)
+- Maze class now extends BaseMaze class with extended functionality (generate, solve, etc)
+- Added 'array' type to ObjectBase.validateField(field: string, val: any, type: string)
+- Removed url field from maze objects
+
 ### v1.7.0
 
 - Maze, Trophy, Bot, Team, and Score now all validate parameter data types when instantiated from json

@@ -3,6 +3,7 @@ import { IBot } from '../src/IBot';
 import { expect } from 'chai';
 import ITrophyStub from '../src/ITrophyStub';
 import { TROPHY_IDS } from '../src/Enums';
+import Logger from '@mazemasterjs/logger';
 
 // test cases
 describe(`${__filename} - Bot Tests`, () => {
@@ -27,7 +28,13 @@ describe(`${__filename} - Bot Tests`, () => {
     weight: 33,
   };
 
-  const botLoad = new Bot(botData);
+  let botLoad: Bot = new Bot();
+  Logger.getInstance().LogLevel = 4;
+
+  before(`botLoad should load with id ${botData.id}`, () => {
+    botLoad = new Bot(botData);
+    expect(botLoad.Id).to.eq(botData.id);
+  });
 
   it(`should error when using bad bot data `, () => {
     expect(() => {

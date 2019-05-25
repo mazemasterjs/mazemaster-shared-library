@@ -103,7 +103,7 @@ export function getEnvVar(varName: string, typeName: string): any {
   }
 
   // we have a value - log the good news
-  log.info(__filename, `getVar(${varName}, ${typeName})`, `${varName}=${val}`);
+  log.trace(__filename, `getVar(${varName}, ${typeName})`, `${varName}=${val}`);
 
   // convert to expect type and return
   switch (typeName) {
