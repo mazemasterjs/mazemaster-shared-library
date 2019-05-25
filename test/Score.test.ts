@@ -8,7 +8,7 @@ import { IScore } from '../src/IScore';
  *
  * Note: Mostly covered by Game.test.ts - just need to test data instanatiation here
  */
-describe('Score Tests', () => {
+describe(__filename + ' - Score Tests', () => {
   const invalidScoreData =
     '{"backtrackCount":3,"bonusPoints":4,"botId":"test-bot-id-1","gameId":"test-game-id-1","gameResult":999,"gameRound":1,"id":"test-score-id-1","lastUpdated":123456789,"mazeId":"test-maze-id-1","moveCount":2,"teamId":"test-team-id-1"}';
 

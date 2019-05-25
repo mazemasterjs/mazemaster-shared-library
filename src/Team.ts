@@ -6,13 +6,9 @@ import { Bot } from './Bot';
 import { TROPHY_IDS } from './Enums';
 import { IBot } from './IBot';
 import { ITrophyStub } from './ITrophyStub';
-import { Logger } from '@mazemasterjs/logger';
-import * as helpers from './Helpers';
+import { ObjectBase } from './ObjectBase';
 
-// instantiate a logger
-const log = Logger.getInstance();
-
-export class Team {
+export class Team extends ObjectBase {
   private name: string;
   private id: string;
   private logo: string;
@@ -20,25 +16,19 @@ export class Team {
   private bots: Array<Bot>;
 
   constructor(data?: Team) {
-    if (data !== undefined) {
-      // validate that the any-type data matches the interface
-      if (!this.isValid(data)) {
-        const err = new Error('Invalid object data provided. See @mazemasterjs/shared-library/Team for field requirements.');
-        log.error(__filename, 'constructor(data?: Team)', 'Error instantiating object ->', err);
-        throw err;
-      }
+    super();
 
-      this.name = data.name;
-      this.bots = new Array<Bot>();
-      this.loadBotsArray(data.bots);
-      this.id = data.id;
-      this.logo = data.logo;
+    if (data !== undefined) {
+      this.id = this.validate('id', data.id, 'string');
+      this.name = this.validate('name', data.name, 'string');
+      this.logo = this.validate('logo', data.logo, 'string');
+      this.bots = this.loadBotsArray(data.bots);
       this.trophies = data.trophies;
     } else {
-      this.name = '';
       this.id = uuid();
-      this.bots = new Array<Bot>();
+      this.name = '';
       this.logo = '';
+      this.bots = new Array<Bot>();
       this.trophies = new Array<ITrophyStub>();
     }
   }
@@ -50,7 +40,7 @@ export class Team {
    * @param trophyId
    */
   public grantTrophy(trophyId: TROPHY_IDS) {
-    this.trophies = helpers.grantTrophy(trophyId, this.trophies);
+    this.trophies = this.addTrophy(trophyId, this.trophies);
   }
 
   /**
@@ -60,7 +50,7 @@ export class Team {
    * @param trophyId (Enums.TROPHY_IDS) - The Id of the trophy to get a count of
    */
   public getTrophyCount(trophyId: TROPHY_IDS): number {
-    return helpers.getTrophyCount(trophyId, this.trophies);
+    return this.countTrophy(trophyId, this.trophies);
   }
 
   /**
@@ -71,32 +61,21 @@ export class Team {
   }
 
   /**
-   * Have to manually validate provided data object since it
-   * it could be provided by a JSON document body or loaded
-   * as a JSON document from the database.
+   * Coerce json bot data into array of Bot objects and return.
+   * This enforces data validation and returns concrete, functional
+   * Bot objects.
+   *
+   * @param bots
    */
-  private isValid(data: any): boolean {
-    const valid =
-      typeof data.name === 'string' &&
-      typeof data.id === 'string' &&
-      typeof data.logo === 'string' &&
-      typeof data.trophies === 'object' &&
-      typeof data.bots === 'object';
+  private loadBotsArray(bots: Array<Bot>): Array<Bot> {
+    const retBots = new Array<Bot>();
 
-    if (!valid) {
-      log.warn(__filename, `isValid(${JSON.stringify(data)})`, 'Data validation failed.');
-    } else {
-      log.trace(__filename, 'isValid(data:any)', 'Data validated.');
-    }
-
-    return valid;
-  }
-
-  private loadBotsArray(bots: Array<Bot>) {
     for (const bot of bots) {
       const newIBot: IBot = JSON.parse(JSON.stringify(bot));
-      this.bots.push(new Bot(newIBot));
+      retBots.push(new Bot(newIBot));
     }
+
+    return retBots;
   }
 
   public get Id() {

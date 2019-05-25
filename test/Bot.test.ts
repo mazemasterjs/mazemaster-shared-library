@@ -5,24 +5,24 @@ import ITrophyStub from '../src/ITrophyStub';
 import { TROPHY_IDS } from '../src/Enums';
 
 // test cases
-describe('Bot Tests', () => {
+describe(`${__filename} - Bot Tests`, () => {
   const bot = new Bot();
   bot.Coder = 'Coder';
   bot.Name = 'Name';
   bot.Weight = 50;
 
   const invalidBotData = JSON.stringify({
-    coder: 'Coder',
     id: 'fake-bot-id',
     name: 'Name',
+    coder: 'Coder',
     trophies: 'I can haz trophy?',
     weight: 33,
   });
 
   const botData: IBot = {
-    coder: 'Coder',
     id: 'fake-bot-id',
     name: 'Name',
+    coder: 'Coder',
     trophies: new Array<ITrophyStub>(),
     weight: 33,
   };

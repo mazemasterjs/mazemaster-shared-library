@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { Service } from '../src/Service';
 import { Endpoint } from '../src/Endpoint';
 
-describe('Service Tests', () => {
+describe(__filename + ' - Service Tests', () => {
   const svc = new Service('service.json');
   const svcName: string = 'example';
   const svcBaseUrl: string = '/example/';

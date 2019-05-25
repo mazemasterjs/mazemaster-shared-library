@@ -2,10 +2,11 @@ import uuid from 'uuid/v4';
 import { GAME_MODES, GAME_RESULTS } from './Enums';
 import { IScore } from './IScore';
 import Logger from '@mazemasterjs/logger';
+import { ObjectBase } from './ObjectBase';
 
 const log = Logger.getInstance();
 
-export class Score {
+export class Score extends ObjectBase {
   private mazeId: string;
   private teamId: string;
   private gameId: string; // multiple scores can be saved under the same gameId - one for each game round
@@ -20,28 +21,22 @@ export class Score {
   private gameMode: GAME_MODES;
 
   constructor(data?: IScore) {
-    if (data !== undefined) {
-      // validate that the any-type data matches the interface
-      if (!this.isValid(data)) {
-        const err = new Error(
-          'Invalid object data provided. See @mazemasterjs/shared-library/IScore for interface requirements.',
-        );
-        log.error(__filename, 'constructor(data?: IScore)', 'Error instantiating object ->', err);
-        throw err;
-      }
+    super();
 
-      this.id = data.id;
-      this.mazeId = data.mazeId;
-      this.teamId = data.teamId;
-      this.gameId = data.gameId;
-      this.gameRound = data.gameRound;
-      this.lastUpdated = data.lastUpdated;
-      this.botId = data.botId;
-      this.gameResult = data.gameResult;
-      this.moveCount = data.moveCount;
-      this.bonusPoints = data.bonusPoints;
-      this.backtrackCount = data.backtrackCount;
-      this.gameMode = data.gameMode;
+    if (data !== undefined) {
+      this.id = this.validate('id', data.id, 'string');
+      this.mazeId = this.validate('mazeId', data.mazeId, 'string');
+      this.teamId = this.validate('teamId', data.teamId, 'string');
+      this.gameId = this.validate('teamId', data.gameId, 'string');
+      this.gameRound = this.validate('teamId', data.gameRound, 'number');
+      this.lastUpdated = this.validate('lastUpdated', data.lastUpdated, 'number');
+      this.botId = this.validate('botId', data.botId, 'string');
+      this.gameResult = this.validate('gameResult', data.gameResult, 'number');
+      this.moveCount = this.validate('moveCount', data.moveCount, 'number');
+      this.bonusPoints = this.validate('bonusPoints', data.bonusPoints, 'number');
+      this.backtrackCount = this.validate('backtrackCount', data.backtrackCount, 'number');
+      this.gameMode = this.validate('gameMode', data.gameMode, 'number');
+      this.validateEnums();
     } else {
       this.id = uuid();
       this.mazeId = '';
@@ -117,50 +112,32 @@ export class Score {
   }
 
   /**
-   * Have to manually validate provided data object since it
-   * it could be provided by a JSON document body or loaded
-   * as a JSON document from the database.
+   * Validate that enumeration values passed from json data match
+   * values stored in the actual enumerations
+   *
+   * @returns boolean - true on successful validation
+   * @throws Validation Error
    */
-  private isValid(data: any): boolean {
-    let valid =
-      typeof data.id === 'string' &&
-      typeof data.mazeId === 'string' &&
-      typeof data.teamId === 'string' &&
-      typeof data.gameId === 'string' &&
-      typeof data.gameRound === 'number' &&
-      typeof data.lastUpdated === 'number' &&
-      typeof data.botId === 'string' &&
-      typeof data.gameResult === 'number' &&
-      typeof data.moveCount === 'number' &&
-      typeof data.bonusPoints === 'number' &&
-      typeof data.gameMode === 'number' &&
-      typeof data.backtrackCount === 'number';
+  private validateEnums(): boolean {
+    const messages = new Array<string>();
 
-    if (!valid) {
-      log.warn(__filename, 'isValid(data:any)', 'At least one of the supplied values is not of the expected type.');
+    if (!GAME_RESULTS[this.gameResult]) {
+      messages.push(`gameResult value (${this.gameResult}) not found within Enums.GAME_RESULTS`);
     }
 
-    if (!GAME_RESULTS[data.gameResult]) {
-      log.warn(
-        __filename,
-        'isValid(data:any)',
-        `gameResult value (${data.gameResult}) not found within Enums.GAME_RESULTS`,
-      );
-      valid = false;
+    if (!GAME_MODES[this.gameMode]) {
+      messages.push(`gameMode value (${this.gameMode}) not found within Enums.GAME_MODES`);
     }
 
-    if (!GAME_MODES[data.gameMode]) {
-      log.warn(__filename, 'isValid(data:any)', `gameMode value (${data.gameMode}) not found within Enums.GAME_MODES`);
-      valid = false;
-    }
-
-    if (!valid) {
-      log.warn(__filename, `isValid(${JSON.stringify(data)})`, 'Data validation failed.');
+    if (messages.length > 0) {
+      const error = new Error(messages.join(' :: '));
+      log.error(__filename, `validateEnums()`, 'Validation Error ->', error);
+      throw error;
     } else {
-      log.trace(__filename, 'isValid(data:any)', 'Data validated.');
+      log.trace(__filename, 'validateEnums()', 'Enumeration values validated.');
     }
 
-    return valid;
+    return true;
   }
 
   /**

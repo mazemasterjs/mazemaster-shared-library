@@ -7,11 +7,8 @@ import Cell from '../src/Cell';
 import Location from '../src/Location';
 import { CELL_TAGS, CELL_TRAPS, DIRS } from '../src/Enums';
 
-// tslint:disable-next-line: no-var-requires
-require('dotenv').config();
-
 // test cases
-describe('Maze Tests', () => {
+describe(__filename + ' - Maze Tests', () => {
   const height = 25;
   const width = 25;
   const challenge = 10;

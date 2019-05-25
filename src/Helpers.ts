@@ -1,7 +1,5 @@
 import { DIRS } from './Enums';
 import { Logger } from '@mazemasterjs/logger';
-import { TROPHY_IDS } from './Enums';
-import { ITrophyStub } from './ITrophyStub';
 
 /**
  * Helper Functions for Maze Master JS
@@ -87,49 +85,4 @@ export function reverseDir(dir: DIRS): number {
     default:
       return 0;
   }
-}
-
-/**
- * Grants a trophy by increasing the count or adding stubs to the given array
- *
- * @param trophyId number - An enumeration value from Enums.TROPHY_IDS
- * @param trophyStubs Array<ITrophyStub> - Array of stubs to to add the trophy to.
- * @returns Array<ITrophyStub>
- */
-export function grantTrophy(trophyId: TROPHY_IDS, trophyStubs: Array<ITrophyStub>): Array<ITrophyStub> {
-  // first check for existing trophy and increment count
-  for (const trophy of trophyStubs) {
-    if (trophy.id === trophyId) {
-      trophy.count++;
-      return trophyStubs;
-    }
-  }
-
-  // trophy wasn't found, so we have to add a new stub with a count of 1
-  const tStub: ITrophyStub = {
-    count: 1,
-    id: trophyId,
-    name: TROPHY_IDS[trophyId],
-  };
-
-  // add it to the array
-  trophyStubs.push(tStub);
-
-  // return the array
-  return trophyStubs;
-}
-
-/**
- * Returns the count (number of times awarded) of the
- * trophy with the given TrophyId from Enums.TROPHY_IDS
- *
- * @param trophyId (Enums.TROPHY_IDS) - The Id of the trophy to get a count of
- */
-export function getTrophyCount(trophyId: TROPHY_IDS, trophyStubs: Array<ITrophyStub>): number {
-  for (const trophy of trophyStubs) {
-    if (trophy.id === trophyId) {
-      return trophy.count;
-    }
-  }
-  return 0;
 }

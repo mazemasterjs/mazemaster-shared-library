@@ -14,7 +14,7 @@ import { Engram } from '../src/Engram';
 import ITrophyStub from '../src/ITrophyStub';
 
 // test cases
-describe('Game, Team, Player, Score Tests', () => {
+describe(__filename + ' - Game Tests', () => {
   const log = Logger.getInstance();
   let game: Game;
   let maze: Maze;

@@ -10,7 +10,7 @@ import ITrophyStub from '../src/ITrophyStub';
  *
  * Note: Direct instantiation is already covered in Game.test.ts
  */
-describe('Team Tests', () => {
+describe(__filename + ' - Team Tests', () => {
   // team needs trophies
   const tStub: ITrophyStub = {
     count: 1,

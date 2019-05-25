@@ -1,26 +1,21 @@
 import { Trophy } from '../src/Trophy';
-// import { ITrophyStub } from '../src/ITrophyStub';
 import { assert, expect } from 'chai';
-// import { TROPHY_IDS } from '../src/Enums';
+
+import { Logger } from '@mazemasterjs/logger';
+const log = Logger.getInstance();
+log.LogLevel = 4;
+log.debug(__filename, __filename, 'Starting tests...');
 
 /**
  * Test cases for Team object
  *
  * Note: Direct instantiation is already covered in Game.test.ts
  */
-describe('Trophy Tests', () => {
-  // team needs trophies
-
-  //   const stubData: any = {
-  //     count: 1,
-  //     id: TROPHY_IDS.DAZED_AND_CONFUSED,
-  //     name: TROPHY_IDS[TROPHY_IDS.DAZED_AND_CONFUSED],
-  //   };
-
+describe(__filename + ' - Trophy Tests', () => {
   const goodData = {
     id: 'VALID_TEST_TROPHY_ID',
     name: 'VALID TEST TROPHY NAME',
-    description: 'VALID TEST TROPHY DESCRIPTIN',
+    description: 'VALID TEST TROPHY DESCRIPTION',
     bonusAward: 1,
     count: 11,
     lastUpdated: 111,
@@ -82,12 +77,12 @@ describe('Trophy Tests', () => {
   it(`Trophy from badData1 should throw error`, () => {
     expect(() => {
       return new Trophy(JSON.parse(JSON.stringify(badData1))).Id;
-    }).to.throw('Invalid object data provided. See @mazemasterjs/shared-library/Trophy for data requirements.');
+    }).to.throw('id field is number, expected string');
   });
 
   it(`Trophy from badData2 should throw error`, () => {
     expect(() => {
       return new Trophy(JSON.parse(JSON.stringify(badData2))).Id;
-    }).to.throw('Invalid object data provided. See @mazemasterjs/shared-library/Trophy for data requirements.');
+    }).to.throw('description field is undefined, expected string.');
   });
 });

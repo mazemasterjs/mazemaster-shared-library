@@ -2,7 +2,7 @@ import { Config } from '../src/Config';
 import { expect } from 'chai';
 
 // test cases
-describe('Config Tests', () => {
+describe(__filename + ' - Config Tests', () => {
   // declare config object
   const config: Config = Config.getInstance();
 

@@ -1,5 +1,4 @@
-import { Logger } from '@mazemasterjs/logger';
-const log = Logger.getInstance();
+import { ObjectBase } from './ObjectBase';
 
 /**
  * Trohpies are awarded by the game server when certain
@@ -8,7 +7,7 @@ const log = Logger.getInstance();
  * See /data/trohpy-list.json for a list of available trophies.
  *
  */
-export class Trophy {
+export class Trophy extends ObjectBase {
   private id: string;
   private name: string;
   private description: string;
@@ -17,6 +16,8 @@ export class Trophy {
   private lastUpdated: number;
 
   constructor(data: Trophy) {
+    super();
+
     this.id = this.validate('id', data.id, 'string');
     this.name = this.validate('name', data.name, 'string');
     this.description = this.validate('description', data.description, 'string');
@@ -49,27 +50,6 @@ export class Trophy {
   public addCount() {
     this.lastUpdated = Date.now();
     this.count++;
-  }
-
-  /**
-   * Validate that the given value is of the expected type.
-   *
-   * @param field string - the field name being validated
-   * @param val any - the field value to check for proper typing
-   * @param type string - the type name to check for for
-   *
-   * @returns any - Returns the given val if validation succeeds
-   * @throws Error - Will throw a 'Type Error' if the typing is incrrect
-   */
-  private validate(field: string, val: any, type: string): any {
-    if (typeof val !== type) {
-      const err: Error = new Error(`${field} field is not of type ${type}.`);
-      log.error(__filename, `validate(${field}, ${val}, ${type})`, 'Type Error ->', err);
-      throw err;
-    }
-
-    log.debug(__filename, `validate(${field}, ${val}, ${type})`, `Type validated.`);
-    return val;
   }
 }
 
