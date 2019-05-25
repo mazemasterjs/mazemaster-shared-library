@@ -4,6 +4,10 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Notes
 
+### v1.7.2
+
+- ObjectBase.validateField - changed all debug logging to trace
+
 ### v1.7.1
 
 - Separated basic Maze content (properties & accessors) and extended functionality (generate, solve, etc) into two classes: BaseMaze and Maze (not so sure this was a great idea...)

@@ -39,7 +39,7 @@ export abstract class ObjectBase {
       throw err;
     }
 
-    log.debug(__filename, `validateField(${field}, ${val}, ${type})`, `${field} field is ${valType}, as expected.`);
+    log.trace(__filename, `validateField(${field}, ${val}, ${type})`, `${field} field is ${valType}, as expected.`);
     return val;
   }
 
