@@ -4,6 +4,12 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Notes
 
+### v1.7.0
+
+- Maze, Trophy, Bot, Team, and Score now all validate parameter data types when instantiated from json
+- Validation function moved to abstract ObjectBase which classes needing validation now extend
+- Trophy Add and Trophy Count functions moved from Helpers to ObjectBase
+
 ### v1.6.3
 
 - Trophy.ts now validates data when instantiated from JSON
