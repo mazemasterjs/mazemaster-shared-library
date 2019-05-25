@@ -4,19 +4,26 @@ import Cell from './Cell';
 import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
 import { Logger } from '@mazemasterjs/logger';
 import { Location } from './Location';
-import Config from './Config';
 import IMazeStub from './IMazeStub';
 import { ObjectBase } from './ObjectBase';
+import { getEnvVar } from './Helpers';
 
 const log = Logger.getInstance();
-const config = Config.getInstance();
 
 let recurseDepth: number = 0; // tracks the level of recursion during path carving
 let maxRecurseDepth: number = 0; // tracks the deepest level of carve recursion seen
 let startGenTime: number = 0; // used to determine time spent generating a maze
-
 let solutionPath: string[]; // used for the maze solver
 let playerPos: Location; // used for the maze solver
+
+// maze settings with defaults - will be replaced
+// by loadEnvVars() in constructor
+const MAZE_MAX_HEIGHT: number = getEnvVar('MAZE_MAX_HEIGHT', 'number');
+const MAZE_MIN_HEIGHT: number = getEnvVar('MAZE_MIN_HEIGHT', 'number');
+const MAZE_MAX_WIDTH: number = getEnvVar('MAZE_MAX_WIDTH', 'number');
+const MAZE_MIN_WIDTH: number = getEnvVar('MAZE_MIN_WIDTH', 'number');
+const TRAPS_MIN_CHALLENGE: number = getEnvVar('TRAPS_MIN_CHALLENGE', 'number');
+const TRAPS_ON_PATH_MIN_CHALLENGE: number = getEnvVar('TRAPS_ON_PATH_MIN_CHALLENGE', 'number');
 
 export class Maze extends ObjectBase {
   private id: string;
@@ -225,13 +232,13 @@ export class Maze extends ObjectBase {
     }
 
     // check for valid height
-    if (height < config.MAZE_MIN_HEIGHT || this.height > config.MAZE_MAX_HEIGHT) {
-      errors.push(fmt('Maze height must be between %d and %d.\n\r', config.MAZE_MIN_HEIGHT, config.MAZE_MAX_HEIGHT));
+    if (height < MAZE_MIN_HEIGHT || this.height > MAZE_MAX_HEIGHT) {
+      errors.push(fmt('Maze height must be between %d and %d.\n\r', MAZE_MIN_HEIGHT, MAZE_MAX_HEIGHT));
     }
 
     // check for valid width
-    if (width < config.MAZE_MIN_WIDTH || this.height > config.MAZE_MAX_WIDTH) {
-      errors.push(fmt('Maze width must be between %d and %d.\n\r', config.MAZE_MIN_WIDTH, config.MAZE_MAX_WIDTH));
+    if (width < MAZE_MIN_WIDTH || this.height > MAZE_MAX_WIDTH) {
+      errors.push(fmt('Maze width must be between %d and %d.\n\r', MAZE_MIN_WIDTH, MAZE_MAX_WIDTH));
     }
 
     // check for valid challenge level
@@ -308,7 +315,7 @@ export class Maze extends ObjectBase {
     log.debug(__filename, 'generate()', fmt('Solution complete, shortest path is %d steps.', this.ShortestPathLength));
 
     // then add some traps...
-    if (this.challenge >= config.TRAPS_MIN_CHALLENGE) {
+    if (this.challenge >= TRAPS_MIN_CHALLENGE) {
       this.addTraps();
     } else {
       log.debug(
@@ -317,7 +324,7 @@ export class Maze extends ObjectBase {
         fmt(
           'Maze Challenge Level [%d] is below the trap threshold [%d] set by MIN_TRAPS_CHALLENGE_LEVEL, skipping addTraps().',
           this.challenge,
-          config.TRAPS_MIN_CHALLENGE,
+          TRAPS_MIN_CHALLENGE,
         ),
       );
     }
@@ -785,7 +792,7 @@ export class Maze extends ObjectBase {
         //   2) Must not be placed on path along maze edges (to avoid blocking path to exit)
         if (!!(tags & CELL_TAGS.PATH)) {
           // enforce challenge level settings
-          if (this.challenge < config.TRAPS_ON_PATH_MIN_CHALLENGE) {
+          if (this.challenge < TRAPS_ON_PATH_MIN_CHALLENGE) {
             log.debug(__filename, fnName, fmt('Invalid trap location (No Traps on Path at CL ' + this.challenge + '): ', cell.Location.toString()));
             continue;
           }

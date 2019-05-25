@@ -86,3 +86,49 @@ export function reverseDir(dir: DIRS): number {
       return 0;
   }
 }
+
+/**
+ * Gets and returns the value of the requested environment variable
+ * as the given type.
+ *
+ * @param varName - the name of the environment variable to get
+ * @param typeName - tye name of the type to return the value as (string | number)
+ */
+export function getEnvVar(varName: string, typeName: string): any {
+  const val = process.env[varName];
+
+  // first see if the variable was found - if not, let's blow this sucker up
+  if (val === undefined) {
+    doError(`getVar(${varName}, ${typeName})`, 'Configuration Error', `Environment variable not set: ${varName}`);
+  }
+
+  // we have a value - log the good news
+  log.info(__filename, `getVar(${varName}, ${typeName})`, `${varName}=${val}`);
+
+  // convert to expect type and return
+  switch (typeName) {
+    case 'string': {
+      return val;
+    }
+    case 'number': {
+      return parseInt(val + '', 10); // this could blow up, but that's ok since we'd want it to
+    }
+    default: {
+      // we only want numbers or strings...
+      doError(`getVar(${varName}, ${typeName})`, 'Argument Error', `Invalid variable type name: ${typeName}. Try 'string' or 'number' instead.`);
+    }
+  }
+}
+
+/**
+ * Wrapping log.error to clean things up a little
+ *
+ * @param method
+ * @param title
+ * @param message
+ */
+export function doError(method: string, title: string, message: string) {
+  const err = new Error(message);
+  log.error(__filename, method, title + ' ->', err);
+  throw err;
+}
