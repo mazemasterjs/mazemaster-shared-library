@@ -10,6 +10,7 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 - Maze class now extends BaseMaze class with extended functionality (generate, solve, etc)
 - Added 'array' type to ObjectBase.validateField(field: string, val: any, type: string)
 - Removed url field from maze objects
+- Removed Config class and reworked Maze/MazeBase - it was not required and caused dependency issues
 
 ### v1.7.0
 
