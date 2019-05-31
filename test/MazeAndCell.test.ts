@@ -20,7 +20,7 @@ describe(__filename + ' - Maze Tests', () => {
   const note2: string = 'This is another unit test.';
   let maze: Maze;
   const mazeId: string = `${height}:${width}:${challenge}:${seed}`;
-  const mazeHash: string = '9a460f32757a2fc763076e0dde526292';
+  const mazeHash: string = '4170b0dc4b1a976da83c065efb7072e2';
   const expectedMazeStub: IMazeStub = {
     id: mazeId,
     height,
@@ -149,14 +149,15 @@ describe(__filename + ' - Maze Tests', () => {
     expect(!!(cell.Exits & DIRS.EAST)).to.equal(false);
   });
 
-  it(`Cell.Tags(0) should reset cell tags.`, () => {
-    cell.Tags = 0;
-    expect(cell.Tags).to.equal(0);
+  it(`Cell.clearTags() should reset cell.Tags to CELL_TAGS.NONE.`, () => {
+    cell.clearTags();
+    expect(cell.Tags).to.equal(CELL_TAGS.NONE);
   });
 
-  it(`Cell.Tags(CARVED + START) should set cell.Tags to 9.`, () => {
-    cell.Tags = CELL_TAGS.CARVED + CELL_TAGS.START;
-    expect(cell.Tags).to.equal(9);
+  it(`Cell.Tags(CARVED + START) should set cell.Tags to ${CELL_TAGS.CARVED + CELL_TAGS.START}.`, () => {
+    cell.addTag(CELL_TAGS.CARVED);
+    cell.addTag(CELL_TAGS.START);
+    expect(cell.Tags).to.equal(CELL_TAGS.CARVED + CELL_TAGS.START);
   });
 
   it(`Cell.removeTag(START) should set cell.Tags to 8.`, () => {
@@ -164,20 +165,30 @@ describe(__filename + ' - Maze Tests', () => {
     expect(cell.Tags).to.equal(8);
   });
 
-  it(`Cell.Traps(0) should set cell.Traps to 0.`, () => {
-    cell.Trap = 0;
-    expect(cell.Trap).to.equal(0);
+  it(`Cell.clearTraps should set cell.Traps to ${CELL_TRAPS.NONE}.`, () => {
+    cell.clearTraps();
+    expect(cell.Traps).to.equal(CELL_TRAPS.NONE);
   });
 
-  it(`Cell.Traps(CELL_TRAPS.BEARTRAP) should set cell.Traps to 2.`, () => {
-    cell.Trap = CELL_TRAPS.BEARTRAP;
-    expect(cell.Trap).to.equal(2);
+  it(`Cell.addTrap(CELL_TRAPS.BEARTRAP) should set cell.Traps to equal ${CELL_TRAPS.BEARTRAP}.`, () => {
+    cell.addTrap(CELL_TRAPS.BEARTRAP);
+    expect(cell.Traps).to.equal(CELL_TRAPS.BEARTRAP);
+  });
+
+  it(`Cell.addTrap(CELL_TRAPS.PIT) should set cell.Traps to equal ${CELL_TRAPS.BEARTRAP + CELL_TRAPS.PIT}.`, () => {
+    cell.addTrap(CELL_TRAPS.PIT);
+    expect(cell.Traps).to.equal(CELL_TRAPS.BEARTRAP + CELL_TRAPS.PIT);
+  });
+
+  it(`Cell.removeTrap(CELL_TRAPS.BEARTRAP) should set cell.Traps to equal ${CELL_TRAPS.PIT}.`, () => {
+    cell.removeTrap(CELL_TRAPS.BEARTRAP);
+    expect(cell.Traps).to.equal(1);
   });
 
   it(`Cell.addNote(note) should add notes to the cell's notes array.`, () => {
     cell.addNote(note1);
     cell.addNote(note2);
-    const notes: Array<string> = cell.Notes();
+    const notes: Array<string> = cell.Notes;
     expect(notes[0] + notes[1]).to.equal(note1 + note2);
   });
 
@@ -185,13 +196,13 @@ describe(__filename + ' - Maze Tests', () => {
     cell.addVisit(1);
     cell.addVisit(2);
     cell.addVisit(3);
-    expect(cell.LastVisitMoveNum()).to.equal(3);
+    expect(cell.LastVisited).to.equal(3);
   });
 
   it(`Cell.getVisitCount() should return the number of cell visits.`, () => {
     cell.addVisit(11);
     cell.addVisit(12);
     cell.addVisit(13);
-    expect(cell.VisitCount()).to.equal(6);
+    expect(cell.VisitCount).to.equal(6);
   });
 });

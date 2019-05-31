@@ -4,6 +4,17 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Notes
 
+### v1.8.0
+
+- [BREAKING CHANGE] Cell.trap is now Cell.traps and supports a bitwise value that allows multiple traps in one cell
+- Maze and MazeBase now both accept optional constructor parameter "jsonData:any" in addition to the public "loadData(jsonData:any)"
+- CellBase added - supports a cleaner implementation of Cell when maze building / cell modification tools aren't required -- The idea is that CellBase should be able to stand alone during gameplay, so any functions (addVist, LastVisitMoveNumber, etc.) that track movement or support scoring should exist on CellBase, while functions needed for maze generation (addExit, addTag, addTrap, etc.) are scoped to Cell (extends CellBase, extends ObjectBase)
+- Several smaller changes caused by the additon of CellBase - look carefully!
+- Cell and CellBase both validate input jsonData parameter types
+- Cell.AddTrap(trap: CELL_TRAPS) function added to allow the safe addition of bitwise trap values
+- Cell.RemoveTrap(trap: CELL_TRAPS) function added to allow the safe removal of bitwise trap values
+- Added clearTraps and clearTags functions to Cell class - mostly useful for unit testing
+
 ### v1.7.2
 
 - ObjectBase.validateField - changed all debug logging to trace

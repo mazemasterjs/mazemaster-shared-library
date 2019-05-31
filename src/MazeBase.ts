@@ -3,6 +3,8 @@ import { ObjectBase } from './ObjectBase';
 import { Location } from './Location';
 import Logger from '@mazemasterjs/logger';
 
+const log = Logger.getInstance();
+
 export class MazeBase extends ObjectBase {
   protected id: string;
   protected height: number;
@@ -23,7 +25,7 @@ export class MazeBase extends ObjectBase {
    * Instantiates or new or pre-loaded Maze object
    * @param data - JSON Object containing stubbed maze data
    */
-  constructor() {
+  constructor(jsonData?: any) {
     super();
 
     this.id = '';
@@ -40,6 +42,10 @@ export class MazeBase extends ObjectBase {
     this.trapCount = 0;
     this.note = '';
     this.lastUpdated = Date.now();
+
+    if (jsonData !== undefined) {
+      this.loadData(jsonData);
+    }
   }
 
   public get LastUpdated(): number {
@@ -97,24 +103,28 @@ export class MazeBase extends ObjectBase {
   /**
    * Validates and loads the given JSON object into the current MazeBase instance
    *
-   * @param data
+   * @param jsonData
    */
-  public loadData(data: any) {
-    if (data !== undefined) {
-      this.id = this.validateField('id', data.id, 'string');
-      this.height = this.validateField('height', data.height, 'number');
-      this.width = this.validateField('width', data.width, 'number');
-      this.challenge = this.validateField('challenge', data.challenge, 'number');
-      this.name = this.validateField('name', data.name, 'string');
-      this.seed = this.validateField('seed', data.seed, 'string');
-      this.cells = this.buildCellsArray(this.validateField('cells', data.cells, 'array'));
-      this.textRender = this.validateField('textRender', data.textRender, 'string');
-      this.startCell = this.validateField('startCell', data.startCell, 'object');
-      this.finishCell = this.validateField('finishCell', data.finishCell, 'object');
-      this.shortestPathLength = this.validateField('shortestPathLength', data.shortestPathLength, 'number');
-      this.trapCount = this.validateField('trapCount', data.trapCount, 'number');
-      this.note = this.validateField('note', data.note, 'string');
-      this.lastUpdated = this.validateField('lastUpdated', data.lastUpdated, 'number');
+  public loadData(jsonData: any) {
+    log.debug(__filename, `loadData(${jsonData})`, 'Attempting to populate MazeBase from jsonData...');
+
+    if (jsonData !== undefined) {
+      this.id = this.validateField('id', jsonData.id, 'string');
+      this.height = this.validateField('height', jsonData.height, 'number');
+      this.width = this.validateField('width', jsonData.width, 'number');
+      this.challenge = this.validateField('challenge', jsonData.challenge, 'number');
+      this.name = this.validateField('name', jsonData.name, 'string');
+      this.seed = this.validateField('seed', jsonData.seed, 'string');
+      this.cells = this.buildCellsArray(this.validateField('cells', jsonData.cells, 'array'));
+      this.textRender = this.validateField('textRender', jsonData.textRender, 'string');
+      this.startCell = this.validateField('startCell', jsonData.startCell, 'object');
+      this.finishCell = this.validateField('finishCell', jsonData.finishCell, 'object');
+      this.shortestPathLength = this.validateField('shortestPathLength', jsonData.shortestPathLength, 'number');
+      this.trapCount = this.validateField('trapCount', jsonData.trapCount, 'number');
+      this.note = this.validateField('note', jsonData.note, 'string');
+      this.lastUpdated = this.validateField('lastUpdated', jsonData.lastUpdated, 'number');
+    } else {
+      log.warn(__filename, `loadData(${jsonData})`, 'Unable to load JSON Data into MazeBase object: ' + JSON.stringify(jsonData));
     }
   }
 
@@ -124,6 +134,8 @@ export class MazeBase extends ObjectBase {
    * @param cells
    */
   private buildCellsArray(cells: Array<Array<Cell>>): Array<Array<Cell>> {
+    log.debug(__filename, `loadData(Array<Array<Cell>>)`, 'Attempting to populate MazeBase from jsonData...');
+
     const newCells: Array<Array<Cell>> = new Array(this.height);
 
     for (let row: number = 0; row < this.height; row++) {

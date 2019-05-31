@@ -51,6 +51,7 @@ export abstract class ObjectBase {
    * @returns Array<ITrophyStub>
    */
   protected addTrophy(trophyId: TROPHY_IDS, trophyStubs: Array<ITrophyStub>): Array<ITrophyStub> {
+    log.trace(__filename, 'addTrophy(trophyId: number, trophyStubs: Array<ITrophyStub>)', `Adding trophyId ${trophyId} to trophyStubs array.`);
     // first check for existing trophy and increment count
     for (const trophy of trophyStubs) {
       if (trophy.id === trophyId) {
@@ -80,6 +81,8 @@ export abstract class ObjectBase {
    * @param trophyId (Enums.TROPHY_IDS) - The Id of the trophy to get a count of
    */
   protected countTrophy(trophyId: TROPHY_IDS, trophyStubs: Array<ITrophyStub>): number {
+    log.trace(__filename, 'countTrophy(trophyId: number, trophyStubs: Array<ITrophyStub>)', `Getting count of trophyId ${trophyId}.`);
+
     for (const trophy of trophyStubs) {
       if (trophy.id === trophyId) {
         return trophy.count;

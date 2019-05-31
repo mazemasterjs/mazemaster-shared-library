@@ -202,7 +202,8 @@ export class Maze extends MazeBase {
 
     // tag start and finish columns (start / finish tags force matching exits on edge)
     this.startCell = new Location(0, startCol);
-    this.cells[0][startCol].Tags = CELL_TAGS.START + CELL_TAGS.CARVED;
+    this.cells[0][startCol].addTag(CELL_TAGS.START);
+    this.cells[0][startCol].addTag(CELL_TAGS.CARVED);
 
     this.finishCell = new Location(height - 1, finishCol);
     this.cells[height - 1][finishCol].addTag(CELL_TAGS.FINISH);
@@ -325,7 +326,7 @@ export class Maze extends MazeBase {
               // render room center - check for cell properties and render appropriately
               let cellFill = CENTER;
               const tags = cell.Tags;
-              const traps = cell.Trap;
+              const traps = cell.Traps;
               if (!!(tags & CELL_TAGS.PATH)) {
                 cellFill = SOLUTION;
               }
@@ -601,7 +602,7 @@ export class Maze extends MazeBase {
 
   // test if cell has a trap
   private hasTrap(cell: Cell): boolean {
-    const traps = cell.Trap;
+    const traps = cell.Traps;
     if (!!(traps & CELL_TRAPS.BEARTRAP)) {
       return true;
     }
@@ -645,7 +646,7 @@ export class Maze extends MazeBase {
         const tags = cell.Tags;
 
         // bail out if we already have a trap here
-        if (cell.Trap !== CELL_TRAPS.NONE) {
+        if (cell.Traps !== CELL_TRAPS.NONE) {
           log.trace(__filename, fnName, fmt('Invalid trap location (Already Trapped): ', cell.Location.toString()));
           continue;
         }
@@ -683,7 +684,7 @@ export class Maze extends MazeBase {
           // avoid blocking solution path along edges
           if (cell.Location.col === this.width - 1 || cell.Location.col === 0 || (cell.Location.row === this.height - 1 || cell.Location.row === 0)) {
             // and avoid T-Junctions, but allow dead-ends (four-way junctions not possible on edge)
-            if (cell.ExitCount() > 2) {
+            if (cell.getExitCount() > 2) {
               log.trace(__filename, fnName, fmt('Invalid trap location (On Edge & On Path): ', cell.Location.toString()));
               continue;
             }
@@ -723,22 +724,22 @@ export class Maze extends MazeBase {
             break;
           }
           case 1: {
-            cell.Trap = CELL_TRAPS.PIT;
+            cell.addTrap(CELL_TRAPS.PIT);
             trapCount++;
             break;
           }
           case 2: {
-            cell.Trap = CELL_TRAPS.FLAMETHOWER;
+            cell.addTrap(CELL_TRAPS.FLAMETHOWER);
             trapCount++;
             break;
           }
           case 3: {
-            cell.Trap = CELL_TRAPS.BEARTRAP;
+            cell.addTrap(CELL_TRAPS.BEARTRAP);
             trapCount++;
             break;
           }
           case 4: {
-            cell.Trap = CELL_TRAPS.TARPIT;
+            cell.addTrap(CELL_TRAPS.TARPIT);
             trapCount++;
             break;
           }
