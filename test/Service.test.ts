@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { Service } from '../src/Service';
 import { Endpoint } from '../src/Endpoint';
 
-describe('Service Tests', () => {
+describe(__filename + ' - Service Tests', () => {
   const svc = new Service('service.json');
   const svcName: string = 'example';
   const svcBaseUrl: string = '/example/';
@@ -16,6 +16,7 @@ describe('Service Tests', () => {
   const svcEp0Arg0Name: string = 'test-arg-1';
   const svcEp0Arg0Desc: string = 'This is a sample argument of type integer.';
   const svcEp0Arg0Type: string = 'integer';
+  const validServiceData = { name: 'valid-name', baseUrl: 'valid-base-url' };
 
   it('Service object should not be null', () => {
     return expect(svc).not.be.null;
@@ -78,18 +79,35 @@ describe('Service Tests', () => {
     const epTest: Endpoint = svc.getEndpointByName('does-not-exist');
     return expect(epTest).to.be.null;
   });
+
+  it(`Service.loadFromJson(validServiceData) should return service with name ${validServiceData.name}`, () => {
+    const tstSvc = new Service();
+    tstSvc.loadFromJson(validServiceData);
+    return expect(tstSvc.Name).to.equal(validServiceData.name);
+  });
 });
 
 describe('Service Anti-Tests', () => {
-  it('Service object should error on empty file name', () => {
-    expect(() => {
-      return new Service('');
-    }).to.throw('ILLEGAL ARGUMENT: serviceFile cannot be empty.');
-  });
+  const invalidServiceData1 = { name: 999, baseUrl: 'valid-base-url' };
+  const invalidServiceData2 = { name: 'valid-name', baseUrl: 999 };
 
   it('Service object should error when service file is not found', () => {
     expect(() => {
       return new Service('fake-file-name.fake');
     }).to.throw('FILE NOT FOUND: fake-file-name.fake');
+  });
+
+  it(`Service.loadFromJson(invalidServiceData1) should throw error.`, () => {
+    const tstSvc = new Service();
+    return expect(() => {
+      tstSvc.loadFromJson(invalidServiceData1);
+    }).to.throw('Service.name must be a string.');
+  });
+
+  it(`Service.loadFromJson(invalidServiceData2) should throw error.`, () => {
+    const tstSvc = new Service();
+    return expect(() => {
+      tstSvc.loadFromJson(invalidServiceData2);
+    }).to.throw('Service.baseUrl must be a string.');
   });
 });

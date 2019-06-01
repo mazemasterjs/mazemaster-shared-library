@@ -10,7 +10,7 @@ import ITrophyStub from '../src/ITrophyStub';
  *
  * Note: Direct instantiation is already covered in Game.test.ts
  */
-describe('Team Tests', () => {
+describe(__filename + ' - Team Tests', () => {
   // team needs trophies
   const tStub: ITrophyStub = {
     count: 1,
@@ -27,6 +27,7 @@ describe('Team Tests', () => {
     coder: 'Coder',
     id: 'fake-bot-id',
     name: 'Name',
+    trophies: new Array<ITrophyStub>(),
     weight: 33,
   };
 
@@ -35,10 +36,18 @@ describe('Team Tests', () => {
   bots.push(new Bot(botData));
   bots.push(new Bot(botData));
 
+  const invalidTeamData = JSON.stringify({
+    bots,
+    id: 'fake-team-id',
+    logo: 999,
+    name: 'Name',
+    trophies,
+  });
+
   const teamData = {
     bots,
     id: 'fake-team-id',
-    logo: 'fake-team-logo.png',
+    logo: 'test-team-logo.png',
     name: 'Name',
     trophies,
   };
@@ -46,6 +55,12 @@ describe('Team Tests', () => {
   // this trick gets around the need to use an interface, which is
   // something we shouldn't need for teams anyway
   const team = new Team(JSON.parse(JSON.stringify(teamData)));
+
+  it(`should error when using bad team data `, () => {
+    expect(() => {
+      new Team(JSON.parse(invalidTeamData)).getTrophyCount(TROPHY_IDS.DAZED_AND_CONFUSED);
+    }).to.throw();
+  });
 
   it(`team.Id should equal '${teamData.id}`, () => {
     expect(team.Id).to.equal(teamData.id);
@@ -64,12 +79,12 @@ describe('Team Tests', () => {
   });
 
   it(`team.addTrophy(DAZED_AND_CONFUSED) increase trophy count to 2`, () => {
-    team.addTrophy(tStub.id);
+    team.grantTrophy(tStub.id);
     expect(team.getTrophyCount(TROPHY_IDS.DAZED_AND_CONFUSED)).to.equal(2);
   });
 
   it(`team.addTrophy(DOUBLE_BACKER) add trophy with count 1`, () => {
-    team.addTrophy(TROPHY_IDS.DOUBLE_BACKER);
+    team.grantTrophy(TROPHY_IDS.DOUBLE_BACKER);
     expect(team.getTrophyCount(TROPHY_IDS.DOUBLE_BACKER)).to.equal(1);
   });
 

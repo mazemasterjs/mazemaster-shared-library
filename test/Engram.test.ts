@@ -3,7 +3,7 @@ import { IEngram } from '../src/IEngram';
 import { expect } from 'chai';
 
 // test cases
-describe('Engram Tests', () => {
+describe(__filename + ' - Engram Tests', () => {
   const engram = new Engram();
   engram.Sight = 'You see';
   engram.Sound = 'You hear';

@@ -1,9 +1,9 @@
-import { GAME_RESULTS } from './Enums';
+import { GAME_MODES, GAME_RESULTS } from './Enums';
 
 export interface IScore {
   mazeId: string;
   teamId: string;
-  gameId: string;
+  gameId: string; // multiple scores can be saved under the same gameId - one for each game round
   botId: string;
   gameRound: number;
   lastUpdated: number;
@@ -12,4 +12,5 @@ export interface IScore {
   moveCount: number;
   backtrackCount: number;
   bonusPoints: number;
+  gameMode: GAME_MODES;
 }

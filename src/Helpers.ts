@@ -19,11 +19,7 @@ const log = Logger.getInstance();
 export function listSelectedBitNames(bitwiseEnum: object, selectedBits: number): string {
   let ret = '';
 
-  log.trace(
-    __filename,
-    `listSelectedBitNames(${bitwiseEnum}, ${selectedBits}`,
-    'Listing selected bit names from enumeration.',
-  );
+  log.trace(__filename, `listSelectedBitNames(${bitwiseEnum}, ${selectedBits}`, 'Listing selected bit names from enumeration.');
 
   for (const dir in bitwiseEnum) {
     if (Number(dir)) {
@@ -38,11 +34,7 @@ export function listSelectedBitNames(bitwiseEnum: object, selectedBits: number):
   if (ret.length === 0) {
     ret = 'NONE';
   }
-  log.trace(
-    __filename,
-    `listSelectedBitNames(${bitwiseEnum}, ${selectedBits})`,
-    'Returning selected bit names: ' + ret,
-  );
+  log.trace(__filename, `listSelectedBitNames(${bitwiseEnum}, ${selectedBits})`, 'Returning selected bit names: ' + ret);
   return ret;
 }
 
@@ -54,11 +46,7 @@ export function listSelectedBitNames(bitwiseEnum: object, selectedBits: number):
  * @param selectedBits - Number representing the selected bits
  */
 export function getSelectedBitNames(bitwiseEnum: object, selectedBits: number): string[] {
-  log.trace(
-    __filename,
-    `getSelectedBitNames(${bitwiseEnum}, ${selectedBits})`,
-    'Creating array of selected bit names for enumeration.',
-  );
+  log.trace(__filename, `getSelectedBitNames(${bitwiseEnum}, ${selectedBits})`, 'Creating array of selected bit names for enumeration.');
   const ret: string[] = new Array<string>();
 
   for (const dir in bitwiseEnum) {
@@ -74,11 +62,7 @@ export function getSelectedBitNames(bitwiseEnum: object, selectedBits: number): 
   if (ret.length === 0) {
     ret.push('NONE');
   }
-  log.trace(
-    __filename,
-    `getSelectedBitNames(${bitwiseEnum}, ${selectedBits})`,
-    'Returning array of selected bit names for enumeration.',
-  );
+  log.trace(__filename, `getSelectedBitNames(${bitwiseEnum}, ${selectedBits})`, 'Returning array of selected bit names for enumeration.');
   return ret;
 }
 
@@ -101,4 +85,50 @@ export function reverseDir(dir: DIRS): number {
     default:
       return 0;
   }
+}
+
+/**
+ * Gets and returns the value of the requested environment variable
+ * as the given type.
+ *
+ * @param varName - the name of the environment variable to get
+ * @param typeName - tye name of the type to return the value as (string | number)
+ */
+export function getEnvVar(varName: string, typeName: string): any {
+  const val = process.env[varName];
+
+  // first see if the variable was found - if not, let's blow this sucker up
+  if (val === undefined) {
+    doError(`getVar(${varName}, ${typeName})`, 'Configuration Error', `Environment variable not set: ${varName}`);
+  }
+
+  // we have a value - log the good news
+  log.trace(__filename, `getVar(${varName}, ${typeName})`, `${varName}=${val}`);
+
+  // convert to expect type and return
+  switch (typeName) {
+    case 'string': {
+      return val;
+    }
+    case 'number': {
+      return parseInt(val + '', 10); // this could blow up, but that's ok since we'd want it to
+    }
+    default: {
+      // we only want numbers or strings...
+      doError(`getVar(${varName}, ${typeName})`, 'Argument Error', `Invalid variable type name: ${typeName}. Try 'string' or 'number' instead.`);
+    }
+  }
+}
+
+/**
+ * Wrapping log.error to clean things up a little
+ *
+ * @param method
+ * @param title
+ * @param message
+ */
+export function doError(method: string, title: string, message: string) {
+  const err = new Error(message);
+  log.error(__filename, method, title + ' ->', err);
+  throw err;
 }

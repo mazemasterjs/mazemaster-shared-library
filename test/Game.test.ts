@@ -14,7 +14,7 @@ import { Engram } from '../src/Engram';
 import ITrophyStub from '../src/ITrophyStub';
 
 // test cases
-describe('Game, Team, Player, Score Tests', () => {
+describe(__filename + ' - Game Tests', () => {
   const log = Logger.getInstance();
   let game: Game;
   let maze: Maze;
@@ -76,7 +76,7 @@ describe('Game, Team, Player, Score Tests', () => {
     team.Name = teamName;
     team.Logo = teamLogo;
     team.Bots.push(bot);
-    team.addTrophy(TROPHY_IDS.DAZED_AND_CONFUSED);
+    team.grantTrophy(TROPHY_IDS.DAZED_AND_CONFUSED);
 
     // create a score for the game
     score = new Score();

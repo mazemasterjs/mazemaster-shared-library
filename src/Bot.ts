@@ -1,5 +1,8 @@
-import uuid from 'uuid';
+import uuid from 'uuid/v4';
 import { IBot } from './IBot';
+import { ITrophyStub } from './ITrophyStub';
+import { TROPHY_IDS } from './Enums';
+import { ObjectBase } from './ObjectBase';
 
 /**
  * An individual, maze-running bot.
@@ -8,24 +11,49 @@ import { IBot } from './IBot';
  * in the mmjs database.
  */
 
-export class Bot {
+export class Bot extends ObjectBase {
   private id: string;
   private name: string;
   private weight: number;
   private coder: string;
+  private trophies: Array<ITrophyStub>;
 
   constructor(data?: IBot) {
+    super();
+
     if (data !== undefined) {
-      this.id = data.id;
-      this.name = data.name;
-      this.weight = data.weight;
-      this.coder = data.coder;
+      this.id = this.validateField('id', data.id, 'string');
+      this.name = this.validateField('name', data.name, 'string');
+      this.weight = this.validateField('name', data.weight, 'number');
+      this.coder = this.validateField('name', data.coder, 'string');
+      this.trophies = this.validateField('trophies', data.trophies, 'object');
     } else {
       this.id = uuid();
       this.name = '';
       this.weight = 100;
       this.coder = '';
+      this.trophies = new Array<ITrophyStub>();
     }
+  }
+
+  /**
+   * Increase count of existing trophy or add a new trophy
+   * if count trophy is not found.
+   *
+   * @param trophyId
+   */
+  public grantTrophy(trophyId: TROPHY_IDS) {
+    this.trophies = this.addTrophy(trophyId, this.trophies);
+  }
+
+  /**
+   * Returns the count (number of times awarded) of the
+   * trophy with the given TrophyId from Enums.TROPHY_IDS
+   *
+   * @param trophyId (Enums.TROPHY_IDS) - The Id of the trophy to get a count of
+   */
+  public getTrophyCount(trophyId: TROPHY_IDS): number {
+    return this.countTrophy(trophyId, this.trophies);
   }
 
   /**
@@ -79,6 +107,13 @@ export class Bot {
    */
   public set Coder(name: string) {
     this.coder = name;
+  }
+
+  /**
+   * @returns a Map<Enums.TROPHY_IDS, number> containing awarded TrophyIds(key) and Counts (val)
+   */
+  public get Trophies(): Array<ITrophyStub> {
+    return this.trophies;
   }
 }
 

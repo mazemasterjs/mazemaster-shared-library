@@ -7,30 +7,29 @@ import Cell from '../src/Cell';
 import Location from '../src/Location';
 import { CELL_TAGS, CELL_TRAPS, DIRS } from '../src/Enums';
 
-// tslint:disable-next-line: no-var-requires
-require('dotenv').config();
-
 // test cases
-describe('Maze Tests', () => {
+describe(__filename + ' - Maze Tests', () => {
   const height = 25;
   const width = 25;
   const challenge = 10;
   const seed = 'UTMaze1';
   const name = 'Unit-Test-Maze-1';
+  const timestamp = Date.now();
   let cell: Cell;
   const note1: string = 'This is a unit test.';
   const note2: string = 'This is another unit test.';
   let maze: Maze;
   const mazeId: string = `${height}:${width}:${challenge}:${seed}`;
-  const mazeHash: string = '20e19650272e7d943f6491fed1786a63';
+  const mazeHash: string = '4170b0dc4b1a976da83c065efb7072e2';
   const expectedMazeStub: IMazeStub = {
-    challenge,
-    height,
     id: mazeId,
+    height,
+    width,
+    challenge,
     name,
     seed,
-    url: '',
-    width,
+    note: '',
+    lastUpdated: timestamp,
   };
 
   it(`Maze.generate(0, 3, 3, 'unit', 'test') should return error`, () => {
@@ -78,6 +77,7 @@ describe('Maze Tests', () => {
 
   it(`Maze.getMazeStub() should match expectedMazeStub`, () => {
     const stub = maze.getMazeStub();
+    stub.lastUpdated = timestamp; // force timestamp (set on Maze instantiation) to match
     expect(JSON.stringify(stub)).to.equal(JSON.stringify(expectedMazeStub));
   });
 
@@ -90,13 +90,37 @@ describe('Maze Tests', () => {
   });
 
   it(`Maze [${mazeId}] MD5 Hash should match: '${mazeHash}'`, () => {
-    const jsonMaze = JSON.stringify(maze);
+    const mazeObj = JSON.parse(JSON.stringify(maze));
+    delete mazeObj.lastUpdated;
+    const jsonMaze = JSON.stringify(mazeObj);
+
     expect(hash(jsonMaze)).to.equal(mazeHash);
   });
 
   it(`Maze.Note should set the maze's note.`, () => {
     maze.Note = note1;
     expect(maze.Note).to.equal(note1);
+  });
+
+  it(`Maze.LastUpdated = timestamp should set maze.lastUpdated to timestamp `, () => {
+    maze.LastUpdated = timestamp;
+    expect(maze.LastUpdated).to.equal(timestamp);
+  });
+
+  it(`New maze from invalid JSON data should return error`, () => {
+    expect(() => {
+      const oldJson: string = JSON.stringify(maze);
+      const oldMazeData = JSON.parse(oldJson);
+      delete oldMazeData.width;
+      new Maze(oldMazeData).Note = 'Should not get here.';
+    }).to.throw();
+  });
+
+  it(`New maze from JSON data should match maze [${mazeId}]`, () => {
+    const oldJson: string = JSON.stringify(maze);
+    const newMaze: Maze = new Maze(JSON.parse(oldJson));
+    const newJson = JSON.stringify(newMaze);
+    expect(newJson).to.equal(oldJson);
   });
 
   it(`Maze.getCell(-1, -1) should return error`, () => {
@@ -125,14 +149,15 @@ describe('Maze Tests', () => {
     expect(!!(cell.Exits & DIRS.EAST)).to.equal(false);
   });
 
-  it(`Cell.Tags(0) should reset cell tags.`, () => {
-    cell.Tags = 0;
-    expect(cell.Tags).to.equal(0);
+  it(`Cell.clearTags() should reset cell.Tags to CELL_TAGS.NONE.`, () => {
+    cell.clearTags();
+    expect(cell.Tags).to.equal(CELL_TAGS.NONE);
   });
 
-  it(`Cell.Tags(CARVED + START) should set cell.Tags to 9.`, () => {
-    cell.Tags = CELL_TAGS.CARVED + CELL_TAGS.START;
-    expect(cell.Tags).to.equal(9);
+  it(`Cell.Tags(CARVED + START) should set cell.Tags to ${CELL_TAGS.CARVED + CELL_TAGS.START}.`, () => {
+    cell.addTag(CELL_TAGS.CARVED);
+    cell.addTag(CELL_TAGS.START);
+    expect(cell.Tags).to.equal(CELL_TAGS.CARVED + CELL_TAGS.START);
   });
 
   it(`Cell.removeTag(START) should set cell.Tags to 8.`, () => {
@@ -140,20 +165,30 @@ describe('Maze Tests', () => {
     expect(cell.Tags).to.equal(8);
   });
 
-  it(`Cell.Traps(0) should set cell.Traps to 0.`, () => {
-    cell.Trap = 0;
-    expect(cell.Trap).to.equal(0);
+  it(`Cell.clearTraps should set cell.Traps to ${CELL_TRAPS.NONE}.`, () => {
+    cell.clearTraps();
+    expect(cell.Traps).to.equal(CELL_TRAPS.NONE);
   });
 
-  it(`Cell.Traps(CELL_TRAPS.BEARTRAP) should set cell.Traps to 2.`, () => {
-    cell.Trap = CELL_TRAPS.BEARTRAP;
-    expect(cell.Trap).to.equal(2);
+  it(`Cell.addTrap(CELL_TRAPS.BEARTRAP) should set cell.Traps to equal ${CELL_TRAPS.BEARTRAP}.`, () => {
+    cell.addTrap(CELL_TRAPS.BEARTRAP);
+    expect(cell.Traps).to.equal(CELL_TRAPS.BEARTRAP);
+  });
+
+  it(`Cell.addTrap(CELL_TRAPS.PIT) should set cell.Traps to equal ${CELL_TRAPS.BEARTRAP + CELL_TRAPS.PIT}.`, () => {
+    cell.addTrap(CELL_TRAPS.PIT);
+    expect(cell.Traps).to.equal(CELL_TRAPS.BEARTRAP + CELL_TRAPS.PIT);
+  });
+
+  it(`Cell.removeTrap(CELL_TRAPS.BEARTRAP) should set cell.Traps to equal ${CELL_TRAPS.PIT}.`, () => {
+    cell.removeTrap(CELL_TRAPS.BEARTRAP);
+    expect(cell.Traps).to.equal(1);
   });
 
   it(`Cell.addNote(note) should add notes to the cell's notes array.`, () => {
     cell.addNote(note1);
     cell.addNote(note2);
-    const notes: Array<string> = cell.Notes();
+    const notes: Array<string> = cell.Notes;
     expect(notes[0] + notes[1]).to.equal(note1 + note2);
   });
 
@@ -161,20 +196,13 @@ describe('Maze Tests', () => {
     cell.addVisit(1);
     cell.addVisit(2);
     cell.addVisit(3);
-    expect(cell.LastVisitMoveNum()).to.equal(3);
+    expect(cell.LastVisited).to.equal(3);
   });
 
   it(`Cell.getVisitCount() should return the number of cell visits.`, () => {
     cell.addVisit(11);
     cell.addVisit(12);
     cell.addVisit(13);
-    expect(cell.VisitCount()).to.equal(6);
-  });
-
-  it(`New maze from JSON data should match maze [${mazeId}]`, () => {
-    const oldJson: string = JSON.stringify(maze);
-    const newMaze: Maze = new Maze(JSON.parse(oldJson));
-    const newJson = JSON.stringify(newMaze);
-    expect(newJson).to.equal(oldJson);
+    expect(cell.VisitCount).to.equal(6);
   });
 });
