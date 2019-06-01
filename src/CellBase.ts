@@ -36,12 +36,12 @@ export class CellBase extends ObjectBase {
     log.trace(__filename, `loadData(${jsonData})`, 'Attempting to populate CellBase from jsonData...');
     if (jsonData !== undefined) {
       this.pos = this.validateField('pos', jsonData.pos, 'object');
-      this.exits = this.validateField('pos', jsonData.exits, 'number');
-      this.tags = this.validateField('pos', jsonData.tags, 'number');
-      this.traps = this.validateField('pos', jsonData.traps, 'number');
-      this.visits = this.validateField('pos', jsonData.visits, 'number');
-      this.lastVisit = this.validateField('pos', jsonData.lastVisit, 'number');
-      this.notes = this.validateField('pos', jsonData.notes, 'array');
+      this.exits = this.validateField('exits', jsonData.exits, 'number');
+      this.tags = this.validateField('tags', jsonData.tags, 'number');
+      this.traps = this.validateField('traps', jsonData.traps, 'number');
+      this.visits = this.validateField('visits', jsonData.visits, 'number');
+      this.lastVisit = this.validateField('lastVisit', jsonData.lastVisit, 'number');
+      this.notes = this.validateField('notes', jsonData.notes, 'array');
     } else {
       log.warn(__filename, `loadData(${jsonData})`, 'Unable to load JSON Data into CellBase: ' + JSON.stringify(jsonData));
     }
