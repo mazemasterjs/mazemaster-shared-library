@@ -62,6 +62,29 @@ describe(__filename + ' - Maze Tests', () => {
     }).to.throw();
   });
 
+  it(`Maze.generate() - maze should have numeric height of 3`, () => {
+    const mazeTypeTest: Maze = new Maze().generate(3, 3, 3, 'Test', 'Test');
+    expect(typeof mazeTypeTest.Height === 'string');
+  });
+
+  it(`Maze.generate() - should coerce string height to number`, () => {
+    const ttHt: any = '3';
+    const mazeTypeTest: Maze = new Maze().generate(ttHt, 3, 3, 'Test', 'Test');
+    expect(typeof mazeTypeTest.Height === 'number');
+  });
+
+  it(`Maze.generate() - should coerce string width to number`, () => {
+    const ttWd: any = '3';
+    const mazeTypeTest: Maze = new Maze().generate(3, ttWd, 3, 'Test', 'Test');
+    expect(typeof mazeTypeTest.Height === 'number');
+  });
+
+  it(`Maze.generate() - should coerce string challenge to number`, () => {
+    const ttCl: any = '3';
+    const mazeTypeTest: Maze = new Maze().generate(3, 3, ttCl, 'Test', 'Test');
+    expect(typeof mazeTypeTest.ChallengeLevel === 'number');
+  });
+
   it(`Maze.generate() should create a small, simple maze.`, () => {
     const littleMaze: Maze = new Maze().generate(3, 3, 1, name, seed);
     expect(littleMaze.Id).to.equal('3:3:1:' + seed);
