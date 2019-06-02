@@ -4,6 +4,13 @@ import { PLAYER_STATES } from './Enums';
 // Class to maintain player state during a game
 export class Player {
   private location: Location;
+  private state: PLAYER_STATES;
+
+  constructor(location: Location, state: PLAYER_STATES) {
+    this.location = location;
+    this.state = state;
+  }
+
   public get Location(): Location {
     return this.location;
   }
@@ -11,20 +18,20 @@ export class Player {
     this.location = value;
   }
 
-  private state: PLAYER_STATES;
   public get State(): PLAYER_STATES {
     return this.state;
   }
 
-  constructor(location: Location, state: PLAYER_STATES) {
-    this.location = location;
-    this.state = state;
-  }
-
   public clearStates() {
-    this.state = PLAYER_STATES.NONE;
+    this.state = PLAYER_STATES.STANDING;
   }
 
+  /**
+   * Adds a PLAYER_STATES value, taking care to ensure that mutually-exclusive
+   * states are toggled appropriately.  e.g. Player cannot be both sitting and standing.
+   *
+   * @param state
+   */
   public addState(state: PLAYER_STATES) {
     if (!(this.state & state)) {
       this.state += state;
@@ -43,9 +50,20 @@ export class Player {
     }
   }
 
+  /**
+   * Removes a PLAYER_STATES bitwise value.  If PLAYER_STATES == NONE, player will reverted to the "STANDING"
+   * state by default
+   *
+   * @param state
+   */
   public removeState(state: PLAYER_STATES) {
     if (!!(this.state & state)) {
       this.state -= state;
+    }
+
+    // there really isn't a "none" state - if nothing else, the player will be STANDING
+    if (this.state === PLAYER_STATES.NONE) {
+      this.state = PLAYER_STATES.STANDING;
     }
   }
 }

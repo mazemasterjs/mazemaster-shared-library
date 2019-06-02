@@ -6,6 +6,7 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ### v1.8.2
 
+- Player.ts updated to ensure that player is never left as PLAYER_STATES.NONE - Default state is now PLAYER_STATES.STANDING (1)
 - Bot.ts data validation will now report the correct field names when validaton fails
 - Minor tweaks to a couple of other log lines
 
