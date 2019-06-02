@@ -24,8 +24,8 @@ export class Bot extends ObjectBase {
     if (data !== undefined) {
       this.id = this.validateField('id', data.id, 'string');
       this.name = this.validateField('name', data.name, 'string');
-      this.weight = this.validateField('name', data.weight, 'number');
-      this.coder = this.validateField('name', data.coder, 'string');
+      this.weight = this.validateField('weight', data.weight, 'number');
+      this.coder = this.validateField('coder', data.coder, 'string');
       this.trophies = this.validateField('trophies', data.trophies, 'object');
     } else {
       this.id = uuid();

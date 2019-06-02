@@ -20,36 +20,49 @@ export class Score extends ObjectBase {
   private bonusPoints: number;
   private gameMode: GAME_MODES;
 
-  constructor(data?: IScore) {
+  constructor(jsonData?: IScore) {
     super();
 
-    if (data !== undefined) {
-      this.id = this.validateField('id', data.id, 'string');
-      this.mazeId = this.validateField('mazeId', data.mazeId, 'string');
-      this.teamId = this.validateField('teamId', data.teamId, 'string');
-      this.gameId = this.validateField('teamId', data.gameId, 'string');
-      this.gameRound = this.validateField('teamId', data.gameRound, 'number');
-      this.lastUpdated = this.validateField('lastUpdated', data.lastUpdated, 'number');
-      this.botId = this.validateField('botId', data.botId, 'string');
-      this.gameResult = this.validateField('gameResult', data.gameResult, 'number');
-      this.moveCount = this.validateField('moveCount', data.moveCount, 'number');
-      this.bonusPoints = this.validateField('bonusPoints', data.bonusPoints, 'number');
-      this.backtrackCount = this.validateField('backtrackCount', data.backtrackCount, 'number');
-      this.gameMode = this.validateField('gameMode', data.gameMode, 'number');
+    this.id = uuid();
+    this.mazeId = '';
+    this.teamId = '';
+    this.gameId = '';
+    this.gameRound = 1;
+    this.lastUpdated = -1;
+    this.botId = '';
+    this.gameResult = GAME_RESULTS.IN_PROGRESS;
+    this.moveCount = 0;
+    this.bonusPoints = 0;
+    this.backtrackCount = 0;
+    this.gameMode = GAME_MODES.SINGLE_PLAYER;
+
+    if (jsonData !== undefined) {
+      this.loadData(jsonData);
+    }
+  }
+
+  /**
+   * Attempts to load the given JSON Object into the current Score instance
+   * @param jsonData
+   */
+  public loadData(jsonData: any) {
+    log.debug(__filename, `loadData(${jsonData})`, 'Attempting to populate ScoreBase from jsonData...');
+    if (jsonData !== undefined) {
+      this.id = this.validateField('id', jsonData.id, 'string');
+      this.mazeId = this.validateField('mazeId', jsonData.mazeId, 'string');
+      this.teamId = this.validateField('teamId', jsonData.teamId, 'string');
+      this.gameId = this.validateField('teamId', jsonData.gameId, 'string');
+      this.gameRound = this.validateField('teamId', jsonData.gameRound, 'number');
+      this.lastUpdated = this.validateField('lastUpdated', jsonData.lastUpdated, 'number');
+      this.botId = this.validateField('botId', jsonData.botId, 'string');
+      this.gameResult = this.validateField('gameResult', jsonData.gameResult, 'number');
+      this.moveCount = this.validateField('moveCount', jsonData.moveCount, 'number');
+      this.bonusPoints = this.validateField('bonusPoints', jsonData.bonusPoints, 'number');
+      this.backtrackCount = this.validateField('backtrackCount', jsonData.backtrackCount, 'number');
+      this.gameMode = this.validateField('gameMode', jsonData.gameMode, 'number');
       this.validateEnums();
     } else {
-      this.id = uuid();
-      this.mazeId = '';
-      this.teamId = '';
-      this.gameId = '';
-      this.gameRound = 1;
-      this.lastUpdated = -1;
-      this.botId = '';
-      this.gameResult = GAME_RESULTS.IN_PROGRESS;
-      this.moveCount = 0;
-      this.bonusPoints = 0;
-      this.backtrackCount = 0;
-      this.gameMode = GAME_MODES.SINGLE_PLAYER;
+      log.warn(__filename, `loadData(${jsonData})`, 'Unable to load JSON data into MazeBase object: ' + JSON.stringify(jsonData));
     }
   }
 

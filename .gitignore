@@ -24,6 +24,7 @@ dist/
 
 #  test / coverage stuff
 coverage
+local-build.bat
 .scannerwork
 .sonarlint
 .nyc_output
