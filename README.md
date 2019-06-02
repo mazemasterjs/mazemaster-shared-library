@@ -4,6 +4,11 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Notes
 
+### v1.8.2
+
+- Bot.ts data validation will now report the correct field names when validaton fails
+- Minor tweaks to a couple of other log lines
+
 ### v1.8.1
 
 - Added forced type conversion (string -> number) to maze.generate() via a new validateAndSetGenParams(...) method to fix a bug where generated mazes were returning string values for height, width, and challengeLevel.
