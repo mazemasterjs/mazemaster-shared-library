@@ -190,9 +190,9 @@ describe(__filename + ' - Game Tests', () => {
     expect(game.Player.State).to.equal(PLAYER_STATES.STUNNED);
   });
 
-  it(`game.Player.clearStates() should set player state to NONE`, () => {
+  it(`game.Player.clearStates() should set player state to NONE, but NONE should automatically be switched back to STANDING`, () => {
     game.Player.clearStates();
-    expect(game.Player.State).to.equal(PLAYER_STATES.NONE);
+    expect(game.Player.State).to.equal(PLAYER_STATES.STANDING);
   });
 
   it(`game.State should be NEW`, () => {
@@ -337,6 +337,7 @@ describe(__filename + ' - Game Tests', () => {
   });
 
   after('Generate text render with player position', () => {
-    log.debug(__filename, 'after()', '\n\r\n\r' + game.Maze.generateTextRender(true, game.Player.Location));
+    const fullMaze: Maze = new Maze(game.Maze);
+    log.debug(__filename, 'after()', '\n\r\n\r' + fullMaze.generateTextRender(true, game.Player.Location));
   });
 });
