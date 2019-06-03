@@ -2,6 +2,7 @@ import Cell from './Cell';
 import { ObjectBase } from './ObjectBase';
 import { Location } from './Location';
 import Logger from '@mazemasterjs/logger';
+import IMazeStub from './IMazeStub';
 
 const log = Logger.getInstance();
 
@@ -126,6 +127,23 @@ export class MazeBase extends ObjectBase {
     } else {
       log.warn(__filename, `loadData(${jsonData})`, 'Unable to load JSON data into MazeBase object: ' + JSON.stringify(jsonData));
     }
+  }
+
+  /**
+   * Returns only basic maze data - for use
+   * with lists, scores, etc
+   */
+  public getMazeStub(): IMazeStub {
+    return {
+      id: this.id,
+      height: this.height,
+      width: this.width,
+      challenge: this.challenge,
+      name: this.name,
+      seed: this.seed,
+      note: this.note,
+      lastUpdated: this.lastUpdated,
+    };
   }
 
   /**

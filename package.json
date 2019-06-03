@@ -37,7 +37,7 @@
     "@types/chai": "^4.1.7",
     "@types/dotenv": "^6.1.1",
     "@types/mocha": "^5.2.7",
-    "@types/mongodb": "^3.1.27",
+    "@types/mongodb": "^3.1.28",
     "@types/node": "^10.14.8",
     "@types/object-hash": "^1.2.0",
     "@types/uuid": "^3.4.4",

@@ -1,18 +1,18 @@
 import { GAME_MODES, GAME_STATES, PLAYER_STATES } from './Enums';
-import { Maze } from './Maze';
 import { Score } from './Score';
 import { Logger } from '@mazemasterjs/logger';
 import { IGameStub } from './IGameStub';
 import { Player } from './Player';
 import { IAction } from './IAction';
 import uuid from 'uuid/v4';
+import MazeBase from './MazeBase';
 
 const log = Logger.getInstance();
 
 export class Game {
   private id: string;
   private state: GAME_STATES;
-  private maze: Maze;
+  private maze: MazeBase;
   private mode: GAME_MODES;
   private score: Score;
   private player: Player;
@@ -22,7 +22,7 @@ export class Game {
   private botId: string;
   private lastAccessed: number;
 
-  constructor(maze: Maze, player: Player, score: Score, round: number, botId: string, teamId: string) {
+  constructor(maze: MazeBase, player: Player, score: Score, round: number, botId: string, teamId: string) {
     this.id = uuid();
     this.state = GAME_STATES.NEW;
     this.maze = maze;
@@ -46,11 +46,7 @@ export class Game {
       this.mode = GAME_MODES.MULTI_PLAYER;
       log.debug(__filename, 'constructor()', `Team [ ${this.teamId} ] provided. Game mode set to MULTI_PLAYER.`);
       if (this.botId !== '') {
-        log.warn(
-          __filename,
-          'constructor()',
-          `Bot [ ${this.botId} ] AND Team [ ${this.teamId} ] provided - individual bot will be ignored.`,
-        );
+        log.warn(__filename, 'constructor()', `Bot [ ${this.botId} ] AND Team [ ${this.teamId} ] provided - individual bot will be ignored.`);
       }
     } else {
       this.mode = GAME_MODES.SINGLE_PLAYER;
@@ -213,7 +209,7 @@ export class Game {
     this.state = gameState;
   }
 
-  public get Maze(): Maze {
+  public get Maze(): MazeBase {
     this.lastAccessed = Date.now();
     return this.maze;
   }

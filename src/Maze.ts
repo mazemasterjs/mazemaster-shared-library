@@ -3,7 +3,6 @@ import Cell from './Cell';
 import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
 import { LOG_LEVELS, Logger } from '@mazemasterjs/logger';
 import { Location } from './Location';
-import IMazeStub from './IMazeStub';
 import { getEnvVar } from './Helpers';
 import { MazeBase } from './MazeBase';
 
@@ -36,23 +35,6 @@ export class Maze extends MazeBase {
     if (data !== undefined) {
       super.loadData(data);
     }
-  }
-
-  /**
-   * Returns only basic maze data - for use
-   * with lists, scores, etc
-   */
-  public getMazeStub(): IMazeStub {
-    return {
-      id: this.id,
-      height: this.height,
-      width: this.width,
-      challenge: this.challenge,
-      name: this.name,
-      seed: this.seed,
-      note: this.note,
-      lastUpdated: this.lastUpdated,
-    };
   }
 
   /**
