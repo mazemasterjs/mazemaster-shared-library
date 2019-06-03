@@ -27,14 +27,16 @@ export class Game {
     this.state = GAME_STATES.NEW;
     this.maze = maze;
     this.player = player;
-    this.score = score;
-    this.score.GameId = this.id;
     this.actions = new Array<IAction>();
     this.lastAccessed = Date.now();
     this.round = round;
     this.mode = GAME_MODES.SINGLE_PLAYER;
-    this.teamId = teamId.trim();
-    this.botId = botId.trim();
+    this.teamId = teamId;
+    this.botId = botId;
+    this.score = score;
+    this.score.MazeId = maze.Id;
+    this.score.GameId = this.id;
+    this.score.TeamId = teamId;
 
     if (teamId + botId === '') {
       const err = new Error('Either a botId (single-player) or a teamId must be provided.');
