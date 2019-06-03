@@ -24,7 +24,7 @@ dist/
 
 #  test / coverage stuff
 coverage
-local-build.bat
+.vscode
 .scannerwork
 .sonarlint
 .nyc_output
