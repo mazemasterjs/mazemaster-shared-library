@@ -1,5 +1,6 @@
 @ECHO OFF
-
+echo "You must stop target project if running - including any watchers!"
+echo "You will need to restart target projects for changes to take effect."
 if EXIST "dist" (
     echo "Clearing dist\ directory"
     rmdir /s /q dist
@@ -24,10 +25,5 @@ copy package.json dist\
 copy README.md dist\
 copy .npmignore dist\
 
-
-if "%~1" neq "--package-only" (
-    echo Publishing module...
-    npm publish dist|rem
-) else (
-    echo "--package-only" flag set, publish skipped.
-)
+echo "Copying \dist to game-server modules folder"
+robocopy /MIR dist\ ..\game-server\node_modules\@mazemasterjs\shared-library

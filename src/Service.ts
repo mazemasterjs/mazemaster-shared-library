@@ -19,24 +19,60 @@ export class Service {
    *
    * @param serviceFile Path and filename of the service.json file to load
    */
-  constructor(serviceFile: string) {
+  constructor(serviceFile?: string) {
     this.name = '';
     this.baseUrl = '';
     this.endpoints = new Array<Endpoint>();
 
-    if (serviceFile === undefined || serviceFile === '') {
-      const err = new Error('ILLEGAL ARGUMENT: serviceFile cannot be empty.');
-      Logger.getInstance().error(__filename, `constructor(${serviceFile})`, ``, err);
-      throw err;
+    if (serviceFile !== undefined && serviceFile !== '') {
+      if (!fs || !fs.readFileSync) {
+        log.warn(__filename, `loadServiceData(${serviceFile}`, 'Cannot access fs module.');
+        return;
+      }
+
+      if (!fs.existsSync(serviceFile)) {
+        const err = new Error(`FILE NOT FOUND: ${serviceFile}`);
+        Logger.getInstance().error(__filename, `constructor(${serviceFile})`, '', err);
+        throw err;
+      }
+
+      this.loadServiceData(serviceFile);
+    }
+  }
+
+  /**
+   * Loads the service directly from the given JSON data object
+   */
+  public loadFromJson(svcData: any) {
+    let error: Error = new Error();
+
+    if (typeof svcData.name !== 'string' || svcData.name.trim() === '') {
+      error = new Error('Service.name must be a string.');
     }
 
-    if (!fs.existsSync(serviceFile)) {
-      const err = new Error(`FILE NOT FOUND: ${serviceFile}`);
-      Logger.getInstance().error(__filename, `constructor(${serviceFile})`, '', err);
-      throw err;
+    if (typeof svcData.baseUrl !== 'string' || svcData.baseUrl.trim() === '') {
+      error = new Error('Service.baseUrl must be a string.');
     }
 
-    this.loadServiceData(serviceFile);
+    if (error.message !== '') {
+      log.error(__filename, `loadFromJson(${svcData})`, 'Cannot parse svcData ->', error);
+      throw error;
+    }
+
+    this.name = svcData.name;
+    this.baseUrl = svcData.baseUrl;
+    this.endpoints = new Array<Endpoint>();
+
+    /* istanbul ignore if */
+    if (svcData.endpoints) {
+      for (const ep of svcData.endpoints) {
+        const newEp: Endpoint = new Endpoint(ep);
+        for (const arg of ep.arguments) {
+          newEp.addArgument(new Argument(arg));
+        }
+        this.endpoints.push(newEp);
+      }
+    }
   }
 
   public addEndpoint(endpoint: Endpoint) {
@@ -63,6 +99,11 @@ export class Service {
    */
   private loadServiceData(serviceFile: string) {
     let svcData: any;
+
+    if (!fs || !fs.readFileSync) {
+      log.warn(__filename, `loadServiceData(${serviceFile}`, 'Cannot access fs module.');
+      return;
+    }
 
     try {
       svcData = JSON.parse(fs.readFileSync(serviceFile, { encoding: 'utf8' }));

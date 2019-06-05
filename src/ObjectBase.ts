@@ -1,0 +1,133 @@
+import uuid from 'uuid/v4';
+import { MD5 as hash } from 'object-hash';
+import { LOG_LEVELS, Logger } from '@mazemasterjs/logger';
+import { TROPHY_IDS } from './Enums';
+import { ITrophyStub } from './ITrophyStub';
+import { isArray } from 'util';
+
+const log = Logger.getInstance();
+
+/**
+ * Base class providing functions/features common to most of the MMJS
+ * game objects.
+ *
+ */
+export abstract class ObjectBase {
+  /**
+   * Validate that the given value is of the expected type.
+   *
+   * @param field string - the field name being validated
+   * @param val any - the field value to check for proper typing
+   * @param type string - the type name to check for for
+   *
+   * @returns any - Returns the given val if validation succeeds
+   * @throws Error - Will throw a 'Type Error' if the typing is incrrect
+   */
+  protected validateField(field: string, val: any, type: string, noTrim?: boolean): any {
+    let valType;
+
+    if (type === 'array') {
+      if (isArray(val)) {
+        valType = 'array';
+      }
+    } else {
+      valType = typeof val;
+    }
+
+    // trim string values (unless noTrim flag is set)
+    if (valType === 'string' && !noTrim) {
+      val = val.trim();
+    }
+
+    if (valType !== type) {
+      const err = new Error(`${field} field is ${valType}, expected ${type}.`);
+      log.error(__filename, `validateField(${field}, ${val}, ${type})`, 'Type Error ->', err);
+      throw err;
+    }
+
+    log.trace(__filename, `validateField(${field}, ${val}, ${type})`, `${field} field is ${valType}, as expected.`);
+    return val;
+  }
+
+  /**
+   * Grants a trophy by increasing the count or adding a s to the given array
+   *
+   * @param trophyId number - An enumeration value from Enums.TROPHY_IDS
+   * @param trophyStubs Array<ITrophyStub> - Array of stubs to to add the trophy to.
+   * @returns Array<ITrophyStub>
+   */
+  protected addTrophy(trophyId: TROPHY_IDS, trophyStubs: Array<ITrophyStub>): Array<ITrophyStub> {
+    log.trace(__filename, 'addTrophy(trophyId: number, trophyStubs: Array<ITrophyStub>)', `Adding trophyId ${trophyId} to trophyStubs array.`);
+    // first check for existing trophy and increment count
+    for (const trophy of trophyStubs) {
+      if (trophy.id === trophyId) {
+        trophy.count++;
+        return trophyStubs;
+      }
+    }
+
+    // trophy wasn't found, so we have to add a new stub with a count of 1
+    const tStub: ITrophyStub = {
+      count: 1,
+      id: trophyId,
+      name: TROPHY_IDS[trophyId],
+    };
+
+    // add it to the array
+    trophyStubs.push(tStub);
+
+    // return the array
+    return trophyStubs;
+  }
+
+  /**
+   * Returns the count (number of times awarded) of the
+   * trophy with the given TrophyId from Enums.TROPHY_IDS
+   *
+   * @param trophyId (Enums.TROPHY_IDS) - The Id of the trophy to get a count of
+   */
+  protected countTrophy(trophyId: TROPHY_IDS, trophyStubs: Array<ITrophyStub>): number {
+    log.trace(__filename, 'countTrophy(trophyId: number, trophyStubs: Array<ITrophyStub>)', `Getting count of trophyId ${trophyId}.`);
+
+    for (const trophy of trophyStubs) {
+      if (trophy.id === trophyId) {
+        return trophy.count;
+      }
+    }
+    return 0;
+  }
+
+  /**
+   * Simple trace wrapper to reduce the number of useless module calls
+   * @param file
+   * @param method
+   * @param msg
+   */
+  protected logTrace(file: string, method: string, msg: string) {
+    if (log.LogLevel >= LOG_LEVELS.TRACE) {
+      log.trace(file, method, msg);
+    }
+  }
+
+  /**
+   * Simple debug wrapper to reduce the number of useless module calls
+   * @param file
+   * @param method
+   * @param msg
+   */
+  protected logDebug(file: string, method: string, msg: string) {
+    if (log.LogLevel >= LOG_LEVELS.DEBUG) {
+      log.debug(file, method, msg);
+    }
+  }
+
+  /**
+   * Hashed UUIDs should be shorter and easier to work with while hopefully still
+   * unique enough for our needs
+   */
+  protected generateId(): string {
+    const newId = hash(uuid());
+    log.trace(__filename, 'generateId()', 'newId=' + newId);
+    return newId;
+  }
+}

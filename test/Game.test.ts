@@ -14,7 +14,7 @@ import { Engram } from '../src/Engram';
 import ITrophyStub from '../src/ITrophyStub';
 
 // test cases
-describe('Game, Team, Player, Score Tests', () => {
+describe(__filename + ' - Game Tests', () => {
   const log = Logger.getInstance();
   let game: Game;
   let maze: Maze;
@@ -63,6 +63,7 @@ describe('Game, Team, Player, Score Tests', () => {
   trophies.push(tStub2);
 
   before(`Game-related objects created without error.`, () => {
+    Logger.getInstance().LogLevel = 4;
     maze = new Maze().generate(height, width, challenge, name, seed);
 
     // create a bot for the team
@@ -76,7 +77,7 @@ describe('Game, Team, Player, Score Tests', () => {
     team.Name = teamName;
     team.Logo = teamLogo;
     team.Bots.push(bot);
-    team.addTrophy(TROPHY_IDS.DAZED_AND_CONFUSED);
+    team.grantTrophy(TROPHY_IDS.DAZED_AND_CONFUSED);
 
     // create a score for the game
     score = new Score();
@@ -89,7 +90,7 @@ describe('Game, Team, Player, Score Tests', () => {
     player = new Player(maze.StartCell, PLAYER_STATES.NONE);
 
     // create the game
-    game = new Game(maze, player, score, 1, bot.Id, team.Id);
+    game = new Game(maze, player, score, 1, team.Id, bot.Id);
 
     // create a game action
     action = {
@@ -119,7 +120,7 @@ describe('Game, Team, Player, Score Tests', () => {
     return expect(game.Id).to.not.be.empty;
   });
 
-  it(`game.Mode should not be MULTI_PLAYER`, () => {
+  it(`game.Mode should be MULTI_PLAYER`, () => {
     return expect(game.Mode).to.equal(GAME_MODES.MULTI_PLAYER);
   });
 
@@ -190,9 +191,9 @@ describe('Game, Team, Player, Score Tests', () => {
     expect(game.Player.State).to.equal(PLAYER_STATES.STUNNED);
   });
 
-  it(`game.Player.clearStates() should set player state to NONE`, () => {
+  it(`game.Player.clearStates() should set player state to NONE, but NONE should automatically be switched back to STANDING`, () => {
     game.Player.clearStates();
-    expect(game.Player.State).to.equal(PLAYER_STATES.NONE);
+    expect(game.Player.State).to.equal(PLAYER_STATES.STANDING);
   });
 
   it(`game.State should be NEW`, () => {
@@ -337,6 +338,7 @@ describe('Game, Team, Player, Score Tests', () => {
   });
 
   after('Generate text render with player position', () => {
-    log.debug(__filename, 'after()', '\n\r\n\r' + game.Maze.generateTextRender(true, game.Player.Location));
+    const fullMaze: Maze = new Maze(game.Maze);
+    log.debug(__filename, 'after()', '\n\r\n\r' + fullMaze.generateTextRender(true, game.Player.Location));
   });
 });

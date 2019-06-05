@@ -24,6 +24,7 @@ dist/
 
 #  test / coverage stuff
 coverage
+.vscode
 .scannerwork
 .sonarlint
 .nyc_output

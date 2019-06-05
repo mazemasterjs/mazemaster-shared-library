@@ -1,11 +1,14 @@
-import uuid from 'uuid/v4';
-import { GAME_RESULTS } from './Enums';
+import { GAME_MODES, GAME_RESULTS } from './Enums';
 import { IScore } from './IScore';
+import Logger from '@mazemasterjs/logger';
+import { ObjectBase } from './ObjectBase';
 
-export class Score {
+const log = Logger.getInstance();
+
+export class Score extends ObjectBase {
   private mazeId: string;
   private teamId: string;
-  private gameId: string;
+  private gameId: string; // multiple scores can be saved under the same gameId - one for each game round
   private botId: string;
   private gameRound: number;
   private id: string;
@@ -14,33 +17,153 @@ export class Score {
   private moveCount: number;
   private backtrackCount: number;
   private bonusPoints: number;
+  private gameMode: GAME_MODES;
 
-  constructor(data?: IScore) {
-    if (data !== undefined) {
-      this.id = data.id;
-      this.mazeId = data.mazeId;
-      this.teamId = data.teamId;
-      this.gameId = data.gameId;
-      this.gameRound = data.gameRound;
-      this.lastUpdated = data.lastUpdated;
-      this.botId = data.botId;
-      this.gameResult = data.gameResult;
-      this.moveCount = data.moveCount;
-      this.bonusPoints = data.bonusPoints;
-      this.backtrackCount = data.backtrackCount;
-    } else {
-      this.id = uuid();
-      this.mazeId = '';
-      this.teamId = '';
-      this.gameId = '';
-      this.gameRound = 1;
-      this.lastUpdated = -1;
-      this.botId = '';
-      this.gameResult = GAME_RESULTS.IN_PROGRESS;
-      this.moveCount = 0;
-      this.bonusPoints = 0;
-      this.backtrackCount = 0;
+  constructor(jsonData?: IScore) {
+    super();
+
+    this.id = this.generateId();
+    this.mazeId = '';
+    this.teamId = '';
+    this.gameId = '';
+    this.gameRound = 1;
+    this.lastUpdated = -1;
+    this.botId = '';
+    this.gameResult = GAME_RESULTS.IN_PROGRESS;
+    this.moveCount = 0;
+    this.bonusPoints = 0;
+    this.backtrackCount = 0;
+    this.gameMode = GAME_MODES.SINGLE_PLAYER;
+
+    if (jsonData !== undefined) {
+      this.loadData(jsonData);
     }
+  }
+
+  /**
+   * Attempts to load the given JSON Object into the current Score instance
+   * @param jsonData
+   */
+  public loadData(jsonData: any) {
+    this.logDebug(__filename, `loadData(${jsonData})`, 'Attempting to populate ScoreBase from jsonData...');
+    if (jsonData !== undefined) {
+      this.id = this.validateField('id', jsonData.id, 'string');
+      this.mazeId = this.validateField('mazeId', jsonData.mazeId, 'string');
+      this.teamId = this.validateField('teamId', jsonData.teamId, 'string');
+      this.gameId = this.validateField('teamId', jsonData.gameId, 'string');
+      this.gameRound = this.validateField('teamId', jsonData.gameRound, 'number');
+      this.lastUpdated = this.validateField('lastUpdated', jsonData.lastUpdated, 'number');
+      this.botId = this.validateField('botId', jsonData.botId, 'string');
+      this.gameResult = this.validateField('gameResult', jsonData.gameResult, 'number');
+      this.moveCount = this.validateField('moveCount', jsonData.moveCount, 'number');
+      this.bonusPoints = this.validateField('bonusPoints', jsonData.bonusPoints, 'number');
+      this.backtrackCount = this.validateField('backtrackCount', jsonData.backtrackCount, 'number');
+      this.gameMode = this.validateField('gameMode', jsonData.gameMode, 'number');
+      this.validateEnums();
+    } else {
+      log.warn(__filename, `loadData(${jsonData})`, 'Unable to load JSON data into MazeBase object: ' + JSON.stringify(jsonData));
+    }
+  }
+
+  /**
+   * Increments the players move count by one.
+   */
+  public addMove() {
+    this.lastUpdated = Date.now();
+    this.moveCount++;
+  }
+
+  /**
+   * Increments the player move count by the given number.
+   * In some situations, the game server may need to increment by more than one.
+   * @param number - the number of moves to add to player's move count
+   *
+   */
+  // TODO: This is probably deprecated...
+  public addMoves(moves: number) {
+    this.lastUpdated = Date.now();
+    this.moveCount = this.moveCount + moves;
+  }
+
+  /**
+   * Increment the Backtrack Counter by 1
+   */
+  public addBacktrack() {
+    this.backtrackCount++;
+    this.lastUpdated = Date.now();
+  }
+
+  /**
+   * Calculate and return the total game score.  All games start with 1000
+   * points.  Then:
+   *
+   * Add bonusPoints (awarded when trophies are added)
+   * Subtract moveCount
+   * Subtract backtrackCount * 2
+   *
+   * gameResults generally reflected via trophies, but special cases:
+   * - ABANDONED: Score reset to zero
+   * - OUT_OF_TIME: Score reset to zero
+   *
+   *
+   * @returns number - the total score for the game
+   */
+  public getTotalScore(): number {
+    if (this.gameResult === GAME_RESULTS.ABANDONED || this.gameResult === GAME_RESULTS.OUT_OF_TIME) {
+      return 0;
+    } else {
+      // all game start with 1000 points
+      let total = 1000;
+
+      total += this.bonusPoints;
+      total -= this.moveCount;
+      total -= this.backtrackCount * 2;
+
+      return total;
+    }
+  }
+
+  /**
+   * Validate that enumeration values passed from json data match
+   * values stored in the actual enumerations
+   *
+   * @returns boolean - true on successful validation
+   * @throws Validation Error
+   */
+  private validateEnums(): boolean {
+    const messages = new Array<string>();
+
+    if (!GAME_RESULTS[this.gameResult]) {
+      messages.push(`gameResult value (${this.gameResult}) not found within Enums.GAME_RESULTS`);
+    }
+
+    if (!GAME_MODES[this.gameMode]) {
+      messages.push(`gameMode value (${this.gameMode}) not found within Enums.GAME_MODES`);
+    }
+
+    if (messages.length > 0) {
+      const error = new Error(messages.join(' :: '));
+      log.error(__filename, `validateEnums()`, 'Validation Error ->', error);
+      throw error;
+    } else {
+      this.logTrace(__filename, 'validateEnums()', 'Enumeration values validated.');
+    }
+
+    return true;
+  }
+
+  /**
+   * Return the current value of gameMode
+   */
+  public get GameMode(): GAME_MODES {
+    return this.gameMode;
+  }
+
+  /**
+   * Set gameMode value to the given value
+   */
+  public set GameMode(mode: GAME_MODES) {
+    this.gameMode = mode;
   }
 
   /**
@@ -71,14 +194,6 @@ export class Score {
    */
   public get BacktrackCount(): number {
     return this.backtrackCount;
-  }
-
-  /**
-   * Increment the Backtrack Counter by 1
-   */
-  public addBacktrack() {
-    this.backtrackCount++;
-    this.lastUpdated = Date.now();
   }
 
   /**
@@ -147,26 +262,6 @@ export class Score {
    */
   public get MoveCount(): number {
     return this.moveCount;
-  }
-
-  /**
-   * Increments the players move count by one.
-   */
-  public addMove() {
-    this.lastUpdated = Date.now();
-    this.moveCount++;
-  }
-
-  /**
-   * Increments the player move count by the given number.
-   * In some situations, the game server may need to increment by more than one.
-   * @param number - the number of moves to add to player's move count
-   *
-   */
-  // TODO: This is probably deprecated...
-  public addMoves(moves: number) {
-    this.lastUpdated = Date.now();
-    this.moveCount = this.moveCount + moves;
   }
 
   /**
