@@ -6,10 +6,14 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ### v1.8.2
 
+- Team / Bot (aka Single / Multiplayer) game modes set automatically - if a botId is provided, game is single-player
+- Validation now automatically trims string variables (unless told not to)
 - Maze.getMazeStub() moved to MazeBase
 - Player.ts updated to ensure that player is never left as PLAYER_STATES.NONE - Default state is now PLAYER_STATES.STANDING (1)
 - Bot.ts data validation will now report the correct field names when validaton fails
-- Minor tweaks to a couple of other log lines
+- Reworked logging to improve performance across the board
+- All maze tests now compare hash values instead of stringified json
+- Generated IDs have been shorted to hashed UUIDs (Team, Score, Bot, and Game)
 
 ### v1.8.1
 

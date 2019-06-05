@@ -1,4 +1,3 @@
-import uuid from 'uuid/v4';
 import { GAME_MODES, GAME_RESULTS } from './Enums';
 import { IScore } from './IScore';
 import Logger from '@mazemasterjs/logger';
@@ -23,7 +22,7 @@ export class Score extends ObjectBase {
   constructor(jsonData?: IScore) {
     super();
 
-    this.id = uuid();
+    this.id = this.generateId();
     this.mazeId = '';
     this.teamId = '';
     this.gameId = '';
@@ -46,7 +45,7 @@ export class Score extends ObjectBase {
    * @param jsonData
    */
   public loadData(jsonData: any) {
-    log.debug(__filename, `loadData(${jsonData})`, 'Attempting to populate ScoreBase from jsonData...');
+    this.logDebug(__filename, `loadData(${jsonData})`, 'Attempting to populate ScoreBase from jsonData...');
     if (jsonData !== undefined) {
       this.id = this.validateField('id', jsonData.id, 'string');
       this.mazeId = this.validateField('mazeId', jsonData.mazeId, 'string');
@@ -147,7 +146,7 @@ export class Score extends ObjectBase {
       log.error(__filename, `validateEnums()`, 'Validation Error ->', error);
       throw error;
     } else {
-      log.trace(__filename, 'validateEnums()', 'Enumeration values validated.');
+      this.logTrace(__filename, 'validateEnums()', 'Enumeration values validated.');
     }
 
     return true;

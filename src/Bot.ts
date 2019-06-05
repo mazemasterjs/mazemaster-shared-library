@@ -1,4 +1,3 @@
-import uuid from 'uuid/v4';
 import { IBot } from './IBot';
 import { ITrophyStub } from './ITrophyStub';
 import { TROPHY_IDS } from './Enums';
@@ -28,7 +27,7 @@ export class Bot extends ObjectBase {
       this.coder = this.validateField('coder', data.coder, 'string');
       this.trophies = this.validateField('trophies', data.trophies, 'object');
     } else {
-      this.id = uuid();
+      this.id = this.generateId();
       this.name = '';
       this.weight = 100;
       this.coder = '';

@@ -63,6 +63,7 @@ describe(__filename + ' - Game Tests', () => {
   trophies.push(tStub2);
 
   before(`Game-related objects created without error.`, () => {
+    Logger.getInstance().LogLevel = 4;
     maze = new Maze().generate(height, width, challenge, name, seed);
 
     // create a bot for the team
@@ -89,7 +90,7 @@ describe(__filename + ' - Game Tests', () => {
     player = new Player(maze.StartCell, PLAYER_STATES.NONE);
 
     // create the game
-    game = new Game(maze, player, score, 1, bot.Id, team.Id);
+    game = new Game(maze, player, score, 1, team.Id, bot.Id);
 
     // create a game action
     action = {
@@ -119,7 +120,7 @@ describe(__filename + ' - Game Tests', () => {
     return expect(game.Id).to.not.be.empty;
   });
 
-  it(`game.Mode should not be MULTI_PLAYER`, () => {
+  it(`game.Mode should be MULTI_PLAYER`, () => {
     return expect(game.Mode).to.equal(GAME_MODES.MULTI_PLAYER);
   });
 

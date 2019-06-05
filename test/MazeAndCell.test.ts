@@ -101,7 +101,7 @@ describe(__filename + ' - Maze Tests', () => {
   it(`Maze.getMazeStub() should match expectedMazeStub`, () => {
     const stub = maze.getMazeStub();
     stub.lastUpdated = timestamp; // force timestamp (set on Maze instantiation) to match
-    expect(JSON.stringify(stub)).to.equal(JSON.stringify(expectedMazeStub));
+    expect(hash(JSON.stringify(stub))).to.equal(hash(JSON.stringify(expectedMazeStub)));
   });
 
   it(`Maze ID should match pattern 'HEIGHT:WIDTH:CHALLENGE:SEED' (${mazeId})`, () => {
@@ -140,10 +140,11 @@ describe(__filename + ' - Maze Tests', () => {
   });
 
   it(`New maze from JSON data should match maze [${mazeId}]`, () => {
-    const oldJson: string = JSON.stringify(maze);
+    const tinyMaze: Maze = new Maze().generate(3, 3, 1, 'Tiny', 'Maze');
+    const oldJson: string = JSON.stringify(tinyMaze);
     const newMaze: Maze = new Maze(JSON.parse(oldJson));
     const newJson = JSON.stringify(newMaze);
-    expect(newJson).to.equal(oldJson);
+    expect(hash(newJson)).to.equal(hash(oldJson));
   });
 
   it(`Maze.getCell(-1, -1) should return error`, () => {

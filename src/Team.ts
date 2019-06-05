@@ -1,7 +1,6 @@
 /**
  * Team is an individual code-camp team that includes a collection of Bots
  */
-import uuid from 'uuid/v4';
 import { Bot } from './Bot';
 import { TROPHY_IDS } from './Enums';
 import { IBot } from './IBot';
@@ -25,7 +24,7 @@ export class Team extends ObjectBase {
       this.bots = this.loadBotsArray(data.bots);
       this.trophies = data.trophies;
     } else {
-      this.id = uuid();
+      this.id = this.generateId();
       this.name = '';
       this.logo = '';
       this.bots = new Array<Bot>();

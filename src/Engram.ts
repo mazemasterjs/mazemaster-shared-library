@@ -7,6 +7,28 @@ import { IEngram } from './IEngram';
 // sound = "You hear the sound of dripping water coming from the South."
 
 export class Engram {
+  private sight: string;
+  private sound: string;
+  private smell: string;
+  private touch: string;
+  private taste: string;
+
+  constructor(data?: IEngram) {
+    if (data) {
+      this.sight = data.sight.trim();
+      this.sound = data.sound.trim();
+      this.smell = data.smell.trim();
+      this.touch = data.touch.trim();
+      this.taste = data.taste.trim();
+    } else {
+      this.sight = '';
+      this.sound = '';
+      this.smell = '';
+      this.touch = '';
+      this.taste = '';
+    }
+  }
+
   public get Sight(): string {
     return this.sight;
   }
@@ -45,27 +67,5 @@ export class Engram {
 
   public set Taste(taste: string) {
     this.taste = taste;
-  }
-
-  private sight: string;
-  private sound: string;
-  private smell: string;
-  private touch: string;
-  private taste: string;
-
-  constructor(data?: IEngram) {
-    if (data) {
-      this.sight = data.sight;
-      this.sound = data.sound;
-      this.smell = data.smell;
-      this.touch = data.touch;
-      this.taste = data.taste;
-    } else {
-      this.sight = '';
-      this.sound = '';
-      this.smell = '';
-      this.touch = '';
-      this.taste = '';
-    }
   }
 }

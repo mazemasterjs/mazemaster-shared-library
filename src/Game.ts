@@ -4,12 +4,12 @@ import { Logger } from '@mazemasterjs/logger';
 import { IGameStub } from './IGameStub';
 import { Player } from './Player';
 import { IAction } from './IAction';
-import uuid from 'uuid/v4';
 import MazeBase from './MazeBase';
+import { ObjectBase } from './ObjectBase';
 
 const log = Logger.getInstance();
 
-export class Game {
+export class Game extends ObjectBase {
   private id: string;
   private state: GAME_STATES;
   private maze: MazeBase;
@@ -22,8 +22,10 @@ export class Game {
   private botId: string;
   private lastAccessed: number;
 
-  constructor(maze: MazeBase, player: Player, score: Score, round: number, botId: string, teamId: string) {
-    this.id = uuid();
+  constructor(maze: MazeBase, player: Player, score: Score, round: number, teamId: string, botId?: string) {
+    super();
+
+    this.id = this.generateId();
     this.state = GAME_STATES.NEW;
     this.maze = maze;
     this.player = player;
@@ -32,27 +34,26 @@ export class Game {
     this.round = round;
     this.mode = GAME_MODES.SINGLE_PLAYER;
     this.teamId = teamId;
-    this.botId = botId;
+    this.botId = botId + '';
     this.score = score;
     this.score.MazeId = maze.Id;
     this.score.GameId = this.id;
-    this.score.TeamId = teamId;
+    this.score.TeamId = teamId.trim();
 
-    if (teamId + botId === '') {
-      const err = new Error('Either a botId (single-player) or a teamId must be provided.');
-      log.error(__filename, 'constructor()', 'Missing parameter ->', err);
+    // teamId is always required
+    if (teamId === '') {
+      const err = new Error('Invalid teamId recieved: ' + teamId);
+      log.error(__filename, 'constructor()', 'Invalid Parameter ->', err);
       throw err;
     }
 
-    if (this.teamId !== '') {
+    // validate bot if singleplayer game
+    this.botId = this.botId.trim();
+    if (botId !== '') {
+      log.debug(__filename, 'constructor()', 'botId provided - game is singleplayer.');
       this.mode = GAME_MODES.MULTI_PLAYER;
-      log.debug(__filename, 'constructor()', `Team [ ${this.teamId} ] provided. Game mode set to MULTI_PLAYER.`);
-      if (this.botId !== '') {
-        log.warn(__filename, 'constructor()', `Bot [ ${this.botId} ] AND Team [ ${this.teamId} ] provided - individual bot will be ignored.`);
-      }
     } else {
-      this.mode = GAME_MODES.SINGLE_PLAYER;
-      log.debug(__filename, 'constructor()', `Bot [ ${this.botId} ] provided. Game mode set to SINGLE_PLAYER.`);
+      log.debug(__filename, 'constructor()', 'No botId was provided - game is multiplayer.');
     }
   }
 
@@ -199,6 +200,11 @@ export class Game {
   // returns game mode: single or multiplayer
   public get Mode(): GAME_MODES {
     return this.mode;
+  }
+
+  // sets game mode: single or multiplayer
+  public set Mode(mode: GAME_MODES) {
+    this.mode = mode;
   }
 
   public get State() {

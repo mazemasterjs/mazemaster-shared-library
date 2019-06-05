@@ -1,7 +1,7 @@
 import Cell from './Cell';
 import { ObjectBase } from './ObjectBase';
 import { Location } from './Location';
-import Logger from '@mazemasterjs/logger';
+import { Logger } from '@mazemasterjs/logger';
 import IMazeStub from './IMazeStub';
 
 const log = Logger.getInstance();
@@ -107,7 +107,7 @@ export class MazeBase extends ObjectBase {
    * @param jsonData
    */
   public loadData(jsonData: any) {
-    log.debug(__filename, `loadData(${jsonData})`, 'Attempting to populate MazeBase from jsonData...');
+    this.logDebug(__filename, `loadData(${jsonData})`, 'Loading data...');
 
     if (jsonData !== undefined) {
       this.id = this.validateField('id', jsonData.id, 'string');
@@ -117,13 +117,14 @@ export class MazeBase extends ObjectBase {
       this.name = this.validateField('name', jsonData.name, 'string');
       this.seed = this.validateField('seed', jsonData.seed, 'string');
       this.cells = this.buildCellsArray(this.validateField('cells', jsonData.cells, 'array'));
-      this.textRender = this.validateField('textRender', jsonData.textRender, 'string');
+      this.textRender = this.validateField('textRender', jsonData.textRender, 'string', true);
       this.startCell = this.validateField('startCell', jsonData.startCell, 'object');
       this.finishCell = this.validateField('finishCell', jsonData.finishCell, 'object');
       this.shortestPathLength = this.validateField('shortestPathLength', jsonData.shortestPathLength, 'number');
       this.trapCount = this.validateField('trapCount', jsonData.trapCount, 'number');
       this.note = this.validateField('note', jsonData.note, 'string');
       this.lastUpdated = this.validateField('lastUpdated', jsonData.lastUpdated, 'number');
+      this.logDebug(__filename, `loadData(${jsonData})`, 'Load successful.');
     } else {
       log.warn(__filename, `loadData(${jsonData})`, 'Unable to load JSON data into MazeBase object: ' + JSON.stringify(jsonData));
     }
@@ -152,7 +153,7 @@ export class MazeBase extends ObjectBase {
    * @param cells
    */
   private buildCellsArray(cells: Array<Array<Cell>>): Array<Array<Cell>> {
-    log.debug(__filename, `buildCellsArray(Array<Array<Cell>>)`, 'Attempting to rebuild cells array from JSON data...');
+    this.logDebug(__filename, `buildCellsArray(Array<Array<Cell>>)`, 'Attempting to rebuild cells array from JSON data...');
 
     const newCells: Array<Array<Cell>> = new Array(this.height);
 
@@ -161,7 +162,7 @@ export class MazeBase extends ObjectBase {
       for (let col: number = 0; col < this.width; col++) {
         const cData = JSON.parse(JSON.stringify(cells[row][col]));
         const cell: Cell = new Cell(cData);
-        log.trace(__filename, 'buildCellsArray(Array<Array<Cell>>)', `Adding cell in position [${row}, ${col}]`);
+        this.logTrace(__filename, 'buildCellsArray(Array<Array<Cell>>)', `Adding cell in position [${row}, ${col}]`);
         cols.push(cell);
       }
       newCells[row] = cols;

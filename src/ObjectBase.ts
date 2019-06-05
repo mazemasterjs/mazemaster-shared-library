@@ -1,4 +1,6 @@
-import Logger from '@mazemasterjs/logger';
+import uuid from 'uuid/v4';
+import { MD5 as hash } from 'object-hash';
+import { LOG_LEVELS, Logger } from '@mazemasterjs/logger';
 import { TROPHY_IDS } from './Enums';
 import { ITrophyStub } from './ITrophyStub';
 import { isArray } from 'util';
@@ -10,7 +12,6 @@ const log = Logger.getInstance();
  * game objects.
  *
  */
-
 export abstract class ObjectBase {
   /**
    * Validate that the given value is of the expected type.
@@ -22,7 +23,7 @@ export abstract class ObjectBase {
    * @returns any - Returns the given val if validation succeeds
    * @throws Error - Will throw a 'Type Error' if the typing is incrrect
    */
-  protected validateField(field: string, val: any, type: string): any {
+  protected validateField(field: string, val: any, type: string, noTrim?: boolean): any {
     let valType;
 
     if (type === 'array') {
@@ -31,6 +32,11 @@ export abstract class ObjectBase {
       }
     } else {
       valType = typeof val;
+    }
+
+    // trim string values (unless noTrim flag is set)
+    if (valType === 'string' && !noTrim) {
+      val = val.trim();
     }
 
     if (valType !== type) {
@@ -89,5 +95,39 @@ export abstract class ObjectBase {
       }
     }
     return 0;
+  }
+
+  /**
+   * Simple trace wrapper to reduce the number of useless module calls
+   * @param file
+   * @param method
+   * @param msg
+   */
+  protected logTrace(file: string, method: string, msg: string) {
+    if (log.LogLevel >= LOG_LEVELS.TRACE) {
+      log.trace(file, method, msg);
+    }
+  }
+
+  /**
+   * Simple debug wrapper to reduce the number of useless module calls
+   * @param file
+   * @param method
+   * @param msg
+   */
+  protected logDebug(file: string, method: string, msg: string) {
+    if (log.LogLevel >= LOG_LEVELS.DEBUG) {
+      log.debug(file, method, msg);
+    }
+  }
+
+  /**
+   * Hashed UUIDs should be shorter and easier to work with while hopefully still
+   * unique enough for our needs
+   */
+  protected generateId(): string {
+    const newId = hash(uuid());
+    log.trace(__filename, 'generateId()', 'newId=' + newId);
+    return newId;
   }
 }
