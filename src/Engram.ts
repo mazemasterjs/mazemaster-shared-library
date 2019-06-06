@@ -1,4 +1,4 @@
-import { IEngram } from './IEngram';
+import { ObjectBase } from './ObjectBase';
 // An engram contains a snapshot of sensory data correlating to the
 // player's position within the maze.  Each sense is a string.
 //
@@ -6,26 +6,27 @@ import { IEngram } from './IEngram';
 // sight = "You are standing in a room. There are exits to the North and South."
 // sound = "You hear the sound of dripping water coming from the South."
 
-export class Engram {
+export class Engram extends ObjectBase {
   private sight: string;
   private sound: string;
   private smell: string;
   private touch: string;
   private taste: string;
 
-  constructor(data?: IEngram) {
-    if (data) {
-      this.sight = data.sight.trim();
-      this.sound = data.sound.trim();
-      this.smell = data.smell.trim();
-      this.touch = data.touch.trim();
-      this.taste = data.taste.trim();
-    } else {
-      this.sight = '';
-      this.sound = '';
-      this.smell = '';
-      this.touch = '';
-      this.taste = '';
+  constructor(data?: any) {
+    super();
+    this.sight = '';
+    this.sound = '';
+    this.smell = '';
+    this.touch = '';
+    this.taste = '';
+
+    if (data !== undefined) {
+      this.sight = this.validateField('sight', data.sight, 'string');
+      this.sound = this.validateField('sound', data.sound, 'string');
+      this.smell = this.validateField('smell', data.smell, 'string');
+      this.touch = this.validateField('touch', data.touch, 'string');
+      this.taste = this.validateField('taste', data.taste, 'string');
     }
   }
 

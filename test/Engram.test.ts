@@ -1,5 +1,4 @@
 import { Engram } from '../src/Engram';
-import { IEngram } from '../src/IEngram';
 import { expect } from 'chai';
 
 // test cases
@@ -11,7 +10,7 @@ describe(__filename + ' - Engram Tests', () => {
   engram.Taste = 'You taste';
   engram.Touch = 'You feel';
 
-  const engramData: IEngram = {
+  const engramData = {
     sight: 'You see',
     smell: 'You smell',
     sound: 'You hear',
