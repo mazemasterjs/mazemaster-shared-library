@@ -28,7 +28,6 @@
   "homepage": "https://github.com/mazemasterjs/shared-library",
   "dependencies": {
     "@mazemasterjs/logger": "^1.0.10",
-    "@types/seedrandom": "^2.4.28",
     "seedrandom": "^2.4.4",
     "uuid": "^3.3.2"
   },
@@ -40,6 +39,7 @@
     "@types/mongodb": "^3.1.28",
     "@types/node": "^10.14.8",
     "@types/object-hash": "^1.2.0",
+    "@types/seedrandom": "^2.4.28",
     "@types/uuid": "^3.4.4",
     "chai": "^4.2.0",
     "dotenv": "^6.2.0",
