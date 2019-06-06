@@ -100,10 +100,6 @@ export class Game extends ObjectBase {
 
   public get BotId(): string {
     this.lastAccessed = Date.now();
-    if (this.botId === '') {
-      log.warn(__filename, 'get BotId()', 'Warning: BotId is empty. Game mode is MULTI_PLAYER.');
-    }
-
     return this.botId;
   }
 
@@ -224,9 +220,6 @@ export class Game extends ObjectBase {
 
   public get TeamId(): string {
     this.lastAccessed = Date.now();
-    if (this.teamId === '') {
-      log.warn(__filename, 'get TeamId()', 'Warning: TeamId is empty. Game mode is SINGLE_PLAYER');
-    }
     return this.teamId;
   }
 
