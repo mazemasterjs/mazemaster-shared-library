@@ -11,7 +11,7 @@ export class Action extends ObjectBase {
    * @param jsonData
    */
   public static fromJson(jsonData: IAction): Action {
-    const action = new Action();
+    const action = new Action(0, 0, '');
     action.command = action.validateEnumField('command', 'COMMANDS', COMMANDS, jsonData.command);
     action.direction = action.validateEnumField('direction', 'DIRS', DIRS, jsonData.direction);
     action.engram = action.validateDataField('engram', jsonData.engram, 'object');
@@ -24,6 +24,7 @@ export class Action extends ObjectBase {
 
   public command: COMMANDS;
   public direction: DIRS;
+  public message: string;
   public engram: Engram;
   public outcomes: Array<string>;
   public score: number;
@@ -31,10 +32,11 @@ export class Action extends ObjectBase {
   public trophies: Array<ITrophyStub>;
   public botCohesion: Array<number>;
 
-  constructor() {
+  constructor(command: COMMANDS, direction: DIRS, message: string) {
     super();
-    this.command = COMMANDS.NONE;
-    this.direction = DIRS.NONE;
+    this.command = command;
+    this.direction = direction;
+    this.message = message;
     this.engram = new Engram();
     this.outcomes = new Array<string>();
     this.score = 0;
@@ -50,6 +52,7 @@ export class Action extends ObjectBase {
     const stub: IAction = {
       command: this.command,
       direction: this.direction,
+      message: this.message,
       engram: this.engram,
       outcomes: this.outcomes,
       score: this.score,

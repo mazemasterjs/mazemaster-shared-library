@@ -5,6 +5,7 @@ import ITrophyStub from './ITrophyStub';
 export interface IAction {
   command: COMMANDS;
   direction: DIRS;
+  message: string;
   engram: Engram;
   outcomes: Array<string>;
   score: number;

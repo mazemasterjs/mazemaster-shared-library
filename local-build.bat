@@ -9,7 +9,7 @@ mkdir dist
 
 if EXIST "bin" (
     echo "Clearing bin\ directory"
-    REM rmdir /s /q bin
+    rmdir /s /q bin
 )
 
 echo "Compiling library"

@@ -6,6 +6,8 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ### v1.8.3
 
+- Static .fromJson(data: any) instantiators added Action, MazeLoc, and Score classes (probably will repace other "loadData" functions with this appropach in the future)
+- Action class requires command, direction, and message values in constructor
 - Trophies removed from Team and Bot - now maintained in Score
 - updated validateDataField(field: string, val: any, type: string, noTrim?: boolean): any
 - added ObjectBase.validateEnumField(fieldName: string, enumName: string, enumObj: object, enumVal: number): number
