@@ -81,6 +81,7 @@ export enum COMMANDS {
   MOVE,
   JUMP,
   WRITE,
+  QUIT,
 }
 
 // enumeration of possible game results
