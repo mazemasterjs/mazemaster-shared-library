@@ -4,6 +4,16 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Notes
 
+### v1.8.3
+
+- Trophies removed from Team and Bot - now maintained in Score
+- updated validateDataField(field: string, val: any, type: string, noTrim?: boolean): any
+- added ObjectBase.validateEnumField(fieldName: string, enumName: string, enumObj: object, enumVal: number): number
+- fixed isNumber check in Helpers getSelectedBitNames and listSelectedBitNames functions
+- Location class renamed to "MazeLoc" - there's a core node class called "Location" that seemed to be interfering with some things
+- Completely reworked Action and Score classes and how they relate to Game
+- Moved interfaces into ./Interfaces subfolder - it was just getting crowded
+
 ### v1.8.2
 
 - Team / Bot (aka Single / Multiplayer) game modes set automatically - if a botId is provided, game is single-player

@@ -40,12 +40,6 @@ describe(__filename + ' - Trophy Tests', () => {
 
   let vt: Trophy;
 
-  //   const trophyDataInvalid1 =
-  //     '{"id":"TEST_TROPHY_ID_VALID","name":"THIS IS A VALID TEST TROPHY","description":"THIS IS ONLY A TEST TROPHY","bonusAward":333,"count":333,"lastUpdated":333333333}';
-
-  //   const trophyDataInvalid2 =
-  //     '{"id":"TEST_TROPHY_ID_VALID","name":"THIS IS A VALID TEST TROPHY","description":"THIS IS ONLY A TEST TROPHY","bonusAward":333,"count":333,"lastUpdated":333333333}';
-
   before('Instantiate valid Trophy', () => {
     vt = new Trophy(JSON.parse(JSON.stringify(goodData)));
   });
@@ -64,14 +58,6 @@ describe(__filename + ' - Trophy Tests', () => {
 
   it(`vt.BonusAward should be ${goodData.bonusAward} `, () => {
     return assert(vt.BonusAward === goodData.bonusAward);
-  });
-
-  it(`vt.Count should be ${goodData.count} `, () => {
-    return assert(vt.Count === goodData.count);
-  });
-
-  it(`vt.LastUpdated should be ${goodData.lastUpdated} `, () => {
-    return assert(vt.LastUpdated === goodData.lastUpdated);
   });
 
   it(`Trophy from badData1 should throw error`, () => {

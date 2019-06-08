@@ -16,8 +16,9 @@ echo "Compiling library"
 tsc|rem
 
 echo "Copying files in bin\ to dist\"
-copy bin\*.* dist\
-copy bin\types\*.* dist\
+robocopy /MIR bin\ dist\
+
+
 
 echo "Copying package files to dist\"
 copy LICENSE dist\

@@ -22,7 +22,8 @@ export function listSelectedBitNames(bitwiseEnum: object, selectedBits: number):
   log.trace(__filename, `listSelectedBitNames(${bitwiseEnum}, ${selectedBits}`, 'Listing selected bit names from enumeration.');
 
   for (const dir in bitwiseEnum) {
-    if (Number(dir)) {
+    // having a hard time with isNumber(0) for some reason - isNaN(parseInt()) seems more reliable
+    if (!isNaN(parseInt(dir, 10))) {
       const bitVal: number = parseInt(dir, 10);
       if (!!(bitVal & selectedBits)) {
         const stringVal: string = (bitwiseEnum as any)[bitVal];
@@ -50,7 +51,8 @@ export function getSelectedBitNames(bitwiseEnum: object, selectedBits: number): 
   const ret: string[] = new Array<string>();
 
   for (const dir in bitwiseEnum) {
-    if (Number(dir)) {
+    // having a hard time with isNumber(0) for some reason - isNaN(parseInt()) seems more reliable
+    if (!isNaN(parseInt(dir, 10))) {
       const bitVal: number = parseInt(dir, 10);
       if (!!(bitVal & selectedBits)) {
         const stringVal: string = (bitwiseEnum as any)[bitVal];

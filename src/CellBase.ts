@@ -1,5 +1,5 @@
 import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
-import { Location } from './Location';
+import { MazeLoc } from './MazeLoc';
 import { ObjectBase } from './ObjectBase';
 import { Logger } from '@mazemasterjs/logger';
 import * as Helpers from './Helpers';
@@ -8,7 +8,7 @@ import * as Helpers from './Helpers';
 const log = Logger.getInstance();
 
 export class CellBase extends ObjectBase {
-  protected pos: Location;
+  protected pos: MazeLoc;
   protected exits: number;
   protected tags: number;
   protected traps: number;
@@ -19,7 +19,7 @@ export class CellBase extends ObjectBase {
   constructor(jsonData?: any) {
     super();
     log.trace(__filename, 'constructor()', 'Instantiating new CellBase.');
-    this.pos = new Location(0, 0);
+    this.pos = new MazeLoc(0, 0);
     this.exits = DIRS.NONE;
     this.tags = CELL_TAGS.NONE;
     this.traps = CELL_TRAPS.NONE;
@@ -35,13 +35,13 @@ export class CellBase extends ObjectBase {
   public loadData(jsonData: any) {
     log.trace(__filename, `loadData(${jsonData})`, 'Attempting to populate CellBase from jsonData...');
     if (jsonData !== undefined) {
-      this.pos = this.validateField('pos', jsonData.pos, 'object');
-      this.exits = this.validateField('exits', jsonData.exits, 'number');
-      this.tags = this.validateField('tags', jsonData.tags, 'number');
-      this.traps = this.validateField('traps', jsonData.traps, 'number');
-      this.visits = this.validateField('visits', jsonData.visits, 'number');
-      this.lastVisit = this.validateField('lastVisit', jsonData.lastVisit, 'number');
-      this.notes = this.validateField('notes', jsonData.notes, 'array');
+      this.pos = this.validateDataField('pos', jsonData.pos, 'object');
+      this.exits = this.validateDataField('exits', jsonData.exits, 'number');
+      this.tags = this.validateDataField('tags', jsonData.tags, 'number');
+      this.traps = this.validateDataField('traps', jsonData.traps, 'number');
+      this.visits = this.validateDataField('visits', jsonData.visits, 'number');
+      this.lastVisit = this.validateDataField('lastVisit', jsonData.lastVisit, 'number');
+      this.notes = this.validateDataField('notes', jsonData.notes, 'array');
     } else {
       log.warn(__filename, `loadData(${jsonData})`, 'Unable to load JSON Data into CellBase: ' + JSON.stringify(jsonData));
     }
@@ -79,8 +79,8 @@ export class CellBase extends ObjectBase {
   /**
    * Returns an array representing the cells grid coordinates (row, col)
    */
-  public get Location(): Location {
-    return new Location(this.pos.row, this.pos.col);
+  public get Location(): MazeLoc {
+    return new MazeLoc(this.pos.row, this.pos.col);
   }
 
   /**
@@ -88,7 +88,7 @@ export class CellBase extends ObjectBase {
    * @param x
    * @param y
    */
-  public set Location(pos: Location) {
+  public set Location(pos: MazeLoc) {
     this.pos = pos;
   }
 

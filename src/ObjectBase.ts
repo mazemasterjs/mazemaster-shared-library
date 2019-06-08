@@ -1,8 +1,6 @@
 import uuid from 'uuid/v4';
 import { MD5 as hash } from 'object-hash';
 import { LOG_LEVELS, Logger } from '@mazemasterjs/logger';
-import { TROPHY_IDS } from './Enums';
-import { ITrophyStub } from './ITrophyStub';
 import { isArray } from 'util';
 
 const log = Logger.getInstance();
@@ -21,9 +19,10 @@ export abstract class ObjectBase {
    * @param type string - the type name to check for for
    *
    * @returns any - Returns the given val if validation succeeds
-   * @throws Error - Will throw a 'Type Error' if the typing is incrrect
+   * @throws Validation Error
    */
-  protected validateField(field: string, val: any, type: string, noTrim?: boolean): any {
+  protected validateDataField(field: string, val: any, type: string, noTrim?: boolean): any {
+    const method = `validateDataField(${field}, ${val}, ${type})`;
     let valType;
 
     if (type === 'array') {
@@ -41,60 +40,42 @@ export abstract class ObjectBase {
 
     if (valType !== type) {
       const err = new Error(`${field} field is ${valType}, expected ${type}.`);
-      log.error(__filename, `validateField(${field}, ${val}, ${type})`, 'Type Error ->', err);
+      log.error(__filename, method, 'Validation Error ->', err);
       throw err;
     }
 
-    log.trace(__filename, `validateField(${field}, ${val}, ${type})`, `${field} field is ${valType}, as expected.`);
+    this.logTrace(__filename, method, `${field} field is ${valType}, as expected.`);
     return val;
   }
 
   /**
-   * Grants a trophy by increasing the count or adding a s to the given array
+   * Validate that enumeration values passed from json data match
+   * values stored in the actual enumeration
    *
-   * @param trophyId number - An enumeration value from Enums.TROPHY_IDS
-   * @param trophyStubs Array<ITrophyStub> - Array of stubs to to add the trophy to.
-   * @returns Array<ITrophyStub>
+   * @param fieldName - name of the class field being validated
+   * @param enumName - name of the enumeration to validate against
+   * @param enumObj - the enumeration to validate against
+   * @param enumVal - the value to validate
+   *
+   * @returns number - the validated value of enumVal
+   * @throws Validation Error
    */
-  protected addTrophy(trophyId: TROPHY_IDS, trophyStubs: Array<ITrophyStub>): Array<ITrophyStub> {
-    log.trace(__filename, 'addTrophy(trophyId: number, trophyStubs: Array<ITrophyStub>)', `Adding trophyId ${trophyId} to trophyStubs array.`);
-    // first check for existing trophy and increment count
-    for (const trophy of trophyStubs) {
-      if (trophy.id === trophyId) {
-        trophy.count++;
-        return trophyStubs;
+  protected validateEnumField(fieldName: string, enumName: string, enumObj: object, enumVal: number): number {
+    const method = `validateEnumField(${fieldName}, ${enumName}, ${enumObj}, ${enumVal})`;
+    this.logDebug(__filename, method, 'Validating enumerated field value.');
+
+    for (const val in enumObj) {
+      if (val) {
+        if (!isNaN(parseInt(val, 10)) && parseInt(val, 10) === enumVal) {
+          this.logDebug(__filename, method, `${fieldName} field value is valid within enumeration ${enumName}`);
+          return enumVal;
+        }
       }
     }
 
-    // trophy wasn't found, so we have to add a new stub with a count of 1
-    const tStub: ITrophyStub = {
-      count: 1,
-      id: trophyId,
-      name: TROPHY_IDS[trophyId],
-    };
-
-    // add it to the array
-    trophyStubs.push(tStub);
-
-    // return the array
-    return trophyStubs;
-  }
-
-  /**
-   * Returns the count (number of times awarded) of the
-   * trophy with the given TrophyId from Enums.TROPHY_IDS
-   *
-   * @param trophyId (Enums.TROPHY_IDS) - The Id of the trophy to get a count of
-   */
-  protected countTrophy(trophyId: TROPHY_IDS, trophyStubs: Array<ITrophyStub>): number {
-    log.trace(__filename, 'countTrophy(trophyId: number, trophyStubs: Array<ITrophyStub>)', `Getting count of trophyId ${trophyId}.`);
-
-    for (const trophy of trophyStubs) {
-      if (trophy.id === trophyId) {
-        return trophy.count;
-      }
-    }
-    return 0;
+    const err = new Error(`${fieldName} field value is not valid within enumeration ${enumName}.`);
+    log.error(__filename, method, 'Validation Error ->', err);
+    throw err;
   }
 
   /**

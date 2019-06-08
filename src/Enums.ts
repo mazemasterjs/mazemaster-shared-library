@@ -1,6 +1,6 @@
 // Enumerated Trophy IDs
 export enum TROPHY_IDS {
-  WASTED_TIME = 0,
+  WASTED_TIME,
   NERVOUS_WALK,
   WATCHING_PAINT_DRY,
   WISHFUL_THINKING,
@@ -72,9 +72,21 @@ export enum CELL_TRAPS {
   FLAMETHOWER = 8,
 }
 
+// Available Player Actions
+export enum COMMANDS {
+  NONE,
+  LOOK,
+  SIT,
+  STAND,
+  MOVE,
+  JUMP,
+  WRITE,
+}
+
 // enumeration of possible game results
 export enum GAME_RESULTS {
-  IN_PROGRESS = 0,
+  NONE,
+  IN_PROGRESS,
   OUT_OF_MOVES,
   OUT_OF_TIME,
   DEATH_TRAP,
@@ -87,7 +99,7 @@ export enum GAME_RESULTS {
 
 // enumeration of possible game states
 export enum GAME_STATES {
-  NEW = 0,
+  NEW,
   IN_PROGRESS,
   FINISHED,
   ABORTED,
@@ -96,13 +108,14 @@ export enum GAME_STATES {
 
 // enumeration of possible game modes
 export enum GAME_MODES {
-  MULTI_PLAYER = 0,
+  NONE,
   SINGLE_PLAYER,
+  MULTI_PLAYER,
 }
 
 // database types/names
 export enum DATABASES {
-  MAZES = 0,
+  MAZES,
   SCORES,
   TEAMS,
 }
@@ -112,6 +125,6 @@ export enum DATABASES {
  * context in order to operate safely and correctly
  */
 export enum FN_MODES {
-  ADD = 0,
+  ADD,
   REMOVE,
 }

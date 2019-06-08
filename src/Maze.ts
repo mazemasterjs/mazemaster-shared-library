@@ -2,7 +2,7 @@ import seedrandom from 'seedrandom';
 import Cell from './Cell';
 import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
 import { LOG_LEVELS, Logger } from '@mazemasterjs/logger';
-import { Location } from './Location';
+import { MazeLoc } from './MazeLoc';
 import { getEnvVar } from './Helpers';
 import { MazeBase } from './MazeBase';
 
@@ -12,7 +12,7 @@ let recurseDepth: number = 0; // tracks the level of recursion during path carvi
 let maxRecurseDepth: number = 0; // tracks the deepest level of carve recursion seen
 let startGenTime: number = 0; // used to determine time spent generating a maze
 let solutionPath: string[]; // used for the maze solver
-let playerPos: Location; // used for the maze solver
+let playerPos: MazeLoc; // used for the maze solver
 
 // maze settings with defaults - will be replaced
 // by loadEnvVars() in constructor
@@ -43,7 +43,7 @@ export class Maze extends MazeBase {
    * @param pos
    * @throws Out Of Bounds error if given position is outside of cells array's bounds.
    */
-  public getCell(pos: Location): Cell {
+  public getCell(pos: MazeLoc): Cell {
     if (pos.row < 0 || pos.row >= this.cells.length || pos.col < 0 || pos.col > this.cells[0].length) {
       const error = new Error(`Invalid cell coordinates given: [${pos.toString()}].`);
       log.error(__filename, `getCell${pos.row}, ${pos.col}`, 'Cell range out of bounds, throwing error.', error);
@@ -85,7 +85,7 @@ export class Maze extends MazeBase {
       this.logTrace(__filename, method, `Neighbor: ${row}, ${col}`);
     }
 
-    return this.getCell(new Location(row, col));
+    return this.getCell(new MazeLoc(row, col));
   }
 
   /**
@@ -126,7 +126,7 @@ export class Maze extends MazeBase {
       const cols: Array<Cell> = new Array();
       for (let col: number = 0; col < width; col++) {
         const cell: Cell = new Cell();
-        cell.Location = new Location(row, col);
+        cell.Location = new MazeLoc(row, col);
         this.logTrace(__filename, 'buildCellsArray()', `Adding cell in position [${row}, ${col}]`);
         cols.push(cell);
       }
@@ -142,16 +142,16 @@ export class Maze extends MazeBase {
     this.logDebug(__filename, method, `Adding START ([0, ${startCol}]) and FINISH ([${height - 1}, ${finishCol}) cells.`);
 
     // tag start and finish columns (start / finish tags force matching exits on edge)
-    this.startCell = new Location(0, startCol);
+    this.startCell = new MazeLoc(0, startCol);
     this.cells[0][startCol].addTag(CELL_TAGS.START);
     this.cells[0][startCol].addTag(CELL_TAGS.CARVED);
 
-    this.finishCell = new Location(height - 1, finishCol);
+    this.finishCell = new MazeLoc(height - 1, finishCol);
     this.cells[height - 1][finishCol].addTag(CELL_TAGS.FINISH);
 
     // start the carving routine
     this.logDebug(__filename, method, 'Starting carvePassage() from Start Cell: ' + this.startCell.toString());
-    this.carvePassage(this.getCell(new Location(this.StartCell.row, this.startCell.col)));
+    this.carvePassage(this.getCell(new MazeLoc(this.StartCell.row, this.startCell.col)));
     this.logDebug(__filename, method, 'carvePassage() complete.');
 
     // now solve the maze and tag the path
@@ -182,7 +182,7 @@ export class Maze extends MazeBase {
    * character blocks.
    */
   // tslint:disable-next-line: no-shadowed-variable
-  public generateTextRender(forceRegen: boolean, playerPos?: Location) {
+  public generateTextRender(forceRegen: boolean, playerPos?: MazeLoc) {
     const H_WALL = '+---';
     const S_DOOR = '+ S ';
     const F_DOOR = '+ F ';
@@ -293,7 +293,7 @@ export class Maze extends MazeBase {
    * and initializes tracking variables
    */
   public solveAndTag() {
-    playerPos = new Location(this.startCell.row, this.startCell.col);
+    playerPos = new MazeLoc(this.startCell.row, this.startCell.col);
     solutionPath = new Array<string>();
     this.tagSolution(playerPos, 0);
   }
@@ -383,7 +383,7 @@ export class Maze extends MazeBase {
    * @param cellPos
    * @param pathId
    */
-  private tagSolution(cellPos: Location, pathId: number) {
+  private tagSolution(cellPos: MazeLoc, pathId: number) {
     const method = `tagSolution(${cellPos.toString()}`;
     recurseDepth++;
     if (recurseDepth > maxRecurseDepth) {
@@ -418,8 +418,8 @@ export class Maze extends MazeBase {
 
       // loop through all directions until a valid move is found
       dirs.forEach(dir => {
-        const cLoc: Location = cell.Location; // current position
-        const nLoc: Location = new Location(cLoc.row, cLoc.col); // next position
+        const cLoc: MazeLoc = cell.Location; // current position
+        const nLoc: MazeLoc = new MazeLoc(cLoc.row, cLoc.col); // next position
 
         switch (dir) {
           case DIRS.NORTH:

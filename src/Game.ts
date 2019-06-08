@@ -1,9 +1,9 @@
-import { GAME_MODES, GAME_STATES, PLAYER_STATES } from './Enums';
+import { GAME_MODES, GAME_RESULTS, GAME_STATES, PLAYER_STATES } from './Enums';
 import { Score } from './Score';
 import { Logger } from '@mazemasterjs/logger';
-import { IGameStub } from './IGameStub';
+import { IGameStub } from './Interfaces/IGameStub';
 import { Player } from './Player';
-import { IAction } from './IAction';
+import { IAction } from './Interfaces/IAction';
 import MazeBase from './MazeBase';
 import { ObjectBase } from './ObjectBase';
 
@@ -22,23 +22,20 @@ export class Game extends ObjectBase {
   private botId: string;
   private lastAccessed: number;
 
-  constructor(maze: MazeBase, player: Player, score: Score, round: number, teamId: string, botId?: string) {
+  constructor(maze: MazeBase, teamId: string, botId?: string) {
     super();
 
     this.id = this.generateId();
     this.state = GAME_STATES.NEW;
     this.maze = maze;
-    this.player = player;
+    this.player = new Player(maze.StartCell, PLAYER_STATES.SITTING);
     this.actions = new Array<IAction>();
     this.lastAccessed = Date.now();
-    this.round = round;
+    this.round = 1;
     this.mode = GAME_MODES.SINGLE_PLAYER;
     this.teamId = teamId;
     this.botId = botId + '';
-    this.score = score;
-    this.score.MazeId = maze.Id;
-    this.score.GameId = this.id;
-    this.score.TeamId = teamId.trim();
+    this.score = new Score(this.id, maze.Id, this.teamId, this.mode, this.botId);
 
     // teamId is always required
     if (teamId === '') {
@@ -62,32 +59,6 @@ export class Game extends ObjectBase {
     return this.round;
   }
 
-  /**
-   * New game round - resets actions, score, player state, and player location
-   */
-  // TODO: This is not fully implemented.  Game Rounds are intended to give players
-  //       the chance to run a maze repeatedly, learning from each run and, hopefully, getting
-  //       better as they go.  Round-specific scores will not persist... should they?
-  public nextRound(): number {
-    this.lastAccessed = Date.now();
-    this.round++;
-    this.state = GAME_STATES.NEW;
-    this.actions = new Array<IAction>();
-    this.score = new Score();
-
-    // reset player to standing
-    this.player.clearStates();
-    this.player.addState(PLAYER_STATES.STANDING);
-
-    // player moves back to start cell
-    this.player.Location = this.maze.StartCell;
-
-    // set score round to match game round
-    this.score.GameRound = this.round;
-
-    return this.round;
-  }
-
   public get LastAccessTime() {
     this.lastAccessed = Date.now();
     return this.lastAccessed;
@@ -105,7 +76,7 @@ export class Game extends ObjectBase {
 
   public addAction(action: IAction) {
     if (this.state === GAME_STATES.NEW) {
-      this.state = GAME_STATES.IN_PROGRESS;
+      this.State = GAME_STATES.IN_PROGRESS;
     }
     this.lastAccessed = Date.now();
     this.actions.push(action);
@@ -195,15 +166,12 @@ export class Game extends ObjectBase {
 
   // returns game mode: single or multiplayer
   public get Mode(): GAME_MODES {
+    this.lastAccessed = Date.now();
     return this.mode;
   }
 
-  // sets game mode: single or multiplayer
-  public set Mode(mode: GAME_MODES) {
-    this.mode = mode;
-  }
-
   public get State() {
+    this.lastAccessed = Date.now();
     // no last access update here because this function is used by cache manager
     return this.state;
   }
@@ -211,6 +179,19 @@ export class Game extends ObjectBase {
   public set State(gameState: GAME_STATES) {
     this.lastAccessed = Date.now();
     this.state = gameState;
+
+    // update the score GAME_RESULT value as well
+    switch (gameState) {
+      case GAME_STATES.IN_PROGRESS: {
+        this.score.GameResult = GAME_RESULTS.IN_PROGRESS;
+        return;
+      }
+      case GAME_STATES.ABORTED:
+      case GAME_STATES.ERROR: {
+        this.score.GameResult = GAME_RESULTS.ABANDONED;
+        return;
+      }
+    }
   }
 
   public get Maze(): MazeBase {

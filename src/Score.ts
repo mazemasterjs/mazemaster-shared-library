@@ -1,75 +1,73 @@
-import { GAME_MODES, GAME_RESULTS } from './Enums';
-import { IScore } from './IScore';
+import { GAME_MODES, GAME_RESULTS, TROPHY_IDS } from './Enums';
 import Logger from '@mazemasterjs/logger';
 import { ObjectBase } from './ObjectBase';
+import ITrophyStub from './Interfaces/ITrophyStub';
 
 const log = Logger.getInstance();
 
 export class Score extends ObjectBase {
-  private mazeId: string;
-  private teamId: string;
-  private gameId: string; // multiple scores can be saved under the same gameId - one for each game round
-  private botId: string;
-  private gameRound: number;
-  private id: string;
-  private lastUpdated: number;
-  private gameResult: GAME_RESULTS;
-  private moveCount: number;
-  private backtrackCount: number;
-  private bonusPoints: number;
-  private gameMode: GAME_MODES;
-
-  constructor(jsonData?: IScore) {
-    super();
-
-    this.id = this.generateId();
-    this.mazeId = '';
-    this.teamId = '';
-    this.gameId = '';
-    this.gameRound = 1;
-    this.lastUpdated = -1;
-    this.botId = '';
-    this.gameResult = GAME_RESULTS.IN_PROGRESS;
-    this.moveCount = 0;
-    this.bonusPoints = 0;
-    this.backtrackCount = 0;
-    this.gameMode = GAME_MODES.SINGLE_PLAYER;
-
-    if (jsonData !== undefined) {
-      this.loadData(jsonData);
-    }
-  }
-
   /**
-   * Attempts to load the given JSON Object into the current Score instance
+   * Attempts to load the given JSON Object into a new score object
+   *
    * @param jsonData
    */
-  public loadData(jsonData: any) {
-    this.logDebug(__filename, `loadData(${jsonData})`, 'Attempting to populate ScoreBase from jsonData...');
+  public static fromJson(jsonData: any): Score {
+    const score: Score = new Score('', '', '', GAME_MODES.NONE);
+    score.logDebug(__filename, `fromJson(${jsonData})`, 'Attempting to populate ScoreBase from jsonData...');
+
     if (jsonData !== undefined) {
-      this.id = this.validateField('id', jsonData.id, 'string');
-      this.mazeId = this.validateField('mazeId', jsonData.mazeId, 'string');
-      this.teamId = this.validateField('teamId', jsonData.teamId, 'string');
-      this.gameId = this.validateField('teamId', jsonData.gameId, 'string');
-      this.gameRound = this.validateField('teamId', jsonData.gameRound, 'number');
-      this.lastUpdated = this.validateField('lastUpdated', jsonData.lastUpdated, 'number');
-      this.botId = this.validateField('botId', jsonData.botId, 'string');
-      this.gameResult = this.validateField('gameResult', jsonData.gameResult, 'number');
-      this.moveCount = this.validateField('moveCount', jsonData.moveCount, 'number');
-      this.bonusPoints = this.validateField('bonusPoints', jsonData.bonusPoints, 'number');
-      this.backtrackCount = this.validateField('backtrackCount', jsonData.backtrackCount, 'number');
-      this.gameMode = this.validateField('gameMode', jsonData.gameMode, 'number');
-      this.validateEnums();
+      score.id = score.validateDataField('id', jsonData.id, 'string');
+      score.mazeId = score.validateDataField('mazeId', jsonData.mazeId, 'string');
+      score.teamId = score.validateDataField('teamId', jsonData.teamId, 'string');
+      score.gameId = score.validateDataField('teamId', jsonData.gameId, 'string');
+      score.botId = score.validateDataField('botId', jsonData.botId, 'string');
+      score.gameMode = score.validateEnumField('gameMode', 'GAME_MODES', GAME_MODES, jsonData.gameMode);
+      score.gameRound = score.validateDataField('teamId', jsonData.gameRound, 'number');
+      score.gameResult = score.validateEnumField('gameResult', 'GAME_RESULTS', GAME_RESULTS, jsonData.gameResult);
+      score.moveCount = score.validateDataField('moveCount', jsonData.moveCount, 'number');
+      score.backtrackCount = score.validateDataField('backtrackCount', jsonData.backtrackCount, 'number');
+      score.trophyStubs = score.validateDataField('trophyStubs', jsonData.trophyStubs, 'array');
+      score.bonusPoints = score.validateDataField('bonusPoints', jsonData.bonusPoints, 'number');
     } else {
       log.warn(__filename, `loadData(${jsonData})`, 'Unable to load JSON data into MazeBase object: ' + JSON.stringify(jsonData));
     }
+    return score;
+  }
+
+  protected id: string;
+  protected gameId: string;
+  protected mazeId: string;
+  protected teamId: string;
+  protected botId: string;
+  protected gameMode: GAME_MODES;
+  protected gameRound: number;
+  protected gameResult: GAME_RESULTS;
+  protected moveCount: number;
+  protected backtrackCount: number;
+  protected trophyStubs: Array<ITrophyStub>;
+  protected bonusPoints: number;
+  private BASE_SCORE: number = 1000;
+
+  constructor(gameId: string, mazeId: string, teamId: string, gameMode: GAME_MODES, botId?: string) {
+    super();
+    this.id = this.generateId();
+    this.gameId = gameId;
+    this.mazeId = mazeId;
+    this.teamId = teamId;
+    this.gameMode = gameMode;
+    this.botId = botId ? botId : '';
+    this.gameRound = 1;
+    this.gameResult = GAME_RESULTS.NONE;
+    this.moveCount = 0;
+    this.backtrackCount = 0;
+    this.trophyStubs = new Array<ITrophyStub>();
+    this.bonusPoints = 0;
   }
 
   /**
    * Increments the players move count by one.
    */
   public addMove() {
-    this.lastUpdated = Date.now();
     this.moveCount++;
   }
 
@@ -81,7 +79,6 @@ export class Score extends ObjectBase {
    */
   // TODO: This is probably deprecated...
   public addMoves(moves: number) {
-    this.lastUpdated = Date.now();
     this.moveCount = this.moveCount + moves;
   }
 
@@ -90,16 +87,15 @@ export class Score extends ObjectBase {
    */
   public addBacktrack() {
     this.backtrackCount++;
-    this.lastUpdated = Date.now();
   }
 
   /**
    * Calculate and return the total game score.  All games start with 1000
    * points.  Then:
    *
-   * Add bonusPoints (awarded when trophies are added)
-   * Subtract moveCount
-   * Subtract backtrackCount * 2
+   * Add bonusPoints (awarded during gameplay, usually via trophies)
+   * Subtract (moveCount - backtrackCount)
+   * Subtract (backtrackCount * 2)
    *
    * gameResults generally reflected via trophies, but special cases:
    * - ABANDONED: Score reset to zero
@@ -113,43 +109,73 @@ export class Score extends ObjectBase {
       return 0;
     } else {
       // all game start with 1000 points
-      let total = 1000;
+      const btMod = this.backtrackCount * 2;
+      const mcMod = this.moveCount - this.backtrackCount;
 
-      total += this.bonusPoints;
-      total -= this.moveCount;
-      total -= this.backtrackCount * 2;
-
-      return total;
+      return this.BASE_SCORE + this.bonusPoints - mcMod - btMod;
     }
   }
 
   /**
-   * Validate that enumeration values passed from json data match
-   * values stored in the actual enumerations
+   * Grants a trophy by increasing the count or adding a stub to the given array
    *
-   * @returns boolean - true on successful validation
-   * @throws Validation Error
+   * @param trophyEnum number - An enumeration value from Enums.TROPHY_IDS
+   * @param trophyStubs Array<ITrophyStub> - Array of stubs to to add the trophy to.
+   * @returns number - current count of the trophy added
    */
-  private validateEnums(): boolean {
-    const messages = new Array<string>();
+  public addTrophy(trophyEnum: TROPHY_IDS): number {
+    const trophyName = TROPHY_IDS[this.validateEnumField('trophyId', 'TROPHY_IDS', TROPHY_IDS, trophyEnum)];
+    log.trace(__filename, `addTrophy(${trophyEnum})`, `Adding ${trophyName} to trophyStubs array.`);
 
-    if (!GAME_RESULTS[this.gameResult]) {
-      messages.push(`gameResult value (${this.gameResult}) not found within Enums.GAME_RESULTS`);
-    }
+    // find the trophy in the array
+    let tStub = this.trophyStubs.find((ts: ITrophyStub) => {
+      return ts.id === trophyName;
+    });
 
-    if (!GAME_MODES[this.gameMode]) {
-      messages.push(`gameMode value (${this.gameMode}) not found within Enums.GAME_MODES`);
-    }
-
-    if (messages.length > 0) {
-      const error = new Error(messages.join(' :: '));
-      log.error(__filename, `validateEnums()`, 'Validation Error ->', error);
-      throw error;
+    // increment count if found
+    if (tStub !== undefined) {
+      tStub.count++;
     } else {
-      this.logTrace(__filename, 'validateEnums()', 'Enumeration values validated.');
+      // otherwise add a new one to the array
+      tStub = { id: trophyName, count: 1 };
+      this.trophyStubs.push(tStub);
     }
 
-    return true;
+    // return the array
+    return tStub.count;
+  }
+
+  /**
+   * Returns the count (number of times awarded) of the
+   * trophy with the given TrophyId from Enums.TROPHY_IDS
+   *
+   * @param trophyId (Enums.TROPHY_IDS) - The Id of the trophy to get a count of
+   */
+  public getTrophyCount(trophyId: TROPHY_IDS): number {
+    log.trace(__filename, 'getTrophyCount(trophyId: number)', `Getting count of trophyId ${TROPHY_IDS[trophyId]}.`);
+
+    // find the trophy in the array
+    const tStub = this.trophyStubs.find((ts: ITrophyStub) => {
+      return ts.id === TROPHY_IDS[trophyId];
+    });
+
+    // return count or 0 if the trophy isn't in the array
+    return tStub === undefined ? 0 : tStub.count;
+  }
+
+  /**
+   * Return the trophy stubs associated with this score
+   */
+  public get Trophies(): Array<ITrophyStub> {
+    return this.trophyStubs;
+  }
+
+  /**
+   * Sets the total number of bonus points to the given value.
+   * @param number - bonus point value to apply
+   */
+  public addBonusPoints(value: number) {
+    this.bonusPoints += value;
   }
 
   /**
@@ -164,14 +190,6 @@ export class Score extends ObjectBase {
    */
   public set GameMode(mode: GAME_MODES) {
     this.gameMode = mode;
-  }
-
-  /**
-   * Returns the last time (Date.now()) the score object was updated
-   * @returns number
-   */
-  public get LastUpdated(): number {
-    return this.lastUpdated;
   }
 
   /**
@@ -199,6 +217,7 @@ export class Score extends ObjectBase {
   /**
    * @return string - the MazeId associated with this score
    */
+
   public get MazeId(): string {
     return this.mazeId;
   }
@@ -272,24 +291,6 @@ export class Score extends ObjectBase {
   }
 
   /**
-   * Sets the total number of bonus points to the given value.
-   * @param number - bonus point value to apply
-   */
-  public set BonusPoints(value: number) {
-    this.lastUpdated = Date.now();
-    this.bonusPoints = value;
-  }
-
-  /**
-   * Sets the total number of bonus points to the given value.
-   * @param number - bonus point value to apply
-   */
-  public set addBonusPoints(value: number) {
-    this.lastUpdated = Date.now();
-    this.bonusPoints += value;
-  }
-
-  /**
    * @returns an enumerated value from Enums.GAME_RESULTS representing the game result
    */
   public get GameResult(): GAME_RESULTS {
@@ -300,7 +301,6 @@ export class Score extends ObjectBase {
    * Set the GameResult to one of the values in Enums.GAME_RESULTS
    */
   public set GameResult(value: GAME_RESULTS) {
-    this.lastUpdated = Date.now();
     this.gameResult = value;
   }
 

@@ -15,18 +15,18 @@ export class Engram extends ObjectBase {
 
   constructor(data?: any) {
     super();
-    this.sight = '';
-    this.sound = '';
-    this.smell = '';
-    this.touch = '';
-    this.taste = '';
+    this.sight = 'You see...';
+    this.sound = 'You hear...';
+    this.smell = 'You smell...';
+    this.touch = 'You feel...';
+    this.taste = 'You taste...';
 
     if (data !== undefined) {
-      this.sight = this.validateField('sight', data.sight, 'string');
-      this.sound = this.validateField('sound', data.sound, 'string');
-      this.smell = this.validateField('smell', data.smell, 'string');
-      this.touch = this.validateField('touch', data.touch, 'string');
-      this.taste = this.validateField('taste', data.taste, 'string');
+      this.sight = this.validateDataField('sight', data.sight, 'string');
+      this.sound = this.validateDataField('sound', data.sound, 'string');
+      this.smell = this.validateDataField('smell', data.smell, 'string');
+      this.touch = this.validateDataField('touch', data.touch, 'string');
+      this.taste = this.validateDataField('taste', data.taste, 'string');
     }
   }
 

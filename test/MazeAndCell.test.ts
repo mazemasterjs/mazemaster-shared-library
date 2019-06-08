@@ -1,10 +1,10 @@
-import { IMazeStub } from '../src/IMazeStub';
+import { IMazeStub } from '../src/Interfaces/IMazeStub';
 import { Maze } from '../src/Maze';
 import { expect } from 'chai';
 import { LOG_LEVELS, Logger } from '@mazemasterjs/logger';
 import { MD5 as hash } from 'object-hash';
 import Cell from '../src/Cell';
-import Location from '../src/Location';
+import Location from '../src/MazeLoc';
 import { CELL_TAGS, CELL_TRAPS, DIRS } from '../src/Enums';
 
 // test cases

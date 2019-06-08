@@ -5,7 +5,7 @@
     "watch": false,
     "removeComments": false,
     "declaration": true,
-    "declarationDir": "bin/types",
+    "declarationDir": "bin",
     "sourceMap": true,
     "outDir": "bin",
     "strict": true,

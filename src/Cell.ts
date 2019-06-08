@@ -1,7 +1,7 @@
 import * as Helpers from './Helpers';
 import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
 import { Logger } from '@mazemasterjs/logger';
-import { Location } from './Location';
+import { MazeLoc } from './MazeLoc';
 import CellBase from './CellBase';
 
 /**
@@ -204,31 +204,31 @@ export class Cell extends CellBase {
     this.logTrace(__filename, `setExit(${modeName}, ${dirName})`, `Setting exits in [${this.pos.toString()}]. Existing exits: ${this.listExits()}.`);
 
     if (mode === FN_MODES.ADD ? !(this.exits & dir) : !!(this.exits & dir)) {
-      let nPos = new Location(-1, -1); // locate an adjoining cell - must open exit on both sides
+      let nPos = new MazeLoc(-1, -1); // locate an adjoining cell - must open exit on both sides
 
       switch (dir) {
         case DIRS.NORTH:
           validMove = this.pos.row > 0;
           if (validMove) {
-            nPos = new Location(this.pos.row - 1, this.pos.col);
+            nPos = new MazeLoc(this.pos.row - 1, this.pos.col);
           }
           break;
         case DIRS.SOUTH:
           validMove = this.pos.row < cells.length;
           if (validMove) {
-            nPos = new Location(this.pos.row + 1, this.pos.col);
+            nPos = new MazeLoc(this.pos.row + 1, this.pos.col);
           }
           break;
         case DIRS.EAST:
           validMove = this.pos.col < cells[0].length;
           if (validMove) {
-            nPos = new Location(this.pos.row, this.pos.col + 1);
+            nPos = new MazeLoc(this.pos.row, this.pos.col + 1);
           }
           break;
         case DIRS.WEST:
           validMove = this.pos.col > 0;
           if (validMove) {
-            nPos = new Location(this.pos.row, this.pos.col - 1);
+            nPos = new MazeLoc(this.pos.row, this.pos.col - 1);
           }
           break;
       }

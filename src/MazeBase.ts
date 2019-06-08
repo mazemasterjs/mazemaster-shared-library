@@ -1,8 +1,8 @@
 import Cell from './Cell';
 import { ObjectBase } from './ObjectBase';
-import { Location } from './Location';
+import { MazeLoc } from './MazeLoc';
 import { Logger } from '@mazemasterjs/logger';
-import IMazeStub from './IMazeStub';
+import IMazeStub from './Interfaces/IMazeStub';
 
 const log = Logger.getInstance();
 
@@ -15,8 +15,8 @@ export class MazeBase extends ObjectBase {
   protected seed: string;
   protected cells: Cell[][];
   protected textRender: string;
-  protected startCell: Location;
-  protected finishCell: Location;
+  protected startCell: MazeLoc;
+  protected finishCell: MazeLoc;
   protected shortestPathLength: number;
   protected trapCount: number;
   protected note: string;
@@ -37,8 +37,8 @@ export class MazeBase extends ObjectBase {
     this.seed = '';
     this.cells = new Array<Array<Cell>>();
     this.textRender = '';
-    this.startCell = new Location(0, 0);
-    this.finishCell = new Location(0, 0);
+    this.startCell = new MazeLoc(0, 0);
+    this.finishCell = new MazeLoc(0, 0);
     this.shortestPathLength = 0;
     this.trapCount = 0;
     this.note = '';
@@ -82,10 +82,10 @@ export class MazeBase extends ObjectBase {
   public get Id(): string {
     return this.id;
   }
-  public get StartCell(): Location {
+  public get StartCell(): MazeLoc {
     return this.startCell;
   }
-  public get FinishCell(): Location {
+  public get FinishCell(): MazeLoc {
     return this.finishCell;
   }
   public get ShortestPathLength(): number {
@@ -110,20 +110,20 @@ export class MazeBase extends ObjectBase {
     this.logDebug(__filename, `loadData(${jsonData})`, 'Loading data...');
 
     if (jsonData !== undefined) {
-      this.id = this.validateField('id', jsonData.id, 'string');
-      this.height = this.validateField('height', jsonData.height, 'number');
-      this.width = this.validateField('width', jsonData.width, 'number');
-      this.challenge = this.validateField('challenge', jsonData.challenge, 'number');
-      this.name = this.validateField('name', jsonData.name, 'string');
-      this.seed = this.validateField('seed', jsonData.seed, 'string');
-      this.cells = this.buildCellsArray(this.validateField('cells', jsonData.cells, 'array'));
-      this.textRender = this.validateField('textRender', jsonData.textRender, 'string', true);
-      this.startCell = this.validateField('startCell', jsonData.startCell, 'object');
-      this.finishCell = this.validateField('finishCell', jsonData.finishCell, 'object');
-      this.shortestPathLength = this.validateField('shortestPathLength', jsonData.shortestPathLength, 'number');
-      this.trapCount = this.validateField('trapCount', jsonData.trapCount, 'number');
-      this.note = this.validateField('note', jsonData.note, 'string');
-      this.lastUpdated = this.validateField('lastUpdated', jsonData.lastUpdated, 'number');
+      this.id = this.validateDataField('id', jsonData.id, 'string');
+      this.height = this.validateDataField('height', jsonData.height, 'number');
+      this.width = this.validateDataField('width', jsonData.width, 'number');
+      this.challenge = this.validateDataField('challenge', jsonData.challenge, 'number');
+      this.name = this.validateDataField('name', jsonData.name, 'string');
+      this.seed = this.validateDataField('seed', jsonData.seed, 'string');
+      this.cells = this.buildCellsArray(this.validateDataField('cells', jsonData.cells, 'array'));
+      this.textRender = this.validateDataField('textRender', jsonData.textRender, 'string', true);
+      this.startCell = this.validateDataField('startCell', jsonData.startCell, 'object');
+      this.finishCell = this.validateDataField('finishCell', jsonData.finishCell, 'object');
+      this.shortestPathLength = this.validateDataField('shortestPathLength', jsonData.shortestPathLength, 'number');
+      this.trapCount = this.validateDataField('trapCount', jsonData.trapCount, 'number');
+      this.note = this.validateDataField('note', jsonData.note, 'string');
+      this.lastUpdated = this.validateDataField('lastUpdated', jsonData.lastUpdated, 'number');
       this.logDebug(__filename, `loadData(${jsonData})`, 'Load successful.');
     } else {
       log.warn(__filename, `loadData(${jsonData})`, 'Unable to load JSON data into MazeBase object: ' + JSON.stringify(jsonData));

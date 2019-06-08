@@ -1,20 +1,20 @@
-import { Location } from './Location';
 import { PLAYER_STATES } from './Enums';
+import MazeLoc from './MazeLoc';
 
 // Class to maintain player state during a game
 export class Player {
-  private location: Location;
+  private location: MazeLoc;
   private state: PLAYER_STATES;
 
-  constructor(location: Location, state: PLAYER_STATES) {
+  constructor(location: MazeLoc, state: PLAYER_STATES) {
     this.location = location;
     this.state = state;
   }
 
-  public get Location(): Location {
+  public get Location(): MazeLoc {
     return this.location;
   }
-  public set Location(value: Location) {
+  public set Location(value: MazeLoc) {
     this.location = value;
   }
 
