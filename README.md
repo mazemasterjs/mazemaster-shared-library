@@ -4,6 +4,12 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Notes
 
+### v1.8.8
+
+- Player starting location was inadvertantly mapped as reference to maze's StartCell... Fixed.
+- Added two new TROPHY_IDS: STANDING_AROUND and TAKING_A_STAND
+- TROPHY_IDS id fields updated to map against actual data
+
 ### v1.8.7
 
 - Redefined BASE_SCORE as environment var. Default is 1000 - used as the starting score for a maze run
