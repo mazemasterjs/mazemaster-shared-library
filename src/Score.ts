@@ -48,7 +48,6 @@ export class Score extends ObjectBase {
   protected trophyStubs: Array<ITrophyStub>;
   protected bonusPoints: number;
   protected lastUpdated: number;
-  private BASE_SCORE: number = 1000;
 
   constructor(gameId: string, mazeId: string, teamId: string, gameMode: GAME_MODES, botId?: string) {
     super();
@@ -110,6 +109,14 @@ export class Score extends ObjectBase {
    * @returns number - the total score for the game
    */
   public getTotalScore(): number {
+    // read the base-score modifier from environment config
+    let BASE_SCORE = 1000;
+    if (process.env.BASE_SCORE !== undefined) {
+      BASE_SCORE = parseInt(process.env.BASE_SCORE + '', 10);
+    } else {
+      log.warn(__dirname, 'getTotalScore()', 'WARNING: BASE_SCORE ENV-VAR IS NOT DEFINED. Defaulting to 1000.');
+    }
+
     if (this.gameResult === GAME_RESULTS.ABANDONED || this.gameResult === GAME_RESULTS.OUT_OF_TIME) {
       return 0;
     } else {
@@ -117,7 +124,7 @@ export class Score extends ObjectBase {
       const btMod = this.backtrackCount * 2;
       const mcMod = this.moveCount - this.backtrackCount;
 
-      return this.BASE_SCORE + this.bonusPoints - mcMod - btMod;
+      return BASE_SCORE + this.bonusPoints - mcMod - btMod;
     }
   }
 

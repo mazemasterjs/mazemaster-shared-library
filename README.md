@@ -6,6 +6,10 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ### v1.8.5
 
+- Redefined BASE_SCORE as environment var. Default is 1000 - used as the starting score for a maze run
+
+### v1.8.5
+
 - Removed IMazeLoc - it's not very useful (and may be causing issues with instantiation?
 - Location class renamed to "MazeLoc" - there's a core node class called "Location" that seemed to be interfering with some things
   - It didn't help - something about this class prevents it from exposing internal functions when referenced via a parent object (e.g. Game->Player->MazeLoc)
