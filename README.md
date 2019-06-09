@@ -6,6 +6,10 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ### v1.8.5
 
+- Removed IMazeLoc - it's not very useful (and may be causing issues with instantiation?
+- Location class renamed to "MazeLoc" - there's a core node class called "Location" that seemed to be interfering with some things
+  - It didn't help - something about this class prevents it from exposing internal functions when referenced via a parent object (e.g. Game->Player->MazeLoc)
+- Re-added lastUpdated to Score object to support date-sorted database queries
 - Stripped property accessors from Engram - what was the point anyway? Lots of pointless accessors all over the place after recent refactoring, but may not get around to removing them all.
 - Fixed mismatch in Enum.TROPHY_IDS: WINNER_WINNER_CHEDDAR_DINNER is now CHICKEN_DINNER
 - Added COMMANDS enum: {NONE, LOOK, MOVE, JUMP, WRITE, SIT, STAND, QUIT}
@@ -15,7 +19,6 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 - updated validateDataField(field: string, val: any, type: string, noTrim?: boolean): any
 - added ObjectBase.validateEnumField(fieldName: string, enumName: string, enumObj: object, enumVal: number): number
 - fixed isNumber check in Helpers getSelectedBitNames and listSelectedBitNames functions
-- Location class renamed to "MazeLoc" - there's a core node class called "Location" that seemed to be interfering with some things
 - Completely reworked Action and Score classes and how they relate to Game
 - Moved interfaces into ./Interfaces subfolder - it was just getting crowded
 

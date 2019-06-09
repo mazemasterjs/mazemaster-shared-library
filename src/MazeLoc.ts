@@ -1,10 +1,8 @@
-import IMazeLoc from './Interfaces/IMazeLoc';
-
 /**
  * Simple x, y coordinates class used for maze positioning
  *
  */
-export class MazeLoc implements IMazeLoc {
+export class MazeLoc {
   /**
    * Return an instance from JSON data
    */

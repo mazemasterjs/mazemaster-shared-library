@@ -28,6 +28,7 @@ export class Score extends ObjectBase {
       score.backtrackCount = score.validateDataField('backtrackCount', jsonData.backtrackCount, 'number');
       score.trophyStubs = score.validateDataField('trophyStubs', jsonData.trophyStubs, 'array');
       score.bonusPoints = score.validateDataField('bonusPoints', jsonData.bonusPoints, 'number');
+      score.lastUpdated = score.validateDataField('lastUpdated', jsonData.lastUpdated, 'number');
     } else {
       log.warn(__filename, `loadData(${jsonData})`, 'Unable to load JSON data into MazeBase object: ' + JSON.stringify(jsonData));
     }
@@ -46,6 +47,7 @@ export class Score extends ObjectBase {
   protected backtrackCount: number;
   protected trophyStubs: Array<ITrophyStub>;
   protected bonusPoints: number;
+  protected lastUpdated: number;
   private BASE_SCORE: number = 1000;
 
   constructor(gameId: string, mazeId: string, teamId: string, gameMode: GAME_MODES, botId?: string) {
@@ -62,12 +64,14 @@ export class Score extends ObjectBase {
     this.backtrackCount = 0;
     this.trophyStubs = new Array<ITrophyStub>();
     this.bonusPoints = 0;
+    this.lastUpdated = Date.now();
   }
 
   /**
    * Increments the players move count by one.
    */
   public addMove() {
+    this.lastUpdated = Date.now();
     this.moveCount++;
   }
 
@@ -79,6 +83,7 @@ export class Score extends ObjectBase {
    */
   // TODO: This is probably deprecated...
   public addMoves(moves: number) {
+    this.lastUpdated = Date.now();
     this.moveCount = this.moveCount + moves;
   }
 
@@ -302,6 +307,13 @@ export class Score extends ObjectBase {
    */
   public set GameResult(value: GAME_RESULTS) {
     this.gameResult = value;
+  }
+
+  public get LastUpdated(): number {
+    return this.lastUpdated;
+  }
+  public set LastUpdated(updateTime: number) {
+    this.lastUpdated = updateTime;
   }
 
   public get Id(): string {

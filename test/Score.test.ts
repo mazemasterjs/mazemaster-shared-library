@@ -34,6 +34,7 @@ describe(__filename + ' - Score Tests', () => {
     backtrackCount: 4,
     trophyStubs: new Array<ITrophyStub>(),
     bonusPoints: 100,
+    lastUpdated: Date.now(),
   };
 
   const score = Score.fromJson(scoreData);
@@ -122,6 +123,12 @@ describe(__filename + ' - Score Tests', () => {
   it(`score.addBonusPoints to increase bonusPoints to ${scoreData.bonusPoints + 10}`, () => {
     score.addBonusPoints(10);
     expect(score.BonusPoints).to.equal(scoreData.bonusPoints + 10);
+  });
+
+  it(`score.lastUpdated accepts new value`, () => {
+    const curVal = score.LastUpdated;
+    score.LastUpdated = Date.now();
+    expect(curVal).to.be.lessThan(score.LastUpdated);
   });
 
   it(`score.moves should equal ${scoreData.moveCount}`, () => {
