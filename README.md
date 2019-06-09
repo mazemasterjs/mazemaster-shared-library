@@ -4,7 +4,7 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Notes
 
-### v1.8.5
+### v1.8.7
 
 - Redefined BASE_SCORE as environment var. Default is 1000 - used as the starting score for a maze run
 
