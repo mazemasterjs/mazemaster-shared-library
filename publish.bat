@@ -5,6 +5,7 @@ if EXIST "dist" (
     rmdir /s /q dist
 )
 mkdir dist
+mkdir dist\Interfaces
 
 if EXIST "bin" (
     echo "Clearing bin\ directory"
@@ -16,6 +17,7 @@ tsc|rem
 
 echo "Copying files in bin\ to dist\"
 copy bin\*.* dist\
+copy bin\Interfaces\*.* dist\Interfaces\
 copy bin\types\*.* dist\
 
 echo "Copying package files to dist\"
