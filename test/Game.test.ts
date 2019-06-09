@@ -143,7 +143,7 @@ describe(__filename + ' - Game Tests', () => {
   it(`spGame.addAction(STAND) should increase spGame.Actions.length to 1.`, () => {
     const curScore = spGame.Score.getTotalScore();
     const curMoves = spGame.Score.MoveCount;
-    const action = createAction(COMMANDS.STAND);
+    const action = createAction(COMMANDS.STAND, DIRS.NONE, '');
     spGame.Score.addMove();
     spGame.Score.addTrophy(TROPHY_IDS.WISHFUL_THINKING);
     spGame.Score.addBonusPoints(-10);
@@ -162,7 +162,7 @@ describe(__filename + ' - Game Tests', () => {
   it(`spGame.addAction(JUMP) should increase MoveCount to 3`, () => {
     const curScore = spGame.Score.getTotalScore();
     const curMoves = spGame.Score.MoveCount;
-    const action = createAction(COMMANDS.JUMP);
+    const action = createAction(COMMANDS.JUMP, DIRS.NONE, '');
     spGame.Score.addMoves(2);
     spGame.Score.addTrophy(TROPHY_IDS.MIGHTY_MOUSE);
     spGame.Score.addBonusPoints(50);
@@ -193,10 +193,10 @@ describe(__filename + ' - Game Tests', () => {
   });
 
   it(`4x look actions should increase move count to 6`, () => {
-    spGame.addAction(createAction(COMMANDS.LOOK, DIRS.SOUTH));
-    spGame.addAction(createAction(COMMANDS.LOOK, DIRS.NORTH));
-    spGame.addAction(createAction(COMMANDS.JUMP, DIRS.EAST));
-    spGame.addAction(createAction(COMMANDS.JUMP, DIRS.WEST));
+    spGame.addAction(createAction(COMMANDS.LOOK, DIRS.SOUTH, ''));
+    spGame.addAction(createAction(COMMANDS.LOOK, DIRS.NORTH, ''));
+    spGame.addAction(createAction(COMMANDS.JUMP, DIRS.EAST, ''));
+    spGame.addAction(createAction(COMMANDS.JUMP, DIRS.WEST, ''));
     spGame.Score.addMoves(4);
     return expect(spGame.Actions.length).to.equal(6);
   });
@@ -206,8 +206,8 @@ describe(__filename + ' - Game Tests', () => {
   });
 
   it(`1 move (-1 point) + 1 backtrack (-2 points) should decrease score to 1031`, () => {
-    spGame.addAction(createAction(COMMANDS.MOVE, DIRS.SOUTH));
-    spGame.addAction(createAction(COMMANDS.MOVE, DIRS.NORTH));
+    spGame.addAction(createAction(COMMANDS.MOVE, DIRS.SOUTH, ''));
+    spGame.addAction(createAction(COMMANDS.MOVE, DIRS.NORTH, ''));
     spGame.Score.addMove();
     spGame.Score.addBacktrack();
     return expect(spGame.Score.getTotalScore()).to.equal(1031);
@@ -252,8 +252,8 @@ function createBot(name: string, coder: string): Bot {
   return b;
 }
 
-function createAction(cmd: COMMANDS, dir?: DIRS): Action {
-  const a = new Action();
+function createAction(cmd: COMMANDS, dir: DIRS, msg: string): Action {
+  const a = new Action(cmd, dir, msg);
   a.command = cmd;
   a.direction = dir ? dir : DIRS.NONE;
   a.engram = new Engram();

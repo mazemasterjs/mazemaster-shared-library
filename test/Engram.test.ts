@@ -4,11 +4,11 @@ import { expect } from 'chai';
 // test cases
 describe(__filename + ' - Engram Tests', () => {
   const engram = new Engram();
-  engram.Sight = 'You see';
-  engram.Sound = 'You hear';
-  engram.Smell = 'You smell';
-  engram.Taste = 'You taste';
-  engram.Touch = 'You feel';
+  engram.sight = 'You see';
+  engram.sound = 'You hear';
+  engram.smell = 'You smell';
+  engram.taste = 'You taste';
+  engram.touch = 'You feel';
 
   const engramData = {
     sight: 'You see',
@@ -20,44 +20,44 @@ describe(__filename + ' - Engram Tests', () => {
 
   const engramLoad = new Engram(engramData);
 
-  it(`engram.Sight should return 'You see'`, () => {
-    expect(engram.Sight).to.equal('You see');
+  it(`engram.sight should return 'You see'`, () => {
+    expect(engram.sight).to.equal('You see');
   });
 
-  it(`engram.Sound should return 'You hear'`, () => {
-    expect(engram.Sound).to.equal('You hear');
+  it(`engram.sound should return 'You hear'`, () => {
+    expect(engram.sound).to.equal('You hear');
   });
 
-  it(`engram.Smell should return 'You smell'`, () => {
-    expect(engram.Smell).to.equal('You smell');
+  it(`engram.smell should return 'You smell'`, () => {
+    expect(engram.smell).to.equal('You smell');
   });
 
-  it(`engram.Touch should return 'You feel'`, () => {
-    expect(engram.Touch).to.equal('You feel');
+  it(`engram.touch should return 'You feel'`, () => {
+    expect(engram.touch).to.equal('You feel');
   });
 
-  it(`engram.Taste should return 'You taste'`, () => {
-    expect(engram.Taste).to.equal('You taste');
+  it(`engram.taste should return 'You taste'`, () => {
+    expect(engram.taste).to.equal('You taste');
   });
 
   // now test with data constructor
-  it(`engramLoad.Sight should return 'You see'`, () => {
-    expect(engramLoad.Sight).to.equal('You see');
+  it(`engramLoad.sight should return 'You see'`, () => {
+    expect(engramLoad.sight).to.equal('You see');
   });
 
-  it(`engramLoad.Sound should return 'You hear'`, () => {
-    expect(engramLoad.Sound).to.equal('You hear');
+  it(`engramLoad.sound should return 'You hear'`, () => {
+    expect(engramLoad.sound).to.equal('You hear');
   });
 
-  it(`engramLoad.Smell should return 'You smell'`, () => {
-    expect(engramLoad.Smell).to.equal('You smell');
+  it(`engramLoad.smell should return 'You smell'`, () => {
+    expect(engramLoad.smell).to.equal('You smell');
   });
 
-  it(`engramLoad.Touch should return 'You feel'`, () => {
-    expect(engramLoad.Touch).to.equal('You feel');
+  it(`engramLoad.touch should return 'You feel'`, () => {
+    expect(engramLoad.touch).to.equal('You feel');
   });
 
-  it(`engramLoad.Taste should return 'You taste'`, () => {
-    expect(engramLoad.Taste).to.equal('You taste');
+  it(`engramLoad.taste should return 'You taste'`, () => {
+    expect(engramLoad.taste).to.equal('You taste');
   });
 });

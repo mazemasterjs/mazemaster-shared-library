@@ -4,8 +4,10 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Notes
 
-### v1.8.3
+### v1.8.5
 
+- Stripped property accessors from Engram - what was the point anyway? Lots of pointless accessors all over the place after recent refactoring, but may not get around to removing them all.
+- Fixed mismatch in Enum.TROPHY_IDS: WINNER_WINNER_CHEDDAR_DINNER is now CHICKEN_DINNER
 - Added COMMANDS enum: {NONE, LOOK, MOVE, JUMP, WRITE, SIT, STAND, QUIT}
 - Static .fromJson(data: any) instantiators added Action, MazeLoc, and Score classes (probably will repace other "loadData" functions with this appropach in the future)
 - Action class requires command, direction, and message values in constructor

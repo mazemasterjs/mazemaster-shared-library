@@ -7,11 +7,11 @@ import { ObjectBase } from './ObjectBase';
 // sound = "You hear the sound of dripping water coming from the South."
 
 export class Engram extends ObjectBase {
-  private sight: string;
-  private sound: string;
-  private smell: string;
-  private touch: string;
-  private taste: string;
+  public sight: string;
+  public sound: string;
+  public smell: string;
+  public touch: string;
+  public taste: string;
 
   constructor(data?: any) {
     super();
@@ -28,45 +28,5 @@ export class Engram extends ObjectBase {
       this.touch = this.validateDataField('touch', data.touch, 'string');
       this.taste = this.validateDataField('taste', data.taste, 'string');
     }
-  }
-
-  public get Sight(): string {
-    return this.sight;
-  }
-
-  public set Sight(sight: string) {
-    this.sight = sight;
-  }
-
-  public get Sound(): string {
-    return this.sound;
-  }
-
-  public set Sound(sound: string) {
-    this.sound = sound;
-  }
-
-  public get Smell(): string {
-    return this.smell;
-  }
-
-  public set Smell(smell: string) {
-    this.smell = smell;
-  }
-
-  public get Touch(): string {
-    return this.touch;
-  }
-
-  public set Touch(touch: string) {
-    this.touch = touch;
-  }
-
-  public get Taste(): string {
-    return this.taste;
-  }
-
-  public set Taste(taste: string) {
-    this.taste = taste;
   }
 }

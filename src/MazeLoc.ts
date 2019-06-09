@@ -30,6 +30,9 @@ export class MazeLoc implements IMazeLoc {
     return this.row === location.row && this.col === location.col;
   }
 
+  /**
+   * Quick toString for printing coordinates
+   */
   public toString(): string {
     return `${this.row}, ${this.col}`;
   }

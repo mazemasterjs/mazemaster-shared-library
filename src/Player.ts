@@ -14,8 +14,8 @@ export class Player {
   public get Location(): MazeLoc {
     return this.location;
   }
-  public set Location(value: MazeLoc) {
-    this.location = value;
+  public set Location(mazeLoc: MazeLoc) {
+    this.location = mazeLoc;
   }
 
   public get State(): PLAYER_STATES {

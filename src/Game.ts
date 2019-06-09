@@ -213,4 +213,8 @@ export class Game extends ObjectBase {
     this.lastAccessed = Date.now();
     return this.player;
   }
+
+  public set Player(player: Player) {
+    this.player = player;
+  }
 }
