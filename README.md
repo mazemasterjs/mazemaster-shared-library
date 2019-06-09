@@ -4,7 +4,7 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Notes
 
-### v1.8.8
+### v1.8.9
 
 - Player starting location was inadvertantly mapped as reference to maze's StartCell... Fixed.
 - Added two new TROPHY_IDS: STANDING_AROUND and TAKING_A_STAND
