@@ -6,6 +6,7 @@ import { Player } from './Player';
 import { IAction } from './Interfaces/IAction';
 import MazeBase from './MazeBase';
 import { ObjectBase } from './ObjectBase';
+import MazeLoc from './MazeLoc';
 
 const log = Logger.getInstance();
 
@@ -28,7 +29,7 @@ export class Game extends ObjectBase {
     this.id = this.generateId();
     this.state = GAME_STATES.NEW;
     this.maze = maze;
-    this.player = new Player(maze.StartCell, PLAYER_STATES.SITTING);
+    this.player = new Player(new MazeLoc(maze.StartCell.row, maze.StartCell.col), PLAYER_STATES.SITTING);
     this.actions = new Array<IAction>();
     this.lastAccessed = Date.now();
     this.round = 1;
