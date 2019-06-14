@@ -2,7 +2,15 @@
 
 Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-library.
 
-## Change Notes
+## Change Log
+
+### v1.8.11
+
+- Corrected comments in Score.ts
+
+### v1.8.10
+
+- Removed bad unidentified string coercions in Game, Helpers, and Score
 
 ### v1.8.9
 

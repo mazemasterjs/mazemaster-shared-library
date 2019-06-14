@@ -101,7 +101,7 @@ export function getEnvVar(varName: string, typeName: string): any {
 
   // first see if the variable was found - if not, let's blow this sucker up
   if (val === undefined) {
-    doError(`getVar(${varName}, ${typeName})`, 'Configuration Error', `Environment variable not set: ${varName}`);
+    throw doError(`getVar(${varName}, ${typeName})`, 'Configuration Error', `Environment variable not set: ${varName}`);
   }
 
   // we have a value - log the good news
@@ -113,7 +113,7 @@ export function getEnvVar(varName: string, typeName: string): any {
       return val;
     }
     case 'number': {
-      return parseInt(val + '', 10); // this could blow up, but that's ok since we'd want it to
+      return parseInt(val, 10); // this could blow up, but that's ok since we'd want it to
     }
     default: {
       // we only want numbers or strings...
@@ -129,8 +129,8 @@ export function getEnvVar(varName: string, typeName: string): any {
  * @param title
  * @param message
  */
-export function doError(method: string, title: string, message: string) {
+export function doError(method: string, title: string, message: string): Error {
   const err = new Error(message);
   log.error(__filename, method, title + ' ->', err);
-  throw err;
+  return err;
 }

@@ -34,8 +34,8 @@ export class Game extends ObjectBase {
     this.lastAccessed = Date.now();
     this.round = 1;
     this.mode = GAME_MODES.SINGLE_PLAYER;
-    this.teamId = teamId;
-    this.botId = botId + '';
+    this.teamId = teamId.trim();
+    this.botId = botId ? botId : '';
     this.score = new Score(this.id, maze.Id, this.teamId, this.mode, this.botId);
 
     // teamId is always required
