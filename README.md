@@ -4,9 +4,9 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
-### v1.8.11
+### v1.8.12
 
-- Corrected comments in Score.ts
+- added game.getLastAction() function that returns the latest IAction from an active game
 
 ### v1.8.10
 

@@ -83,6 +83,15 @@ export class Game extends ObjectBase {
     this.actions.push(action);
   }
 
+  public getLastAction(): IAction {
+    this.lastAccessed = Date.now();
+    if (this.actions.length === 0) {
+      const actError = new Error('The game has no actions to return.');
+      log.error(__filename, 'getLastAction()', 'Cannot return lastAction ->', actError);
+      throw actError;
+    }
+    return this.actions[this.actions.length - 1];
+  }
   public getAction(moveNumber: number): IAction {
     this.lastAccessed = Date.now();
     return this.actions[moveNumber];

@@ -55,6 +55,12 @@ describe(__filename + ' - Game Tests', () => {
     return expect(spGame.Round).to.equal(1);
   });
 
+  it(`game.getLastAction should throw an error if no actions exist`, () => {
+    return expect(() => {
+      spGame.getLastAction();
+    }).to.throw();
+  });
+
   /**
    * Player Tests
    *
@@ -153,6 +159,11 @@ describe(__filename + ' - Game Tests', () => {
     spGame.addAction(action);
 
     return expect(spGame.Actions.length).to.equal(1);
+  });
+
+  it(`spGame.getLastAction() should return the last action added`, () => {
+    const lastAct = spGame.getLastAction();
+    return expect(lastAct.command).to.equal(COMMANDS.STAND);
   });
 
   it(`Current score after one move should be 989`, () => {

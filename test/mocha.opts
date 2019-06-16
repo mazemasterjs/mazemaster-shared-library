@@ -3,4 +3,4 @@
 --watch-extensions ts
 --recursive
 --timeout 5000
-test/*.test.ts
+test/Game.test.ts
