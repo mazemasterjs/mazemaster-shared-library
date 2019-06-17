@@ -4,6 +4,9 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.9.0
+- added facing for the player object based on the existing cardinal direction ENUMs.
+
 ### v1.8.12
 
 - added game.getLastAction() function that returns the latest IAction from an active game
