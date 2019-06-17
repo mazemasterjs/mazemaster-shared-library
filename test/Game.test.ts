@@ -113,7 +113,14 @@ describe(__filename + ' - Game Tests', () => {
     expect(spGame.Player.Facing).to.equal(DIRS.SOUTH);
   });
 
-  // @Derald: Need two more tests: one to change facing, one more to verify that it changed as expected
+  it(`Player's facing changed to east`, () => {
+    spGame.Player.Facing = DIRS.EAST;
+    expect(spGame.Player.Facing).to.equal(DIRS.EAST);
+  });
+
+  it(`Players changed facing direction should be east`, () => {
+    expect(spGame.Player.Facing).to.equal(DIRS.EAST);
+  });
 
   /**
    * Score Tests
