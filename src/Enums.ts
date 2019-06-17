@@ -52,6 +52,8 @@ export enum DIRS {
   SOUTH = 2,
   EAST = 4,
   WEST = 8,
+  LEFT = 16,
+  RIGHT = 32,
 }
 
 // CELL TAGS (bitwise)
@@ -77,11 +79,16 @@ export enum CELL_TRAPS {
 // Available Player Actions
 export enum COMMANDS {
   NONE,
+  FACE,
+  LISTEN,
   LOOK,
   SIT,
+  SNIFF,
   STAND,
+  TURN,
   MOVE,
   JUMP,
+  WAIT,
   WRITE,
   QUIT,
 }
@@ -114,13 +121,6 @@ export enum GAME_MODES {
   NONE,
   SINGLE_PLAYER,
   MULTI_PLAYER,
-}
-
-// database types/names
-export enum DATABASES {
-  MAZES,
-  SCORES,
-  TEAMS,
 }
 
 /**

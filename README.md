@@ -4,7 +4,12 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.9.1
+
+- Added LEFT and RIGHT (16, 32) to DIRS to support turn/facing
+
 ### v1.9.0
+
 - added facing for the player object based on the existing cardinal direction ENUMs.
 
 ### v1.8.12
