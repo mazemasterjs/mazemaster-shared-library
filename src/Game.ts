@@ -1,4 +1,4 @@
-import { GAME_MODES, GAME_RESULTS, GAME_STATES, PLAYER_STATES } from './Enums';
+import { DIRS, GAME_MODES, GAME_RESULTS, GAME_STATES, PLAYER_STATES } from './Enums';
 import { Score } from './Score';
 import { Logger } from '@mazemasterjs/logger';
 import { IGameStub } from './Interfaces/IGameStub';
@@ -29,7 +29,7 @@ export class Game extends ObjectBase {
     this.id = this.generateId();
     this.state = GAME_STATES.NEW;
     this.maze = maze;
-    this.player = new Player(new MazeLoc(maze.StartCell.row, maze.StartCell.col), PLAYER_STATES.SITTING, 2);
+    this.player = new Player(new MazeLoc(maze.StartCell.row, maze.StartCell.col), PLAYER_STATES.SITTING, DIRS.SOUTH);
     this.actions = new Array<IAction>();
     this.lastAccessed = Date.now();
     this.round = 1;

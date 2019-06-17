@@ -108,6 +108,13 @@ describe(__filename + ' - Game Tests', () => {
     expect(spGame.Player.State).to.equal(PLAYER_STATES.STANDING);
   });
 
+  /* New tests for Player.Facing */
+  it(`Player should be facing south initially`, () => {
+    expect(spGame.Player.Facing).to.equal(DIRS.SOUTH);
+  });
+
+  // @Derald: Need two more tests: one to change facing, one more to verify that it changed as expected
+
   /**
    * Score Tests
    */
