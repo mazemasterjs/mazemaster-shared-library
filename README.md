@@ -7,6 +7,7 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 ### v1.9.1
 
 - Added LEFT and RIGHT (16, 32) to DIRS to support turn/facing
+- Added SNIFF, LISTEN, WAIT, FACE, and TURN to COMMANDS Enum (some may not get used)
 
 ### v1.9.0
 
