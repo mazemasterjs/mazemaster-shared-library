@@ -1,9 +1,9 @@
-import { Location } from '../src/Location';
+import { MazeLoc } from '../src/MazeLoc';
 import { expect } from 'chai';
 
 // test cases
 describe(__filename + ' - Location Tests', () => {
-  const loc: Location = new Location(1, 2);
+  const loc: MazeLoc = new MazeLoc(1, 2);
   const expectedStr = `${loc.row}, ${loc.col}`;
 
   it(`Location.toString() should return '${expectedStr}'`, () => {
@@ -11,6 +11,6 @@ describe(__filename + ' - Location Tests', () => {
   });
 
   it(`Location.equals() should return true`, () => {
-    expect(loc.equals(new Location(loc.row, loc.col))).to.equal(true);
+    expect(loc.equals(new MazeLoc(loc.row, loc.col))).to.equal(true);
   });
 });

@@ -2,7 +2,63 @@
 
 Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-library.
 
-## Change Notes
+## Change Log
+
+### v1.9.0
+- added facing for the player object based on the existing cardinal direction ENUMs.
+
+### v1.8.12
+
+- added game.getLastAction() function that returns the latest IAction from an active game
+
+### v1.8.10
+
+- Removed bad unidentified string coercions in Game, Helpers, and Score
+
+### v1.8.9
+
+- Player starting location was inadvertantly mapped as reference to maze's StartCell... Fixed.
+- Added two new TROPHY_IDS: STANDING_AROUND and TAKING_A_STAND
+- TROPHY_IDS id fields updated to map against actual data
+
+### v1.8.7
+
+- Redefined BASE_SCORE as environment var. Default is 1000 - used as the starting score for a maze run
+
+### v1.8.5
+
+- Removed IMazeLoc - it's not very useful (and may be causing issues with instantiation?
+- Location class renamed to "MazeLoc" - there's a core node class called "Location" that seemed to be interfering with some things
+  - It didn't help - something about this class prevents it from exposing internal functions when referenced via a parent object (e.g. Game->Player->MazeLoc)
+- Re-added lastUpdated to Score object to support date-sorted database queries
+- Stripped property accessors from Engram - what was the point anyway? Lots of pointless accessors all over the place after recent refactoring, but may not get around to removing them all.
+- Fixed mismatch in Enum.TROPHY_IDS: WINNER_WINNER_CHEDDAR_DINNER is now CHICKEN_DINNER
+- Added COMMANDS enum: {NONE, LOOK, MOVE, JUMP, WRITE, SIT, STAND, QUIT}
+- Static .fromJson(data: any) instantiators added Action, MazeLoc, and Score classes (probably will repace other "loadData" functions with this appropach in the future)
+- Action class requires command, direction, and message values in constructor
+- Trophies removed from Team and Bot - now maintained in Score
+- updated validateDataField(field: string, val: any, type: string, noTrim?: boolean): any
+- added ObjectBase.validateEnumField(fieldName: string, enumName: string, enumObj: object, enumVal: number): number
+- fixed isNumber check in Helpers getSelectedBitNames and listSelectedBitNames functions
+- Completely reworked Action and Score classes and how they relate to Game
+- Moved interfaces into ./Interfaces subfolder - it was just getting crowded
+
+### v1.8.2
+
+- Team / Bot (aka Single / Multiplayer) game modes set automatically - if a botId is provided, game is single-player
+- Validation now automatically trims string variables (unless told not to)
+- Maze.getMazeStub() moved to MazeBase
+- Player.ts updated to ensure that player is never left as PLAYER_STATES.NONE - Default state is now PLAYER_STATES.STANDING (1)
+- Bot.ts data validation will now report the correct field names when validaton fails
+- Reworked logging to improve performance across the board
+- All maze tests now compare hash values instead of stringified json
+- Generated IDs have been shorted to hashed UUIDs (Team, Score, Bot, and Game)
+
+### v1.8.1
+
+- Added forced type conversion (string -> number) to maze.generate() via a new validateAndSetGenParams(...) method to fix a bug where generated mazes were returning string values for height, width, and challengeLevel.
+- Added tests to cover parameter validation in maze.generate()
+- Cleaned up logging in Maze.ts and removed util.format dependency
 
 ### v1.8.0
 

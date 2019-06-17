@@ -1,8 +1,6 @@
 import { Bot } from '../src/Bot';
-import { IBot } from '../src/IBot';
+import { IBot } from '../src/Interfaces/IBot';
 import { expect } from 'chai';
-import ITrophyStub from '../src/ITrophyStub';
-import { TROPHY_IDS } from '../src/Enums';
 import Logger from '@mazemasterjs/logger';
 
 // test cases
@@ -16,15 +14,13 @@ describe(`${__filename} - Bot Tests`, () => {
     id: 'fake-bot-id',
     name: 'Name',
     coder: 'Coder',
-    trophies: 'I can haz trophy?',
-    weight: 33,
+    weight: '33',
   });
 
   const botData: IBot = {
     id: 'fake-bot-id',
     name: 'Name',
     coder: 'Coder',
-    trophies: new Array<ITrophyStub>(),
     weight: 33,
   };
 
@@ -38,7 +34,7 @@ describe(`${__filename} - Bot Tests`, () => {
 
   it(`should error when using bad bot data `, () => {
     expect(() => {
-      new Bot(JSON.parse(invalidBotData)).getTrophyCount(TROPHY_IDS.DAZED_AND_CONFUSED);
+      new Bot(JSON.parse(invalidBotData)).Name = '';
     }).to.throw();
   });
 
@@ -58,15 +54,6 @@ describe(`${__filename} - Bot Tests`, () => {
     expect(bot.Weight).to.equal(50);
   });
 
-  it(`bot.addTrophy(DOUBLE_BACKER) should add a trophy with count 1`, () => {
-    bot.grantTrophy(TROPHY_IDS.DOUBLE_BACKER);
-    expect(bot.getTrophyCount(TROPHY_IDS.DOUBLE_BACKER)).to.equal(1);
-  });
-
-  it(`bot.Trophies().length should should equal 1`, () => {
-    expect(bot.Trophies.length).to.equal(1);
-  });
-
   // Now test bot loaded from interface data
 
   it(`botLoad.Id should equal 'fake-bot-id'`, () => {
@@ -83,14 +70,5 @@ describe(`${__filename} - Bot Tests`, () => {
 
   it(`botLoad.Weight should should equal 33`, () => {
     expect(botLoad.Weight).to.equal(33);
-  });
-
-  it(`botLoad.addTrophy(DOUBLE_BACKER) add trophy with count 1`, () => {
-    botLoad.grantTrophy(TROPHY_IDS.DOUBLE_BACKER);
-    expect(botLoad.getTrophyCount(TROPHY_IDS.DOUBLE_BACKER)).to.equal(1);
-  });
-
-  it(`botLoad.Trophies().length should should equal 1`, () => {
-    expect(botLoad.Trophies.length).to.equal(1);
   });
 });

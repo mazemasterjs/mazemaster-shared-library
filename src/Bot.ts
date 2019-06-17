@@ -1,7 +1,4 @@
-import uuid from 'uuid/v4';
-import { IBot } from './IBot';
-import { ITrophyStub } from './ITrophyStub';
-import { TROPHY_IDS } from './Enums';
+import { IBot } from './Interfaces/IBot';
 import { ObjectBase } from './ObjectBase';
 
 /**
@@ -16,44 +13,21 @@ export class Bot extends ObjectBase {
   private name: string;
   private weight: number;
   private coder: string;
-  private trophies: Array<ITrophyStub>;
 
   constructor(data?: IBot) {
     super();
 
     if (data !== undefined) {
-      this.id = this.validateField('id', data.id, 'string');
-      this.name = this.validateField('name', data.name, 'string');
-      this.weight = this.validateField('name', data.weight, 'number');
-      this.coder = this.validateField('name', data.coder, 'string');
-      this.trophies = this.validateField('trophies', data.trophies, 'object');
+      this.id = this.validateDataField('id', data.id, 'string');
+      this.name = this.validateDataField('name', data.name, 'string');
+      this.weight = this.validateDataField('weight', data.weight, 'number');
+      this.coder = this.validateDataField('coder', data.coder, 'string');
     } else {
-      this.id = uuid();
+      this.id = this.generateId();
       this.name = '';
       this.weight = 100;
       this.coder = '';
-      this.trophies = new Array<ITrophyStub>();
     }
-  }
-
-  /**
-   * Increase count of existing trophy or add a new trophy
-   * if count trophy is not found.
-   *
-   * @param trophyId
-   */
-  public grantTrophy(trophyId: TROPHY_IDS) {
-    this.trophies = this.addTrophy(trophyId, this.trophies);
-  }
-
-  /**
-   * Returns the count (number of times awarded) of the
-   * trophy with the given TrophyId from Enums.TROPHY_IDS
-   *
-   * @param trophyId (Enums.TROPHY_IDS) - The Id of the trophy to get a count of
-   */
-  public getTrophyCount(trophyId: TROPHY_IDS): number {
-    return this.countTrophy(trophyId, this.trophies);
   }
 
   /**
@@ -107,13 +81,6 @@ export class Bot extends ObjectBase {
    */
   public set Coder(name: string) {
     this.coder = name;
-  }
-
-  /**
-   * @returns a Map<Enums.TROPHY_IDS, number> containing awarded TrophyIds(key) and Counts (val)
-   */
-  public get Trophies(): Array<ITrophyStub> {
-    return this.trophies;
   }
 }
 

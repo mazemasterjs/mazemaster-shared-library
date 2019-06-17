@@ -1,10 +1,10 @@
-import { IMazeStub } from '../src/IMazeStub';
+import { IMazeStub } from '../src/Interfaces/IMazeStub';
 import { Maze } from '../src/Maze';
 import { expect } from 'chai';
 import { LOG_LEVELS, Logger } from '@mazemasterjs/logger';
 import { MD5 as hash } from 'object-hash';
 import Cell from '../src/Cell';
-import Location from '../src/Location';
+import Location from '../src/MazeLoc';
 import { CELL_TAGS, CELL_TRAPS, DIRS } from '../src/Enums';
 
 // test cases
@@ -62,6 +62,29 @@ describe(__filename + ' - Maze Tests', () => {
     }).to.throw();
   });
 
+  it(`Maze.generate() - maze should have numeric height of 3`, () => {
+    const mazeTypeTest: Maze = new Maze().generate(3, 3, 3, 'Test', 'Test');
+    expect(typeof mazeTypeTest.Height === 'string');
+  });
+
+  it(`Maze.generate() - should coerce string height to number`, () => {
+    const ttHt: any = '3';
+    const mazeTypeTest: Maze = new Maze().generate(ttHt, 3, 3, 'Test', 'Test');
+    expect(typeof mazeTypeTest.Height === 'number');
+  });
+
+  it(`Maze.generate() - should coerce string width to number`, () => {
+    const ttWd: any = '3';
+    const mazeTypeTest: Maze = new Maze().generate(3, ttWd, 3, 'Test', 'Test');
+    expect(typeof mazeTypeTest.Height === 'number');
+  });
+
+  it(`Maze.generate() - should coerce string challenge to number`, () => {
+    const ttCl: any = '3';
+    const mazeTypeTest: Maze = new Maze().generate(3, 3, ttCl, 'Test', 'Test');
+    expect(typeof mazeTypeTest.ChallengeLevel === 'number');
+  });
+
   it(`Maze.generate() should create a small, simple maze.`, () => {
     const littleMaze: Maze = new Maze().generate(3, 3, 1, name, seed);
     expect(littleMaze.Id).to.equal('3:3:1:' + seed);
@@ -78,7 +101,7 @@ describe(__filename + ' - Maze Tests', () => {
   it(`Maze.getMazeStub() should match expectedMazeStub`, () => {
     const stub = maze.getMazeStub();
     stub.lastUpdated = timestamp; // force timestamp (set on Maze instantiation) to match
-    expect(JSON.stringify(stub)).to.equal(JSON.stringify(expectedMazeStub));
+    expect(hash(JSON.stringify(stub))).to.equal(hash(JSON.stringify(expectedMazeStub)));
   });
 
   it(`Maze ID should match pattern 'HEIGHT:WIDTH:CHALLENGE:SEED' (${mazeId})`, () => {
@@ -117,10 +140,11 @@ describe(__filename + ' - Maze Tests', () => {
   });
 
   it(`New maze from JSON data should match maze [${mazeId}]`, () => {
-    const oldJson: string = JSON.stringify(maze);
+    const tinyMaze: Maze = new Maze().generate(3, 3, 1, 'Tiny', 'Maze');
+    const oldJson: string = JSON.stringify(tinyMaze);
     const newMaze: Maze = new Maze(JSON.parse(oldJson));
     const newJson = JSON.stringify(newMaze);
-    expect(newJson).to.equal(oldJson);
+    expect(hash(newJson)).to.equal(hash(oldJson));
   });
 
   it(`Maze.getCell(-1, -1) should return error`, () => {

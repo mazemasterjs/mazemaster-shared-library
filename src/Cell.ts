@@ -1,7 +1,7 @@
 import * as Helpers from './Helpers';
 import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
 import { Logger } from '@mazemasterjs/logger';
-import { Location } from './Location';
+import { MazeLoc } from './MazeLoc';
 import CellBase from './CellBase';
 
 /**
@@ -32,14 +32,14 @@ export class Cell extends CellBase {
    */
   public addTrap(trap: CELL_TRAPS) {
     if (!!(this.traps & trap)) {
-      log.warn(
+      this.logTrace(
         __filename,
         `addTrap(${trap})`,
         `${CELL_TRAPS[trap]} (${trap}) already set in cell [${this.pos.toString()}]. Current traps: ${Helpers.listSelectedBitNames(CELL_TRAPS, this.traps)}`,
       );
     } else {
       this.traps += trap;
-      log.warn(__filename, `addTrap(${trap})`, `${CELL_TRAPS[trap]} (${trap}) added to cell [${this.pos.toString()}].`);
+      this.logTrace(__filename, `addTrap(${trap})`, `${CELL_TRAPS[trap]} (${trap}) added to cell [${this.pos.toString()}].`);
     }
   }
 
@@ -51,13 +51,13 @@ export class Cell extends CellBase {
   public removeTrap(trap: CELL_TRAPS) {
     if (!!(this.traps && CELL_TRAPS)) {
       this.traps -= trap;
-      log.trace(
+      this.logTrace(
         __filename,
         `removeTrap(${trap})`,
         `${CELL_TRAPS[trap]} (${trap}) removed from cell [${this.pos.toString()}]. Traps left: ${Helpers.listSelectedBitNames(CELL_TRAPS, this.traps)}`,
       );
     } else {
-      log.warn(
+      this.logTrace(
         __filename,
         `removeTrap(${trap})`,
         `${CELL_TRAPS[trap]} (${trap}) not found in cell [${this.pos.toString()}]. Current traps: ${Helpers.listSelectedBitNames(CELL_TRAPS, this.traps)}`,
@@ -86,7 +86,7 @@ export class Cell extends CellBase {
         case CELL_TAGS.START:
           // force north exit on start cell - WARNING: do NOT use addExit() for this!
           if (!(this.exits & DIRS.NORTH)) {
-            log.trace(
+            this.logTrace(
               __filename,
               'addTag(' + tagName + ')',
               `[${this.pos.row}, ${this.pos.col}] has ${tagName} tag. Forcing NORTH exit through edge. Cell exits: ${this.listExits()}`,
@@ -97,7 +97,7 @@ export class Cell extends CellBase {
         case CELL_TAGS.FINISH:
           // force south exit on finish cell - WARNING: do NOT use addExit() for this, either!
           if (!(this.exits & DIRS.SOUTH)) {
-            log.trace(
+            this.logTrace(
               __filename,
               'addTag(' + tagName + ')',
               `[${this.pos.row}, ${this.pos.col}] has ${tagName} tag. Forcing SOUTH exit through edge. Cell exits: ${this.listExits()}`,
@@ -106,7 +106,11 @@ export class Cell extends CellBase {
           }
           break;
       }
-      log.trace(__filename, 'addTag(' + tagName + ')', `Tag ${tagName} added to cell [${this.pos.row}, ${this.pos.col}]. Current tags: ${this.listTags()}.`);
+      this.logTrace(
+        __filename,
+        'addTag(' + tagName + ')',
+        `Tag ${tagName} added to cell [${this.pos.row}, ${this.pos.col}]. Current tags: ${this.listTags()}.`,
+      );
     } else {
       log.warn(
         __filename,
@@ -124,7 +128,7 @@ export class Cell extends CellBase {
     const tagName = CELL_TAGS[tag];
     if (!!(this.tags & tag)) {
       this.tags -= tag;
-      log.debug(
+      this.logTrace(
         __filename,
         'removeTag(' + tagName + ')',
         `Tag ${tagName} removed from cell [${this.pos.row}, ${this.pos.col}]. Current tags: ${this.listTags()}.`,
@@ -161,7 +165,7 @@ export class Cell extends CellBase {
    * @returns boolean
    */
   public addExit(dir: DIRS, cells: Array<Array<Cell>>): boolean {
-    log.trace(__filename, `addExit(${DIRS[dir]})`, `Calling setExit(ADD, ${DIRS[dir]}) from [${this.pos.toString()}]. Existing exits: ${this.listExits()}`);
+    this.logTrace(__filename, `addExit(${DIRS[dir]})`, `Calling setExit(ADD, ${DIRS[dir]}) from [${this.pos.toString()}]. Existing exits: ${this.listExits()}`);
     return this.setExit(FN_MODES.ADD, dir, cells);
   }
 
@@ -174,7 +178,7 @@ export class Cell extends CellBase {
    * @returns boolean
    */
   public removeExit(dir: DIRS, cells: Array<Array<Cell>>): boolean {
-    log.trace(
+    this.logTrace(
       __filename,
       `removeExit(${DIRS[dir]})`,
       `Calling setExit(REMOVE, ${DIRS[dir]}) from [${this.pos.toString()}]. Existing exits: ${this.listExits()}`,
@@ -197,48 +201,48 @@ export class Cell extends CellBase {
     const dirName = DIRS[dir];
     let validMove = true; // only set to true if valid adjoining cell exits to open an exit to
 
-    log.trace(__filename, `setExit(${modeName}, ${dirName})`, `Setting exits in [${this.pos.toString()}]. Existing exits: ${this.listExits()}.`);
+    this.logTrace(__filename, `setExit(${modeName}, ${dirName})`, `Setting exits in [${this.pos.toString()}]. Existing exits: ${this.listExits()}.`);
 
     if (mode === FN_MODES.ADD ? !(this.exits & dir) : !!(this.exits & dir)) {
-      let nPos = new Location(-1, -1); // locate an adjoining cell - must open exit on both sides
+      let nPos = new MazeLoc(-1, -1); // locate an adjoining cell - must open exit on both sides
 
       switch (dir) {
         case DIRS.NORTH:
           validMove = this.pos.row > 0;
           if (validMove) {
-            nPos = new Location(this.pos.row - 1, this.pos.col);
+            nPos = new MazeLoc(this.pos.row - 1, this.pos.col);
           }
           break;
         case DIRS.SOUTH:
           validMove = this.pos.row < cells.length;
           if (validMove) {
-            nPos = new Location(this.pos.row + 1, this.pos.col);
+            nPos = new MazeLoc(this.pos.row + 1, this.pos.col);
           }
           break;
         case DIRS.EAST:
           validMove = this.pos.col < cells[0].length;
           if (validMove) {
-            nPos = new Location(this.pos.row, this.pos.col + 1);
+            nPos = new MazeLoc(this.pos.row, this.pos.col + 1);
           }
           break;
         case DIRS.WEST:
           validMove = this.pos.col > 0;
           if (validMove) {
-            nPos = new Location(this.pos.row, this.pos.col - 1);
+            nPos = new MazeLoc(this.pos.row, this.pos.col - 1);
           }
           break;
       }
 
       if (validMove) {
-        log.trace(__filename, 'setExit()', `Valid direction, setting exit from [${this.Location.toString()}] into [${nPos.row}, ${nPos.col}]`);
+        this.logTrace(__filename, 'setExit()', `Valid direction, setting exit from [${this.Location.toString()}] into [${nPos.row}, ${nPos.col}]`);
         this.exits = mode === FN_MODES.ADD ? (this.exits += dir) : (this.exits -= dir);
 
         const neighbor: Cell = cells[nPos.row][nPos.col];
 
-        log.trace(__filename, `setExit(${modeName}, ${dirName})`, `Exits set in cell [${this.pos.toString()}]. Existing exits: ${this.listExits()}.`);
+        this.logTrace(__filename, `setExit(${modeName}, ${dirName})`, `Exits set in cell [${this.pos.toString()}]. Existing exits: ${this.listExits()}.`);
 
         neighbor.exits = mode === FN_MODES.ADD ? (neighbor.exits += Helpers.reverseDir(dir)) : (neighbor.exits -= dir);
-        log.trace(
+        this.logTrace(
           __filename,
           `setExit(${modeName}, ${dirName})`,
           `Reverse exit (${dirName} -> ${

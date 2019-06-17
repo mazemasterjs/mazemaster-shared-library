@@ -1,4 +1,4 @@
-import { IEngram } from './IEngram';
+import { ObjectBase } from './ObjectBase';
 // An engram contains a snapshot of sensory data correlating to the
 // player's position within the maze.  Each sense is a string.
 //
@@ -6,66 +6,27 @@ import { IEngram } from './IEngram';
 // sight = "You are standing in a room. There are exits to the North and South."
 // sound = "You hear the sound of dripping water coming from the South."
 
-export class Engram {
-  public get Sight(): string {
-    return this.sight;
-  }
+export class Engram extends ObjectBase {
+  public sight: string;
+  public sound: string;
+  public smell: string;
+  public touch: string;
+  public taste: string;
 
-  public set Sight(sight: string) {
-    this.sight = sight;
-  }
+  constructor(data?: any) {
+    super();
+    this.sight = 'You see...';
+    this.sound = 'You hear...';
+    this.smell = 'You smell...';
+    this.touch = 'You feel...';
+    this.taste = 'You taste...';
 
-  public get Sound(): string {
-    return this.sound;
-  }
-
-  public set Sound(sound: string) {
-    this.sound = sound;
-  }
-
-  public get Smell(): string {
-    return this.smell;
-  }
-
-  public set Smell(smell: string) {
-    this.smell = smell;
-  }
-
-  public get Touch(): string {
-    return this.touch;
-  }
-
-  public set Touch(touch: string) {
-    this.touch = touch;
-  }
-
-  public get Taste(): string {
-    return this.taste;
-  }
-
-  public set Taste(taste: string) {
-    this.taste = taste;
-  }
-
-  private sight: string;
-  private sound: string;
-  private smell: string;
-  private touch: string;
-  private taste: string;
-
-  constructor(data?: IEngram) {
-    if (data) {
-      this.sight = data.sight;
-      this.sound = data.sound;
-      this.smell = data.smell;
-      this.touch = data.touch;
-      this.taste = data.taste;
-    } else {
-      this.sight = '';
-      this.sound = '';
-      this.smell = '';
-      this.touch = '';
-      this.taste = '';
+    if (data !== undefined) {
+      this.sight = this.validateDataField('sight', data.sight, 'string');
+      this.sound = this.validateDataField('sound', data.sound, 'string');
+      this.smell = this.validateDataField('smell', data.smell, 'string');
+      this.touch = this.validateDataField('touch', data.touch, 'string');
+      this.taste = this.validateDataField('taste', data.taste, 'string');
     }
   }
 }

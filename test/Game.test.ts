@@ -1,342 +1,290 @@
-// import { IMazeStub } from '../src/IMazeStub';
-import { IGameStub } from '../src/IGameStub';
-import Logger from '@mazemasterjs/logger';
-import { Game } from '../src/Game';
+import { Action } from '../src/Action';
+import { Logger } from '@mazemasterjs/logger';
 import { Maze } from '../src/Maze';
+import { MazeBase } from '../src/MazeBase';
 import { Team } from '../src/Team';
-import { Score } from '../src/Score';
-import { Player } from '../src/Player';
 import { Bot } from '../src/Bot';
+import { Game } from '../src/Game';
 import { expect } from 'chai';
-import { GAME_MODES, GAME_RESULTS, GAME_STATES, PLAYER_STATES, TROPHY_IDS } from '../src/Enums';
-import { IAction } from '../src/IAction';
+import { COMMANDS, DIRS, GAME_MODES, GAME_RESULTS, GAME_STATES, PLAYER_STATES, TROPHY_IDS } from '../src/Enums';
 import { Engram } from '../src/Engram';
-import ITrophyStub from '../src/ITrophyStub';
+import ITrophyStub from '../src/Interfaces/ITrophyStub';
+import { IGameStub } from '../src/Interfaces/IGameStub';
 
-// test cases
+Logger.getInstance().LogLevel = 4;
+
 describe(__filename + ' - Game Tests', () => {
-  const log = Logger.getInstance();
-  let game: Game;
-  let maze: Maze;
-  let team: Team;
-  let player: Player;
-  let score: Score;
-  let action: IAction;
-  const forcedGameId = 'FORCED_GAME_ID_001';
-  const height = 3;
-  const width = 4;
-  const challenge = 5;
-  const name = 'GameTestName';
-  const seed = 'GameTestSeed';
-  const botName = 'GameTestBotName';
-  const botCoder = 'GameTestBotCoder';
-  const botWeight = 100;
-  const teamName = 'GameTestTeamName';
-  const teamLogo = 'GameTestTeamLogo.png';
-
-  // need an engram to test with
-  const engram = new Engram();
-  engram.Sight = 'You see';
-  engram.Sound = 'You hear';
-  engram.Smell = 'You smell';
-  engram.Taste = 'You taste';
-  engram.Touch = 'You feel';
-
-  // and some other things for action
-  const outcome = ['You fell down.', 'You stood up.'];
-  const cohesion = [1, 1, 1, 1, 1];
-  const trophies = new Array<ITrophyStub>();
-
-  // the team needs some trophies
-  const tStub1: ITrophyStub = {
-    count: 1,
-    id: TROPHY_IDS.DAZED_AND_CONFUSED,
-    name: TROPHY_IDS[TROPHY_IDS.DAZED_AND_CONFUSED],
-  };
-  trophies.push(tStub1);
-
-  const tStub2: ITrophyStub = {
-    count: 5,
-    id: TROPHY_IDS.DOUBLE_BACKER,
-    name: TROPHY_IDS[TROPHY_IDS.DOUBLE_BACKER],
-  };
-  trophies.push(tStub2);
-
-  before(`Game-related objects created without error.`, () => {
-    maze = new Maze().generate(height, width, challenge, name, seed);
-
-    // create a bot for the team
-    const bot = new Bot();
-    bot.Coder = botCoder;
-    bot.Name = botName;
-    bot.Weight = botWeight;
-
-    // create a team for the game
-    team = new Team();
-    team.Name = teamName;
-    team.Logo = teamLogo;
-    team.Bots.push(bot);
-    team.grantTrophy(TROPHY_IDS.DAZED_AND_CONFUSED);
-
-    // create a score for the game
-    score = new Score();
-    score.MazeId = maze.Id;
-    score.GameRound = 1;
-    score.TeamId = team.Id;
-    score.BotId = team.Bots[0].Id;
-
-    // create a  player for the game
-    player = new Player(maze.StartCell, PLAYER_STATES.NONE);
-
-    // create the game
-    game = new Game(maze, player, score, 1, bot.Id, team.Id);
-
-    // create a game action
-    action = {
-      action: 'move',
-      botCohesion: cohesion,
-      direction: 'south',
-      engram,
-      location: game.Player.Location,
-      mazeId: game.Maze.Id,
-      outcome,
-      playerState: game.Player.State,
-      score: game.Score,
-      trophies,
-    };
-
-    return expect(game).to.not.equal(undefined);
-  });
+  const maze: MazeBase = new MazeBase(new Maze().generate(5, 5, 10, 'test-name', 'test-seed'));
+  const spGameId = 'forced-sp-01';
+  const team: Team = createTeam();
+  const spGame: Game = new Game(maze, team.Id, team.Bots[0].Id);
 
   /**
    * Game Tests - Part One
    */
-  it(`game.State should equal GAME_STATES.NEW`, () => {
-    expect(game.State).to.equal(GAME_STATES.NEW);
+  it(`spGame.State should be NEW`, () => {
+    expect(spGame.State).to.equal(GAME_STATES.NEW);
   });
 
   it(`game.Id should not be empty`, () => {
-    return expect(game.Id).to.not.be.empty;
+    return expect(spGame.Id).to.not.be.empty;
   });
 
-  it(`game.Mode should not be MULTI_PLAYER`, () => {
-    return expect(game.Mode).to.equal(GAME_MODES.MULTI_PLAYER);
+  it(`game.Id = '${spGameId}' should set game.Id to '${spGameId}'`, () => {
+    spGame.forceSetId(spGameId);
+    return expect(spGame.Id).to.equal(spGameId);
   });
 
-  it(`game.forceSetId(${forcedGameId}) should set game.Id`, () => {
-    game.forceSetId(forcedGameId);
-    return expect(game.Id).to.equal(forcedGameId);
+  it(`spGame.Mode should be MULTI_PLAYER`, () => {
+    return expect(spGame.Mode).to.equal(GAME_MODES.MULTI_PLAYER);
   });
 
-  it(`Forced game.Id should be applied to game.Score.GameId`, () => {
-    return expect(game.Id).to.equal(game.Score.GameId);
+  it(`spGame.GetRound should be 1`, () => {
+    return expect(spGame.Round).to.equal(1);
   });
 
-  it(`game.GetRound should be 1`, () => {
-    return expect(game.Round).to.equal(1);
+  it(`spGame.TeamId should equal team.Id`, () => {
+    return expect(spGame.TeamId).to.equal(team.Id);
   });
 
-  it(`game.TeamId should equal team.Id`, () => {
-    return expect(game.TeamId).to.equal(team.Id);
+  it(`spGame.BotId should equal team.Bots[0].Id`, () => {
+    return expect(spGame.BotId).to.equal(team.Bots[0].Id);
   });
 
-  it(`game.BotId should equal team.Bots[0].Id`, () => {
-    return expect(game.BotId).to.equal(team.Bots[0].Id);
+  it(`spGame.GetRound should be 1`, () => {
+    return expect(spGame.Round).to.equal(1);
   });
 
-  it(`game.GetRound should be 1`, () => {
-    return expect(game.Round).to.equal(1);
+  it(`game.getLastAction should throw an error if no actions exist`, () => {
+    return expect(() => {
+      spGame.getLastAction();
+    }).to.throw();
   });
 
   /**
    * Player Tests
    *
    */
-  it(`Player.Location should equal maze.StartCell`, () => {
-    expect(game.Player.Location.equals(game.Maze.StartCell)).to.equal(true);
+  it(`Player should start a new game in the maze's start cell`, () => {
+    expect(spGame.Player.Location.equals(spGame.Maze.StartCell)).to.equal(true);
   });
 
-  it(`game.Player.State should be PLAYER_STATES.NONE`, () => {
-    expect(game.Player.State).to.equal(PLAYER_STATES.NONE);
+  it(`Player should start a new game in state PLAYER_STATES.SITTING`, () => {
+    expect(spGame.Player.State).to.equal(PLAYER_STATES.SITTING);
   });
 
-  it(`game.Player.addState(PLAYER_STATES.STANDING) should set player state to STANDING`, () => {
-    game.Player.addState(PLAYER_STATES.STANDING);
-    expect(game.Player.State).to.equal(PLAYER_STATES.STANDING);
+  it(`spGame.Player.addState(PLAYER_STATES.STANDING) should set player state to STANDING`, () => {
+    spGame.Player.addState(PLAYER_STATES.STANDING);
+    expect(spGame.Player.State).to.equal(PLAYER_STATES.STANDING);
   });
 
-  it(`game.Player.addState(PLAYER_STATES.STUNNED) should set player state to STANDING & STUNNED`, () => {
-    game.Player.addState(PLAYER_STATES.STUNNED);
-    expect(game.Player.State).to.equal(PLAYER_STATES.STANDING + PLAYER_STATES.STUNNED);
+  it(`spGame.Player.addState(PLAYER_STATES.STUNNED) should set player state to STANDING & STUNNED`, () => {
+    spGame.Player.addState(PLAYER_STATES.STUNNED);
+    expect(spGame.Player.State).to.equal(PLAYER_STATES.STANDING + PLAYER_STATES.STUNNED);
   });
 
-  it(`game.Player.addState(PLAYER_STATES.SITTING) should set player state to SITTING and remove STANDING`, () => {
-    game.Player.addState(PLAYER_STATES.SITTING);
-    expect(game.Player.State).to.equal(PLAYER_STATES.SITTING + PLAYER_STATES.STUNNED);
+  it(`spGame.Player.addState(PLAYER_STATES.SITTING) should set player state to SITTING and remove STANDING`, () => {
+    spGame.Player.addState(PLAYER_STATES.SITTING);
+    expect(spGame.Player.State).to.equal(PLAYER_STATES.SITTING + PLAYER_STATES.STUNNED);
   });
 
-  it(`game.Player.addState(PLAYER_STATES.STANDING) should set player state to STUNNED and STANDING, and remove SITTING`, () => {
-    game.Player.addState(PLAYER_STATES.STANDING);
-    expect(game.Player.State).to.equal(PLAYER_STATES.STANDING + PLAYER_STATES.STUNNED);
+  it(`spGame.Player.addState(PLAYER_STATES.STANDING) should set player state to STUNNED and STANDING, and remove SITTING`, () => {
+    spGame.Player.addState(PLAYER_STATES.STANDING);
+    expect(spGame.Player.State).to.equal(PLAYER_STATES.STANDING + PLAYER_STATES.STUNNED);
   });
 
-  it(`game.Player.addState(PLAYER_STATES.LYING) should set player state to STUNNED and LYING, and remove STANDING`, () => {
-    game.Player.addState(PLAYER_STATES.LYING);
-    expect(game.Player.State).to.equal(PLAYER_STATES.LYING + PLAYER_STATES.STUNNED);
+  it(`spGame.Player.addState(PLAYER_STATES.LYING) should set player state to STUNNED and LYING, and remove STANDING`, () => {
+    spGame.Player.addState(PLAYER_STATES.LYING);
+    expect(spGame.Player.State).to.equal(PLAYER_STATES.LYING + PLAYER_STATES.STUNNED);
   });
 
-  it(`game.Player.removeState(PLAYER_STATES.LYING) should set player state to STUNNED`, () => {
-    game.Player.removeState(PLAYER_STATES.LYING);
-    expect(game.Player.State).to.equal(PLAYER_STATES.STUNNED);
+  it(`spGame.Player.removeState(PLAYER_STATES.LYING) should set player state to STUNNED`, () => {
+    spGame.Player.removeState(PLAYER_STATES.LYING);
+    expect(spGame.Player.State).to.equal(PLAYER_STATES.STUNNED);
   });
 
-  it(`game.Player.clearStates() should set player state to NONE`, () => {
-    game.Player.clearStates();
-    expect(game.Player.State).to.equal(PLAYER_STATES.NONE);
+  it(`spGame.Player.clearStates() should set player state to NONE, but NONE should automatically be switched back to STANDING`, () => {
+    spGame.Player.clearStates();
+    expect(spGame.Player.State).to.equal(PLAYER_STATES.STANDING);
   });
 
-  it(`game.State should be NEW`, () => {
-    expect(game.State).to.equal(GAME_STATES.NEW);
+  /* New tests for Player.Facing */
+  it(`Player should be facing south initially`, () => {
+    expect(spGame.Player.Facing).to.equal(DIRS.SOUTH);
+  });
+
+  it(`Player's facing changed to east`, () => {
+    spGame.Player.Facing = DIRS.EAST;
+    expect(spGame.Player.Facing).to.equal(DIRS.EAST);
+  });
+
+  it(`Players changed facing direction should be east`, () => {
+    expect(spGame.Player.Facing).to.equal(DIRS.EAST);
   });
 
   /**
    * Score Tests
    */
-  it(`game.Score.Id should be not be empty`, () => {
-    return expect(game.Score.Id).to.not.be.empty;
+  it(`spGame.Score.Id should be not be empty`, () => {
+    return expect(spGame.Score.Id).to.not.be.empty;
   });
 
-  it(`game.Score.BotId should equal game.BotId`, () => {
-    expect(game.Score.BotId).to.equal(game.BotId);
+  it(`spGame.Score.BotId should equal spGame.BotId`, () => {
+    expect(spGame.Score.BotId).to.equal(spGame.BotId);
   });
 
-  it(`game.Score.TeamId should equal game.TeamId`, () => {
-    expect(game.Score.TeamId).to.equal(game.TeamId);
+  it(`spGame.Score.TeamId should equal spGame.TeamId`, () => {
+    expect(spGame.Score.TeamId).to.equal(spGame.TeamId);
   });
 
-  it(`game.Score.GameId should equal game.Id`, () => {
-    return expect(game.Score.GameId).to.equal(game.Id);
+  it(`spGame.Score.GameId should equal spGame.Id`, () => {
+    return expect(spGame.Score.GameId).to.equal(spGame.Id);
   });
 
-  it(`game.Score.MazeId should be not be empty`, () => {
-    return expect(game.Score.MazeId).to.not.be.empty;
+  it(`spGame.Score.MazeId should be not be empty`, () => {
+    return expect(spGame.Score.MazeId).to.not.be.empty;
   });
 
-  it(`game.Score.GameRound should be 1`, () => {
-    return expect(game.Score.GameRound).to.equal(1);
+  it(`spGame.Score.GameRound should be 1`, () => {
+    return expect(spGame.Score.GameRound).to.equal(1);
   });
 
-  it(`game.Score.GameResult should be IN_PROGRESS`, () => {
-    return expect(game.Score.GameResult).to.equal(GAME_RESULTS.IN_PROGRESS);
+  it(`spGame.Score.GameResult should be NONE`, () => {
+    return expect(spGame.Score.GameResult).to.equal(GAME_RESULTS.NONE);
   });
 
-  it(`game.Score.GAME_RESULTS should be IN_PROGRESS`, () => {
-    expect(game.Score.GameResult).to.equal(GAME_RESULTS.IN_PROGRESS);
-  });
-
-  it(`game.Score.MoveCount should be 0`, () => {
-    return expect(game.Score.MoveCount).to.equal(0);
-  });
-
-  it(`game.Score.addMove() should increment Score.Moves to 1`, () => {
-    game.Score.addMove();
-    return expect(game.Score.MoveCount).to.equal(1);
-  });
-
-  it(`game.Score.addMoves(2) should increment Score.Moves to 3`, () => {
-    game.Score.addMoves(2);
-    return expect(game.Score.MoveCount).to.equal(3);
-  });
-
-  it(`game.Score.BacktrackCount should be 0`, () => {
-    return expect(game.Score.BacktrackCount).to.equal(0);
-  });
-
-  it(`game.Score.AddBacktrack should be increase BacktrackCount to 1`, () => {
-    game.Score.addBacktrack();
-    return expect(game.Score.BacktrackCount).to.equal(1);
-  });
-
-  it(`game.Score.BonusPoints should be 0`, () => {
-    return expect(game.Score.BonusPoints).to.equal(0);
-  });
-
-  it(`game.Score.BonusPoints = 100 should be increase BonusPoints to 100`, () => {
-    game.Score.BonusPoints = 100;
-    return expect(game.Score.BonusPoints).to.equal(100);
-  });
-
-  it(`game.Score.addBonusPoints(10) should be increase BonusPoints to 110`, () => {
-    game.Score.addBonusPoints = 10;
-    return expect(game.Score.BonusPoints).to.equal(110);
-  });
-
-  it(`game.Score.LastUpdated should return a number`, () => {
-    return expect(game.Score.LastUpdated).to.be.a('number');
+  it(`spGame.Score.MoveCount should be 0`, () => {
+    return expect(spGame.Score.MoveCount).to.equal(0);
   });
 
   /**
    * Game Tests - Part two
    */
-  it(`game.addAction() should increase game.Actions.length to 1.`, () => {
-    game.addAction(action);
-    return expect(game.Actions.length).to.equal(1);
+  it(`spGame.addAction(STAND) should increase spGame.Actions.length to 1.`, () => {
+    const curScore = spGame.Score.getTotalScore();
+    const curMoves = spGame.Score.MoveCount;
+    const action = createAction(COMMANDS.STAND, DIRS.NONE, '');
+    spGame.Score.addMove();
+    spGame.Score.addTrophy(TROPHY_IDS.WISHFUL_THINKING);
+    spGame.Score.addBonusPoints(-10);
+    action.score = curScore - spGame.Score.getTotalScore();
+    action.moveCount = curMoves - spGame.Score.MoveCount;
+
+    spGame.addAction(action);
+
+    return expect(spGame.Actions.length).to.equal(1);
   });
 
-  it(`game.State should should now be IN_PROGRESS.`, () => {
-    return expect(game.State).to.equal(GAME_STATES.IN_PROGRESS);
+  it(`spGame.getLastAction() should return the last action added`, () => {
+    const lastAct = spGame.getLastAction();
+    return expect(lastAct.command).to.equal(COMMANDS.STAND);
   });
 
-  it(`game.Score.MoveCount() should still be 3`, () => {
-    return expect(game.Score.MoveCount).to.equal(3);
+  it(`Current score after one move should be 989`, () => {
+    return expect(spGame.Score.getTotalScore()).to.equal(989);
   });
 
-  /** Note: These actions are all pointers - properties are not independent  */
-  it(`game.addAction() x5 should increase game.Actions.length to 6.`, () => {
-    game.addAction(action);
-    game.addAction(action);
-    game.addAction(action);
-    game.addAction(action);
-    game.addAction(action);
-    return expect(game.Actions.length).to.equal(6);
+  it(`spGame.addAction(JUMP) should increase MoveCount to 3`, () => {
+    const curScore = spGame.Score.getTotalScore();
+    const curMoves = spGame.Score.MoveCount;
+    const action = createAction(COMMANDS.JUMP, DIRS.NONE, '');
+    spGame.Score.addMoves(2);
+    spGame.Score.addTrophy(TROPHY_IDS.MIGHTY_MOUSE);
+    spGame.Score.addBonusPoints(50);
+    action.score = curScore - spGame.Score.getTotalScore();
+    action.moveCount = curMoves - spGame.Score.MoveCount;
+
+    spGame.addAction(action);
+
+    return expect(spGame.Score.MoveCount).to.equal(3);
   });
 
-  it(`game.getAction(2).score.MoveCount should equal 3`, () => {
-    expect(game.getAction(2).score.MoveCount).to.equal(3);
+  it(`Current score after three moves should be 1037`, () => {
+    return expect(spGame.Score.getTotalScore()).to.equal(1037);
   });
 
-  it(`game.getActionsRange(1, 3).length should equal 3`, () => {
-    expect(game.getActionsRange(1, 3).length).to.equal(3);
+  it(`spGame.State should should now be IN_PROGRESS.`, () => {
+    return expect(spGame.State).to.equal(GAME_STATES.IN_PROGRESS);
   });
 
-  it(`game.getActionsSince(1).length should equal 6`, () => {
-    expect(game.getActionsSince(1).length).to.equal(6);
+  it(`set spGame.State should be reflected in Score`, () => {
+    spGame.State = GAME_STATES.ABORTED;
+    return expect(spGame.Score.GameResult).to.equal(GAME_RESULTS.ABANDONED);
   });
 
-  it(`game.getStub() should return a valid api URL`, () => {
-    const gameUrl = 'http://mazemasterjs.com/api/game/get/';
-    const stub: IGameStub = game.getStub(gameUrl);
-    expect(stub.url).to.equal(gameUrl + game.Id);
+  it(`set spGame.State should be reflected in Score 2`, () => {
+    spGame.State = GAME_STATES.IN_PROGRESS;
+    return expect(spGame.Score.GameResult).to.equal(GAME_RESULTS.IN_PROGRESS);
   });
 
-  it(`game.nextRound() should update game round`, () => {
-    game.nextRound();
-    expect(game.Round).to.equal(2);
+  it(`4x look actions should increase move count to 6`, () => {
+    spGame.addAction(createAction(COMMANDS.LOOK, DIRS.SOUTH, ''));
+    spGame.addAction(createAction(COMMANDS.LOOK, DIRS.NORTH, ''));
+    spGame.addAction(createAction(COMMANDS.JUMP, DIRS.EAST, ''));
+    spGame.addAction(createAction(COMMANDS.JUMP, DIRS.WEST, ''));
+    spGame.Score.addMoves(4);
+    return expect(spGame.Actions.length).to.equal(6);
   });
 
-  it(`game.nextRound() should reposition player to start cell`, () => {
-    expect(game.Player.Location).to.equal(game.Maze.StartCell);
+  it(`Score should now be 1033`, () => {
+    return expect(spGame.Score.getTotalScore()).to.equal(1033);
   });
 
-  it(`game.nextRound() should reset game state to NEW`, () => {
-    expect(game.State).to.equal(GAME_STATES.NEW);
+  it(`1 move (-1 point) + 1 backtrack (-2 points) should decrease score to 1031`, () => {
+    spGame.addAction(createAction(COMMANDS.MOVE, DIRS.SOUTH, ''));
+    spGame.addAction(createAction(COMMANDS.MOVE, DIRS.NORTH, ''));
+    spGame.Score.addMove();
+    spGame.Score.addBacktrack();
+    return expect(spGame.Score.getTotalScore()).to.equal(1031);
   });
 
-  it(`game.nextRound() should reset player state to STANDING`, () => {
-    expect(game.Player.State).to.equal(PLAYER_STATES.STANDING);
+  it(`spGame.getActionsRange(1, 3).length should equal 3`, () => {
+    expect(spGame.getActionsRange(1, 3).length).to.equal(3);
+  });
+
+  it(`spGame.getActionsSince(1).length should equal 8`, () => {
+    expect(spGame.getActionsSince(1).length).to.equal(8);
+  });
+
+  it(`spGame.getStub() should return a valid api URL`, () => {
+    const gameUrl = 'http://mazemasterjs.com/game/get/';
+    const stub: IGameStub = spGame.getStub(gameUrl);
+    expect(stub.url).to.equal(gameUrl + spGame.Id);
   });
 
   after('Generate text render with player position', () => {
-    log.debug(__filename, 'after()', '\n\r\n\r' + game.Maze.generateTextRender(true, game.Player.Location));
+    const fullMaze: Maze = new Maze(spGame.Maze);
+    Logger.getInstance().debug(__filename, 'after()', '\n\r\n\r' + fullMaze.generateTextRender(true, spGame.Player.Location));
   });
 });
+
+function createTeam(): Team {
+  const t = new Team();
+  t.Name = 'Mocha Madness';
+  t.Logo = 'http://mazemasterjs/images/logos/fake-logo-150.png';
+  t.Bots.push(createBot('MochaName-1', 'MochaCoder-1'));
+  t.Bots.push(createBot('MochaName-2', 'MochaCoder-2'));
+  t.Bots.push(createBot('MochaName-3', 'MochaCoder-3'));
+  t.Bots.push(createBot('MochaName-4', 'MochaCoder-4'));
+  t.Bots.push(createBot('MochaName-5', 'MochaCoder-5'));
+  return t;
+}
+
+function createBot(name: string, coder: string): Bot {
+  const b = new Bot();
+  b.Name = name;
+  b.Coder = coder;
+  return b;
+}
+
+function createAction(cmd: COMMANDS, dir: DIRS, msg: string): Action {
+  const a = new Action(cmd, dir, msg);
+  a.command = cmd;
+  a.direction = dir ? dir : DIRS.NONE;
+  a.engram = new Engram();
+  a.outcomes = [`Command: ${COMMANDS[a.command]} Direction: ${DIRS[a.direction]}`];
+  a.trophies = new Array<ITrophyStub>();
+  a.botCohesion = new Array<number>(5).fill(1);
+
+  return a;
+}
