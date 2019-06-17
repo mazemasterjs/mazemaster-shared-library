@@ -1,14 +1,16 @@
-import { PLAYER_STATES } from './Enums';
+import { PLAYER_STATES, DIRS } from './Enums';
 import MazeLoc from './MazeLoc';
 
 // Class to maintain player state during a game
 export class Player {
   private location: MazeLoc;
   private state: PLAYER_STATES;
+  private facing: DIRS;
 
-  constructor(location: MazeLoc, state: PLAYER_STATES) {
+  constructor(location: MazeLoc, state: PLAYER_STATES, facing: DIRS) {
     this.location = location;
     this.state = state;
+    this.facing = facing;
   }
 
   public get Location(): MazeLoc {
@@ -24,6 +26,15 @@ export class Player {
 
   public clearStates() {
     this.state = PLAYER_STATES.STANDING;
+  }
+
+  //Gets and retrieves the cardinal direction the player character is facing
+  public set Facing(dir: DIRS){
+    this.facing = dir;
+  }
+
+  public get Facing(){
+    return this.facing;
   }
 
   /**
