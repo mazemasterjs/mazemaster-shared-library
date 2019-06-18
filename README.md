@@ -4,6 +4,9 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.9.2
+-Removed the hardcoded "You see...", "You smell...", etc. text in the engram constructor.
+
 ### v1.9.1
 
 - Added LEFT and RIGHT (16, 32) to DIRS to support turn/facing

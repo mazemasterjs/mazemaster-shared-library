@@ -15,11 +15,11 @@ export class Engram extends ObjectBase {
 
   constructor(data?: any) {
     super();
-    this.sight = 'You see...';
-    this.sound = 'You hear...';
-    this.smell = 'You smell...';
-    this.touch = 'You feel...';
-    this.taste = 'You taste...';
+    this.sight = '';
+    this.sound = '';
+    this.smell = '';
+    this.touch = '';
+    this.taste = '';
 
     if (data !== undefined) {
       this.sight = this.validateDataField('sight', data.sight, 'string');

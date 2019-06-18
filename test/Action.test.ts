@@ -48,7 +48,7 @@ describe(__filename + ' - Action Tests', () => {
   });
   it(`action.Engram to have default values`, () => {
     const pass =
-      act.engram.sight.length > 0 && act.engram.smell.length > 0 && act.engram.sound.length > 0 && act.engram.taste.length > 0 && act.engram.touch.length > 0;
+      act.engram.sight.length === 0 && act.engram.smell.length === 0 && act.engram.sound.length === 0 && act.engram.taste.length === 0 && act.engram.touch.length === 0;
     expect(pass).to.equal(true);
   });
   it(`action.Command is COMMANDS.LOOK`, () => {
