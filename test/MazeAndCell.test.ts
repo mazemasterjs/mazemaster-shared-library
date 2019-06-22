@@ -20,7 +20,7 @@ describe(__filename + ' - Maze Tests', () => {
   const note2: string = 'This is another unit test.';
   let maze: Maze;
   const mazeId: string = `${height}:${width}:${challenge}:${seed}`;
-  const mazeHash: string = '4170b0dc4b1a976da83c065efb7072e2';
+  const mazeHash: string = '1385022c9832907ae2cce5f08b78a77d';
   const expectedMazeStub: IMazeStub = {
     id: mazeId,
     height,
@@ -194,18 +194,18 @@ describe(__filename + ' - Maze Tests', () => {
     expect(cell.Traps).to.equal(CELL_TRAPS.NONE);
   });
 
-  it(`Cell.addTrap(CELL_TRAPS.BEARTRAP) should set cell.Traps to equal ${CELL_TRAPS.BEARTRAP}.`, () => {
-    cell.addTrap(CELL_TRAPS.BEARTRAP);
-    expect(cell.Traps).to.equal(CELL_TRAPS.BEARTRAP);
+  it(`Cell.addTrap(CELL_TRAPS.MOUSETRAP) should set cell.Traps to equal ${CELL_TRAPS.MOUSETRAP}.`, () => {
+    cell.addTrap(CELL_TRAPS.MOUSETRAP);
+    expect(cell.Traps).to.equal(CELL_TRAPS.MOUSETRAP);
   });
 
-  it(`Cell.addTrap(CELL_TRAPS.PIT) should set cell.Traps to equal ${CELL_TRAPS.BEARTRAP + CELL_TRAPS.PIT}.`, () => {
+  it(`Cell.addTrap(CELL_TRAPS.PIT) should set cell.Traps to equal ${CELL_TRAPS.MOUSETRAP + CELL_TRAPS.PIT}.`, () => {
     cell.addTrap(CELL_TRAPS.PIT);
-    expect(cell.Traps).to.equal(CELL_TRAPS.BEARTRAP + CELL_TRAPS.PIT);
+    expect(cell.Traps).to.equal(CELL_TRAPS.MOUSETRAP + CELL_TRAPS.PIT);
   });
 
-  it(`Cell.removeTrap(CELL_TRAPS.BEARTRAP) should set cell.Traps to equal ${CELL_TRAPS.PIT}.`, () => {
-    cell.removeTrap(CELL_TRAPS.BEARTRAP);
+  it(`Cell.removeTrap(CELL_TRAPS.MOUSETRAP) should set cell.Traps to equal ${CELL_TRAPS.PIT}.`, () => {
+    cell.removeTrap(CELL_TRAPS.MOUSETRAP);
     expect(cell.Traps).to.equal(1);
   });
 

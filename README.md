@@ -4,8 +4,15 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.9.3
+
+- getCell, getNeighbor, and generateTextRender all moved to MazeBase. Maze is now only needed for generation.
+- Added new CELL_TRAPS enum values: POISON_DART = 16, TELEPORTER = 32, DEADFALL = 64, FRAGILE_FLOOR = 128
+- Corrected spelling of CELL_TRAPS.FLAMETHOWER
+
 ### v1.9.2
--Removed the hardcoded "You see...", "You smell...", etc. text in the engram constructor.
+
+- Removed the hardcoded "You see...", "You smell...", etc. text in the engram constructor.
 
 ### v1.9.1
 

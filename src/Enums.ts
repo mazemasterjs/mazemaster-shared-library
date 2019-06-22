@@ -67,13 +67,16 @@ export enum CELL_TAGS {
 }
 
 // Various Trap IDs
-// TODO: Does not need to be bitwise... @kreebog - remove
 export enum CELL_TRAPS {
   NONE = 0,
   PIT = 1,
-  BEARTRAP = 2,
+  MOUSETRAP = 2,
   TARPIT = 4,
-  FLAMETHOWER = 8,
+  FLAMETHROWER = 8,
+  POISON_DART = 16,
+  TELEPORTER = 32,
+  DEADFALL = 64,
+  FRAGILE_FLOOR = 128,
 }
 
 // Available Player Actions
