@@ -20,7 +20,7 @@ describe(__filename + ' - Maze Tests', () => {
   const note2: string = 'This is another unit test.';
   let maze: Maze;
   const mazeId: string = `${height}:${width}:${challenge}:${seed}`;
-  const mazeHash: string = '1385022c9832907ae2cce5f08b78a77d';
+  const mazeHash: string = '480acb65a1daa187270927736f57eb71';
   const expectedMazeStub: IMazeStub = {
     id: mazeId,
     height,

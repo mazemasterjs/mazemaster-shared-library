@@ -4,6 +4,21 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.9.4
+
+- New trap type: Cheese. It's poisoned, but it smells so gouda that if the player comes near it, they will
+  - be helpless to avoid it's allure and will involuntarily consume it.
+- Traps now have implied difficulty levels to make Challenge Level more meaningful:
+  - All : Pit >p<, Mouse Trap >m<
+  - CL 4: Tarpit >t<
+  - CL 5: Flamethrower >f<
+  - CL 6: Deadfall >D<
+  - CL 7: Poison Dart >d<
+  - CL 8: Fragile Floor >F<
+  - CL 9: Teleporter >T<
+  - CL 10: Poisoned Cheese >c<
+- New trap types now included with textRender
+
 ### v1.9.3
 
 - getCell, getNeighbor, and generateTextRender all moved to MazeBase. Maze is now only needed for generation.

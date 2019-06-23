@@ -77,6 +77,7 @@ export enum CELL_TRAPS {
   TELEPORTER = 32,
   DEADFALL = 64,
   FRAGILE_FLOOR = 128,
+  CHEESE = 256,
 }
 
 // Available Player Actions

@@ -158,17 +158,10 @@ export class MazeBase extends ObjectBase {
               if (!!(tags & CELL_TAGS.PATH)) {
                 cellFill = SOLUTION;
               }
-              if (!!(traps & CELL_TRAPS.MOUSETRAP)) {
-                cellFill = '>b<';
-              }
-              if (!!(traps & CELL_TRAPS.PIT)) {
-                cellFill = '>p<';
-              }
-              if (!!(traps & CELL_TRAPS.FLAMETHROWER)) {
-                cellFill = '>f<';
-              }
-              if (!!(traps & CELL_TRAPS.TARPIT)) {
-                cellFill = '>t<';
+
+              // add a trap icon if one is in this cell
+              if (traps > 0) {
+                cellFill = this.getCellTrapIcon(traps);
               }
 
               // override cell fill with avatar location when player position is given
@@ -331,6 +324,44 @@ export class MazeBase extends ObjectBase {
       newCells[row] = cols;
     }
     return newCells;
+  }
+
+  /**
+   * Return appropriate trap icon for text-renderer given
+   * a cell.Traps bitwise value.
+   *
+   * @param cellTraps
+   */
+  private getCellTrapIcon(cellTraps: number): string {
+    if (!!(cellTraps & CELL_TRAPS.MOUSETRAP)) {
+      return '>m<';
+    }
+    if (!!(cellTraps & CELL_TRAPS.PIT)) {
+      return '>p<';
+    }
+    if (!!(cellTraps & CELL_TRAPS.FLAMETHROWER)) {
+      return '>f<';
+    }
+    if (!!(cellTraps & CELL_TRAPS.FRAGILE_FLOOR)) {
+      return '>F<';
+    }
+    if (!!(cellTraps & CELL_TRAPS.POISON_DART)) {
+      return '>d<';
+    }
+    if (!!(cellTraps & CELL_TRAPS.TELEPORTER)) {
+      return '>T<';
+    }
+    if (!!(cellTraps & CELL_TRAPS.TARPIT)) {
+      return '>t<';
+    }
+    if (!!(cellTraps & CELL_TRAPS.DEADFALL)) {
+      return '>D<';
+    }
+    if (!!(cellTraps & CELL_TRAPS.CHEESE)) {
+      return '>C<';
+    }
+
+    return '';
   }
 }
 

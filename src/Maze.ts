@@ -449,38 +449,57 @@ export class Maze extends MazeBase {
             break;
           }
           case 2: {
-            cell.addTrap(CELL_TRAPS.FLAMETHROWER);
-            trapCount++;
-            break;
-          }
-          case 3: {
             cell.addTrap(CELL_TRAPS.MOUSETRAP);
             trapCount++;
             break;
           }
+          case 3: {
+            if (this.challenge >= 4) {
+              cell.addTrap(CELL_TRAPS.TARPIT);
+              trapCount++;
+            }
+            break;
+          }
           case 4: {
-            cell.addTrap(CELL_TRAPS.TARPIT);
-            trapCount++;
+            if (this.challenge >= 5) {
+              cell.addTrap(CELL_TRAPS.FLAMETHROWER);
+              trapCount++;
+            }
             break;
           }
           case 5: {
-            cell.addTrap(CELL_TRAPS.DEADFALL);
-            trapCount++;
+            if (this.challenge >= 6) {
+              cell.addTrap(CELL_TRAPS.DEADFALL);
+              trapCount++;
+            }
             break;
           }
           case 6: {
-            cell.addTrap(CELL_TRAPS.TELEPORTER);
-            trapCount++;
+            if (this.challenge >= 7) {
+              cell.addTrap(CELL_TRAPS.POISON_DART);
+              trapCount++;
+            }
             break;
           }
           case 7: {
-            cell.addTrap(CELL_TRAPS.FRAGILE_FLOOR);
-            trapCount++;
+            if (this.challenge >= 8) {
+              cell.addTrap(CELL_TRAPS.FRAGILE_FLOOR);
+              trapCount++;
+            }
             break;
           }
           case 8: {
-            cell.addTrap(CELL_TRAPS.TARPIT);
-            trapCount++;
+            if (this.challenge >= 9) {
+              cell.addTrap(CELL_TRAPS.TELEPORTER);
+              trapCount++;
+            }
+            break;
+          }
+          case 9: {
+            if (this.challenge >= 10) {
+              cell.addTrap(CELL_TRAPS.CHEESE);
+              trapCount++;
+            }
             break;
           }
           default: {
