@@ -4,7 +4,7 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
-### v1.9.4
+### v1.9.5
 
 - New trap type: Cheese. It's poisoned, but it smells so gouda that if the player comes near it, they will
   - be helpless to avoid it's allure and will involuntarily consume it.
@@ -19,7 +19,7 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
   - CL 10: Poisoned Cheese >c<
 - New trap types now included with textRender
 
-### v1.9.3
+### v1.9.4
 
 - getCell, getNeighbor, and generateTextRender all moved to MazeBase. Maze is now only needed for generation.
 - Added new CELL_TRAPS enum values: POISON_DART = 16, TELEPORTER = 32, DEADFALL = 64, FRAGILE_FLOOR = 128
