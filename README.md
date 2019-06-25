@@ -4,6 +4,10 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.9.6
+
+- Engram sight/sound/smell/touch/taste are all now of type Array<any>
+
 ### v1.9.5
 
 - New trap type: Cheese. It's poisoned, but it smells so gouda that if the player comes near it, they will

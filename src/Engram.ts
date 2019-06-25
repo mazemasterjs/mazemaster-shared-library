@@ -7,26 +7,26 @@ import { ObjectBase } from './ObjectBase';
 // sound = "You hear the sound of dripping water coming from the South."
 
 export class Engram extends ObjectBase {
-  public sight: string;
-  public sound: string;
-  public smell: string;
-  public touch: string;
-  public taste: string;
+  public sight: Array<any>;
+  public sound: Array<any>;
+  public smell: Array<any>;
+  public touch: Array<any>;
+  public taste: Array<any>;
 
   constructor(data?: any) {
     super();
-    this.sight = '';
-    this.sound = '';
-    this.smell = '';
-    this.touch = '';
-    this.taste = '';
+    this.sight = new Array();
+    this.sound = new Array();
+    this.smell = new Array();
+    this.touch = new Array();
+    this.taste = new Array();
 
     if (data !== undefined) {
-      this.sight = this.validateDataField('sight', data.sight, 'string');
-      this.sound = this.validateDataField('sound', data.sound, 'string');
-      this.smell = this.validateDataField('smell', data.smell, 'string');
-      this.touch = this.validateDataField('touch', data.touch, 'string');
-      this.taste = this.validateDataField('taste', data.taste, 'string');
+      this.sight = this.validateDataField('sight', data.sight, 'array');
+      this.sound = this.validateDataField('sound', data.sound, 'array');
+      this.smell = this.validateDataField('smell', data.smell, 'array');
+      this.touch = this.validateDataField('touch', data.touch, 'array');
+      this.taste = this.validateDataField('taste', data.taste, 'array');
     }
   }
 }
