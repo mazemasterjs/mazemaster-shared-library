@@ -1,4 +1,4 @@
-import { IFeeling, ISenses, ISight, ISmell, ISound, ITaste } from '../src/Interfaces/ISenses';
+import { IFeeling, ISenses, ISight, ISmell, ISound, ITaste } from './Interfaces/ISenses';
 
 import { ObjectBase } from './ObjectBase';
 // An engram contains a snapshot of sensory data correlating to the
