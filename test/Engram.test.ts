@@ -1,63 +1,63 @@
 import { Engram } from '../src/Engram';
 import { expect } from 'chai';
+import { IFeeling, ISenses, ISight, ISmell, ISound, ITaste } from '../src/Interfaces/ISenses';
 
 // test cases
 describe(__filename + ' - Engram Tests', () => {
   const engram = new Engram();
-  engram.sight.push('You see');
-  engram.sound.push('You hear');
-  engram.smell.push('You smell');
-  engram.taste.push('You taste');
-  engram.touch.push('You feel');
+  const sights: ISight = { sight: 'darkness', distance: -1 };
+  const sounds: ISound = { sound: 'silence', volume: -1 };
+  const smells: ISmell = { scent: 'nothing', strength: -1 };
+  const tastes: ITaste = { taste: 'nothing', strength: -1 };
+  const feelings: IFeeling = { feeling: 'nothing', intensity: -1 };
+  const senses: ISenses = { see: [sights], hear: [sounds], smell: [smells], taste: [tastes], feel: [feelings] };
 
-  const engramData = {
-    sight: ['You see'],
-    smell: ['You smell'],
-    sound: ['You hear'],
-    taste: ['You taste'],
-    touch: ['You feel'],
-  };
+  engram.north = senses;
+  engram.south = senses;
+  engram.east = senses;
+  engram.west = senses;
+  engram.here = senses;
 
-  const engramLoad = new Engram(engramData);
+  const engramLoad = new Engram(engram);
 
-  it(`engram.sight should return 'You see'`, () => {
-    expect(engram.sight[0]).to.equal('You see');
+  it(`engram.north.see[0] should return 'darkness:-1'`, () => {
+    expect(`${engram.north.see[0].sight}:${engram.north.see[0].distance}`).to.equal('darkness:-1');
   });
 
-  it(`engram.sound should return 'You hear'`, () => {
-    expect(engram.sound[0]).to.equal('You hear');
+  it(`engram.north.sound[0] should return 'silence:-1'`, () => {
+    expect(`${engram.north.hear[0].sound}:${engram.north.hear[0].volume}`).to.equal('silence:-1');
   });
 
-  it(`engram.smell should return 'You smell'`, () => {
-    expect(engram.smell[0]).to.equal('You smell');
+  it(`engram.east.sound[0] should return 'nothing:-1'`, () => {
+    expect(`${engram.east.smell[0].scent}:${engram.east.smell[0].strength}`).to.equal('nothing:-1');
   });
 
-  it(`engram.touch should return 'You feel'`, () => {
-    expect(engram.touch[0]).to.equal('You feel');
+  it(`engram.west.taste[0] should return 'nothing:-1'`, () => {
+    expect(`${engram.west.taste[0].taste}:${engram.west.taste[0].strength}`).to.equal('nothing:-1');
   });
 
-  it(`engram.taste should return 'You taste'`, () => {
-    expect(engram.taste[0]).to.equal('You taste');
+  it(`engram.north.sound[0] should return 'nothing:-1'`, () => {
+    expect(`${engram.north.feel[0].feeling}:${engram.north.feel[0].intensity}`).to.equal('nothing:-1');
   });
 
   // now test with data constructor
-  it(`engramLoad.sight should return 'You see'`, () => {
-    expect(engramLoad.sight[0]).to.equal('You see');
+  it(`engramLoad.north.see[0] should return 'darkness:-1'`, () => {
+    expect(`${engramLoad.north.see[0].sight}:${engramLoad.north.see[0].distance}`).to.equal('darkness:-1');
   });
 
-  it(`engramLoad.sound should return 'You hear'`, () => {
-    expect(engramLoad.sound[0]).to.equal('You hear');
+  it(`engramLoad.north.sound[0] should return 'silence:-1'`, () => {
+    expect(`${engramLoad.north.hear[0].sound}:${engramLoad.north.hear[0].volume}`).to.equal('silence:-1');
   });
 
-  it(`engramLoad.smell should return 'You smell'`, () => {
-    expect(engramLoad.smell[0]).to.equal('You smell');
+  it(`engramLoad.east.sound[0] should return 'nothing:-1'`, () => {
+    expect(`${engramLoad.east.smell[0].scent}:${engramLoad.east.smell[0].strength}`).to.equal('nothing:-1');
   });
 
-  it(`engramLoad.touch should return 'You feel'`, () => {
-    expect(engramLoad.touch[0]).to.equal('You feel');
+  it(`engramLoad.west.taste[0] should return 'nothing:-1'`, () => {
+    expect(`${engramLoad.west.taste[0].taste}:${engramLoad.west.taste[0].strength}`).to.equal('nothing:-1');
   });
 
-  it(`engramLoad.taste should return 'You taste'`, () => {
-    expect(engramLoad.taste[0]).to.equal('You taste');
+  it(`engramLoad.north.sound[0] should return 'nothing:-1'`, () => {
+    expect(`${engramLoad.north.feel[0].feeling}:${engramLoad.north.feel[0].intensity}`).to.equal('nothing:-1');
   });
 });

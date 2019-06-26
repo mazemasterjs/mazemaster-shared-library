@@ -4,6 +4,10 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### 1.10.0
+
+- Engrams completely reworked. The are now based on directions: North, South, East, West, and Here. Each direction contains five verbs: See, Hear, Smell, Feel, and Taste. Each verb contains an array of sense-specific tuples, for example console.log(engram.north.see[0].sight + ', ' + engram.north.see[0].distance) could result in "exit, 0" or "lava, 1"
+
 ### v1.9.6
 
 - Engram sight/sound/smell/touch/taste are all now of type Array<any>

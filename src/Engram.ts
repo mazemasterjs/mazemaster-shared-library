@@ -1,32 +1,40 @@
+import { IFeeling, ISenses, ISight, ISmell, ISound, ITaste } from '../src/Interfaces/ISenses';
+
 import { ObjectBase } from './ObjectBase';
 // An engram contains a snapshot of sensory data correlating to the
-// player's position within the maze.  Each sense is a string.
-//
-// Example:
-// sight = "You are standing in a room. There are exits to the North and South."
-// sound = "You hear the sound of dripping water coming from the South."
+// player's position within the maze and representing five different directions:
+// North, South, East, West, and Here
 
 export class Engram extends ObjectBase {
-  public sight: Array<any>;
-  public sound: Array<any>;
-  public smell: Array<any>;
-  public touch: Array<any>;
-  public taste: Array<any>;
+  public north: ISenses;
+  public south: ISenses;
+  public east: ISenses;
+  public west: ISenses;
+  public here: ISenses;
 
   constructor(data?: any) {
     super();
-    this.sight = new Array();
-    this.sound = new Array();
-    this.smell = new Array();
-    this.touch = new Array();
-    this.taste = new Array();
+
+    // populate with empty sense data
+    const sights: ISight = { sight: '', distance: -1 };
+    const sounds: ISound = { sound: '', volume: -1 };
+    const smells: ISmell = { scent: '', strength: -1 };
+    const tastes: ITaste = { taste: '', strength: -1 };
+    const feelings: IFeeling = { feeling: '', intensity: -1 };
+    const senses: ISenses = { see: [sights], hear: [sounds], smell: [smells], taste: [tastes], feel: [feelings] };
+
+    this.north = senses;
+    this.south = senses;
+    this.east = senses;
+    this.west = senses;
+    this.here = senses;
 
     if (data !== undefined) {
-      this.sight = this.validateDataField('sight', data.sight, 'array');
-      this.sound = this.validateDataField('sound', data.sound, 'array');
-      this.smell = this.validateDataField('smell', data.smell, 'array');
-      this.touch = this.validateDataField('touch', data.touch, 'array');
-      this.taste = this.validateDataField('taste', data.taste, 'array');
+      this.north = this.validateDataField('north', data.north, 'object');
+      this.south = this.validateDataField('south', data.south, 'object');
+      this.east = this.validateDataField('east', data.east, 'object');
+      this.west = this.validateDataField('west', data.west, 'object');
+      this.here = this.validateDataField('here', data.here, 'object');
     }
   }
 }
