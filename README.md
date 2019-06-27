@@ -4,6 +4,11 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.10.2
+
+- Added new function to Helpers.ts: getNextDir(dir: DIRS, counterClockwise = false): DIRS
+- Added lodash for deepClone feature to dereference the empty initialization objects
+
 ### v1.10.1
 
 - issue with import path resolved in Engram
