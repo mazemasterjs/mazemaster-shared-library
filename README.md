@@ -4,6 +4,10 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.10.3
+
+- Fixed the new function recently added to Helpers.ts: getNextDir(dir: DIRS, counterClockwise = false): DIRS
+
 ### v1.10.2
 
 - Added new function to Helpers.ts: getNextDir(dir: DIRS, counterClockwise = false): DIRS

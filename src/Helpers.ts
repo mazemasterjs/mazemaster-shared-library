@@ -148,12 +148,16 @@ export function getNextDir(dir: DIRS, counterClockwise = false): DIRS {
   switch (dir) {
     case DIRS.NORTH:
       newDir = DIRS.EAST;
+      break;
     case DIRS.SOUTH:
       newDir = DIRS.WEST;
+      break;
     case DIRS.EAST:
       newDir = DIRS.SOUTH;
+      break;
     case DIRS.WEST:
       newDir = DIRS.NORTH;
+      break;
   }
 
   return counterClockwise ? reverseDir(newDir) : newDir;
