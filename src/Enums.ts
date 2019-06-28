@@ -135,3 +135,12 @@ export enum FN_MODES {
   ADD,
   REMOVE,
 }
+
+/** Authentication Roles */
+export enum USER_ROLES {
+  NONE,
+  USER,
+  ASSISTANT,
+  INSTRUCTOR,
+  ADMIN,
+}

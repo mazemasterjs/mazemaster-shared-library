@@ -4,6 +4,12 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.12.0
+
+- Added classes to support authentication/authorization
+  - User.ts, IUser.ts, and User.test.ts introduced for use in
+  - Enums.USER_ROLES {NONE, USER, ASSISTANT, INSTRUCTOR, ADMIN} added
+
 ### v1.11.0
 
 - Changes to engram.here:
