@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash';
-import { ISenses } from './Interfaces/ISenses';
+import { DIRS } from './Enums';
+import { IHere, IIntuition, ISenses } from './Interfaces/ISenses';
 import { ObjectBase } from './ObjectBase';
 
 // An engram contains a snapshot of sensory data correlating to the
@@ -11,7 +12,7 @@ export class Engram extends ObjectBase {
   public south: ISenses;
   public east: ISenses;
   public west: ISenses;
-  public here: ISenses;
+  public here: IHere;
 
   constructor(data?: any) {
     super();
@@ -31,11 +32,17 @@ export class Engram extends ObjectBase {
         feel: [{ feeling: '', intensity: -1 }],
       };
 
+      // need an intuition object for here
+      const intuition: IIntuition = { message: '', confidence: 0, direction: DIRS.NONE };
+
+      // and a here to add to the base engram
+      const here = { exitNorth: false, exitSouth: false, exitEast: false, exitWest: false, items: [''], messages: [''], intuition: cloneDeep(intuition) };
+
       this.north = cloneDeep(senses);
       this.south = cloneDeep(senses);
       this.east = cloneDeep(senses);
       this.west = cloneDeep(senses);
-      this.here = cloneDeep(senses);
+      this.here = cloneDeep(here);
     }
   }
 }

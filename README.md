@@ -4,6 +4,14 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.11.0
+
+- Changes to engram.here:
+  - here.exitNorth|South|East|West [boolean]
+  - here.messages[] - to display cell.Notes[n]
+  - here.intuition{message: string, confidence: number, direction: DIRS}
+- additional tests added to Engram.tests.ts
+
 ### v1.10.3
 
 - Fixed the new function recently added to Helpers.ts: getNextDir(dir: DIRS, counterClockwise = false): DIRS
