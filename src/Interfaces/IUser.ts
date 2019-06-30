@@ -1,10 +1,13 @@
 import { USER_ROLES } from '../Enums';
 
 export interface IUser {
+  id: string;
+  userName: string;
   firstName: string;
   lastName: string;
-  userName: string;
   role: USER_ROLES;
-  lastLogin: number;
   pwHash: string;
+  teamId: string;
+  botId: string;
+  lastLogin: number;
 }
