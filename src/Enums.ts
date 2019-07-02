@@ -95,6 +95,7 @@ export enum COMMANDS {
   WAIT,
   WRITE,
   QUIT,
+  SNEAK,
 }
 
 // enumeration of possible game results

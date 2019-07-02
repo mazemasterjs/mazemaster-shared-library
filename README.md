@@ -4,6 +4,10 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.12.2
+
+- added SNEAK to the command enums
+
 ### v1.12.1
 
 - Updates to new User class include data validation, fromJSON(), and additional properties (teamId & botId)
