@@ -145,3 +145,11 @@ export enum USER_ROLES {
   INSTRUCTOR,
   ADMIN,
 }
+
+/**
+ * Used to determine mode of functions modifying cell exits
+ */
+export enum SET_EXIT_MODES {
+  ADD = 0,
+  REMOVE,
+}

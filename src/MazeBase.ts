@@ -3,7 +3,8 @@ import { ObjectBase } from './ObjectBase';
 import { MazeLoc } from './MazeLoc';
 import { Logger } from '@mazemasterjs/logger';
 import IMazeStub from './Interfaces/IMazeStub';
-import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
+import { CELL_TAGS, CELL_TRAPS, DIRS, SET_EXIT_MODES } from './Enums';
+import { reverseDir } from './Helpers';
 
 const log = Logger.getInstance();
 
@@ -84,10 +85,19 @@ export class MazeBase extends ObjectBase {
   }
 
   /**
+   *
+   * @param {row: number, col: number} pos
+   * @return {Cell} The requested Cell
+   * @throws {Error} Out Of Bounds error if given position is outside of cells array's bounds.
+   */
+  public getCell(pos: { row: number; col: number }): Cell;
+
+  /**
    * Attempts to find and return the cell in the given position
    *
-   * @param pos
-   * @throws Out Of Bounds error if given position is outside of cells array's bounds.
+   * @param {MazeLoc} pos
+   * @return {Cell} The requested Cell
+   * @throws {Error} Out Of Bounds error if given position is outside of cells array's bounds.
    */
   public getCell(pos: MazeLoc): Cell {
     if (pos.row < 0 || pos.row >= this.cells.length || pos.col < 0 || pos.col > this.cells[0].length) {
@@ -304,9 +314,42 @@ export class MazeBase extends ObjectBase {
   }
 
   /**
-   * Rebuild the maze array from the given data to instantiate
-   * each individual Cell object
+   * Adds exit to a cell if exit doesn't already exist.
+   * Also adds neighboring exit to valid, adjoining cell.
+   *
+   * @param dir
    * @param cells
+   * @returns boolean
+   */
+  public addExit(dir: DIRS, cell: Cell): boolean {
+    this.logTrace(
+      __filename,
+      `addExit(${DIRS[dir]})`,
+      `Calling setExit(ADD, ${DIRS[dir]}) from [${cell.Location.toString()}]. Existing exits: ${cell.listExits()}`,
+    );
+    return this.setExit(SET_EXIT_MODES.ADD, dir, cell);
+  }
+
+  /**
+   * Removes exit from the given cell and it's adjoining neighbor.
+   *
+   * @param {DIRS} dir
+   * @param {Cell} cell
+   * @returns boolean
+   */
+  public removeExit(dir: DIRS, cell: Cell): boolean {
+    this.logTrace(
+      __filename,
+      `removeExit(${DIRS[dir]})`,
+      `Calling setExit(REMOVE, ${DIRS[dir]}) from [${cell.Location.toString()}]. Existing exits: ${cell.listExits()}`,
+    );
+    return this.setExit(SET_EXIT_MODES.REMOVE, dir, cell);
+  }
+
+  /**
+   * Rebuild the maze array from the given data to re-hydrate each individual Cell object
+   *
+   * @param {Array<Array<Cell>>} cells
    */
   private buildCellsArray(cells: Array<Array<Cell>>): Array<Array<Cell>> {
     this.logTrace(__filename, `buildCellsArray(Array<Array<Cell>>)`, 'Attempting to rebuild cells array from JSON data...');
@@ -325,6 +368,83 @@ export class MazeBase extends ObjectBase {
     }
     return newCells;
   }
+
+  /**
+   * Adds or Removes cell exits, depending on SET_EXIT_MODES value.
+   * Also adds or removes opposite exit from valid, adjoining cell.
+   * Only trace logging - this is called frequently by recursive generation
+   * routines.
+   *
+   * @param dir
+   * @param cells
+   * @returns boolean
+   */
+  private setExit(mode: SET_EXIT_MODES, dir: DIRS, cell: Cell): boolean {
+    const modeName = mode === SET_EXIT_MODES.ADD ? 'ADD' : 'REMOVE';
+    const dirName = DIRS[dir];
+    let validMove = true; // only set to true if valid adjoining cell exits to open an exit to
+
+    this.logTrace(__filename, `setExit(${modeName}, ${dirName})`, `Setting exits in [${cell.Location.toString()}]. Existing exits: ${cell.listExits()}.`);
+
+    if (mode === SET_EXIT_MODES.ADD ? !(cell.Exits & dir) : !!(cell.Exits & dir)) {
+      let nPos = new MazeLoc(-1, -1); // locate an adjoining cell - must open exit on both sides
+
+      switch (dir) {
+        case DIRS.NORTH:
+          validMove = cell.Location.row > 0;
+          if (validMove) {
+            nPos = new MazeLoc(cell.Location.row - 1, cell.Location.col);
+          }
+          break;
+        case DIRS.SOUTH:
+          validMove = cell.Location.row < this.Cells.length;
+          if (validMove) {
+            nPos = new MazeLoc(cell.Location.row + 1, cell.Location.col);
+          }
+          break;
+        case DIRS.EAST:
+          validMove = cell.Location.col < this.Cells[0].length;
+          if (validMove) {
+            nPos = new MazeLoc(cell.Location.row, cell.Location.col + 1);
+          }
+          break;
+        case DIRS.WEST:
+          validMove = cell.Location.col > 0;
+          if (validMove) {
+            nPos = new MazeLoc(cell.Location.row, cell.Location.col - 1);
+          }
+          break;
+      }
+
+      if (validMove) {
+        this.logTrace(__filename, 'setExit()', `Valid direction, setting exit from [${cell.Location.toString()}] into [${nPos.row}, ${nPos.col}]`);
+        cell.Exits = mode === SET_EXIT_MODES.ADD ? (cell.Exits += dir) : (cell.Exits -= dir);
+        this.logTrace(__filename, `setExit(${modeName}, ${dirName})`, `Exits set in cell [${cell.Location.toString()}]. Existing exits: ${cell.listExits()}.`);
+
+        const neighbor: Cell = this.getNeighbor(cell, dir);
+        neighbor.Exits = mode === SET_EXIT_MODES.ADD ? (neighbor.Exits += reverseDir(dir)) : (neighbor.Exits -= dir);
+        this.logTrace(
+          __filename,
+          `setExit(${modeName}, ${dirName})`,
+          `Reverse exit (${dirName} -> ${
+            DIRS[reverseDir(dir)]
+          }) set in adjoining cell [${neighbor.Location.toString()}]. Exits: ${neighbor.listExits()}, Tags: ${neighbor.listTags()}.`,
+        );
+      } else {
+        log.warn(__filename, `setExit(${modeName}, ${dirName})`, `Invalid adjoining cell location: [${nPos.toString()}]`);
+      }
+    } else {
+      log.warn(
+        __filename,
+        `setExit(${modeName}, ${dirName})`,
+        `Invalid action in cell [${cell.Location.toString()}]. Exit ${
+          mode === SET_EXIT_MODES.ADD ? 'already exists' : 'not found'
+        }. Cell exits: ${cell.listExits()}`,
+      );
+    }
+
+    return validMove;
+  } // setExit
 
   /**
    * Return appropriate trap icon for text-renderer given

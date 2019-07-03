@@ -178,7 +178,7 @@ export class Maze extends MazeBase {
             // if (!(nextCell.getTags() & CELL_TAGS.CARVED) && !(cell.getExits() & dir)) {
             // attempt to add an exit into the next room
 
-            if (cell.addExit(dir, this.cells)) {
+            if (this.addExit(dir, cell)) {
               // this is a good move, so mark the cell as carved and enter it to continue carving
               nextCell.addTag(CELL_TAGS.CARVED);
               this.carvePassage(nextCell);

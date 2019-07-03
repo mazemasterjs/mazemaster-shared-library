@@ -4,6 +4,19 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.12.3
+
+- To better allow traps to change the layout of the maze in real-time, the following changes have been made:
+  - addExit
+    - Signature changed from _addExit(dir: DIRS, cells: Array<Array<Cell>>)_ to _addExit(dir: DIRS, cell: Cell)_
+    - Function moved from Cell.ts to MazeBase.ts
+  - removeExit
+    - Signature changed from _removeExit(dir: DIRS, cells: Array<Array<Cell>>)_ to _removeExit(dir: DIRS, cell: Cell)_
+    - Function moved from Cell.ts to MazeBase.ts
+  - FN_MODES
+    - Enum renamed to SET_EXIT_MODES
+    - Enum moved from Cell.ts to Enums.ts
+
 ### v1.12.2
 
 - added SNEAK to the command enums

@@ -164,12 +164,12 @@ describe(__filename + ' - Maze Tests', () => {
   });
 
   it(`cell.addExit(DIRS.EAST) should add an exit to the EAST.`, () => {
-    cell.addExit(DIRS.EAST, maze.Cells);
+    maze.addExit(DIRS.EAST, cell);
     expect(!!(cell.Exits & DIRS.EAST)).to.equal(true);
   });
 
   it(`cell.removeExit(DIRS.EAST) should remove the exit to the EAST.`, () => {
-    cell.removeExit(DIRS.EAST, maze.Cells);
+    maze.removeExit(DIRS.EAST, cell);
     expect(!!(cell.Exits & DIRS.EAST)).to.equal(false);
   });
 
