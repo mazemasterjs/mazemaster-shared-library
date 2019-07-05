@@ -4,7 +4,7 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
-### v1.12.5
+### v1.12.6
 
 - Fixed bug in setExit(): Forgot to reverse direction when removing exits in neighboring cell.
 - To improve consistency:
