@@ -4,6 +4,11 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.12.4
+
+- added Life to the player
+- added Poisoned to the PLAYER_STATES enum
+
 ### v1.12.3
 
 - To better allow traps to change the layout of the maze in real-time, the following changes have been made:

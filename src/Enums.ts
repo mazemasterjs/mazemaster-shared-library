@@ -42,6 +42,7 @@ export enum PLAYER_STATES {
   BEARTRAPPED = 128,
   SLOWED = 256,
   DEAD = 512,
+  POISONED = 1024,
 }
 
 // Cardinal directions (bitwise)

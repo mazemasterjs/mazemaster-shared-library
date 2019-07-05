@@ -6,11 +6,13 @@ export class Player {
   private location: MazeLoc;
   private state: PLAYER_STATES;
   private facing: DIRS;
+  private life: number;
 
-  constructor(location: MazeLoc, state: PLAYER_STATES, facing: DIRS) {
+  constructor(location: MazeLoc, state: PLAYER_STATES, facing: DIRS, life: number = 100) {
     this.location = location;
     this.state = state;
     this.facing = facing;
+    this.life = life;
   }
 
   public get Location(): MazeLoc {
@@ -35,6 +37,14 @@ export class Player {
 
   public get Facing() {
     return this.facing;
+  }
+
+  public set Life(num: number) {
+    this.life = num;
+  }
+
+  public get Life() {
+    return this.life;
   }
 
   /**
