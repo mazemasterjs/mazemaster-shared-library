@@ -111,4 +111,14 @@ export abstract class ObjectBase {
     log.trace(__filename, 'generateId()', 'newId=' + newId);
     return newId;
   }
+
+  /**
+   * Generate and return a hash for the given string
+   * unique enough for our needs
+   */
+  protected generateHash(rawString: string): string {
+    const hashedString = hash(rawString);
+    log.trace(__filename, 'generateHash()', 'hashedString=' + hashedString);
+    return hashedString;
+  }
 }

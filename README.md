@@ -4,7 +4,107 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.12.6
+
+- Fixed bug in setExit(): Forgot to reverse direction when removing exits in neighboring cell.
+- To improve consistency:
+  - Signature changed from _setExit(mode: SET_EXIT_MODES, dir: DIRS, cell: Cell)_ to _setExit(mode: SET_EXIT_MODES, cell: Cell, dir: DIRS)_
+  - Signature changed from _addExit(dir: DIRS, cell: Cell)_ to _addExit(cell: Cell, dir:DIRS)_
+  - Signature changed from _removeExit(dir: DIRS, cell: Cell)_ to _addExit(cell: Cell, dir:DIRS)_
+
+### v1.12.4
+
+- added Life to the player
+- added Poisoned to the PLAYER_STATES enum
+
+### v1.12.3
+
+- To better allow traps to change the layout of the maze in real-time, the following changes have been made:
+  - addExit
+    - Signature changed from _addExit(dir: DIRS, cells: Array<Array<Cell>>)_ to _addExit(dir: DIRS, cell: Cell)_
+    - Function moved from Cell.ts to MazeBase.ts
+  - removeExit
+    - Signature changed from _removeExit(dir: DIRS, cells: Array<Array<Cell>>)_ to _removeExit(dir: DIRS, cell: Cell)_
+    - Function moved from Cell.ts to MazeBase.ts
+  - FN_MODES
+    - Enum renamed to SET_EXIT_MODES
+    - Enum moved from Cell.ts to Enums.ts
+
+### v1.12.2
+
+- added SNEAK to the command enums
+
+### v1.12.1
+
+- Updates to new User class include data validation, fromJSON(), and additional properties (teamId & botId)
+
+### v1.12.0
+
+- Added classes to support authentication/authorization
+  - User.ts, IUser.ts, and User.test.ts introduced for use in
+  - Enums.USER_ROLES {NONE, USER, ASSISTANT, INSTRUCTOR, ADMIN} added
+
+### v1.11.0
+
+- Changes to engram.here:
+  - here.exitNorth|South|East|West [boolean]
+  - here.messages[] - to display cell.Notes[n]
+  - here.intuition{message: string, confidence: number, direction: DIRS}
+- additional tests added to Engram.tests.ts
+
+### v1.10.3
+
+- Fixed the new function recently added to Helpers.ts: getNextDir(dir: DIRS, counterClockwise = false): DIRS
+
+### v1.10.2
+
+- Added new function to Helpers.ts: getNextDir(dir: DIRS, counterClockwise = false): DIRS
+- Added lodash for deepClone feature to dereference the empty initialization objects
+
+### v1.10.1
+
+- issue with import path resolved in Engram
+
+### 1.10.0
+
+- Engrams completely reworked. The are now based on directions: North, South, East, West, and Here. Each direction contains five verbs: See, Hear, Smell, Feel, and Taste. Each verb contains an array of sense-specific tuples, for example console.log(engram.north.see[0].sight + ', ' + engram.north.see[0].distance) could result in "exit, 0" or "lava, 1"
+
+### v1.9.6
+
+- Engram sight/sound/smell/touch/taste are all now of type Array<any>
+
+### v1.9.5
+
+- New trap type: Cheese. It's poisoned, but it smells so gouda that if the player comes near it, they will
+  - be helpless to avoid it's allure and will involuntarily consume it.
+- Traps now have implied difficulty levels to make Challenge Level more meaningful:
+  - All : Pit >p<, Mouse Trap >m<
+  - CL 4: Tarpit >t<
+  - CL 5: Flamethrower >f<
+  - CL 6: Deadfall >D<
+  - CL 7: Poison Dart >d<
+  - CL 8: Fragile Floor >F<
+  - CL 9: Teleporter >T<
+  - CL 10: Poisoned Cheese >c<
+- New trap types now included with textRender
+
+### v1.9.4
+
+- getCell, getNeighbor, and generateTextRender all moved to MazeBase. Maze is now only needed for generation.
+- Added new CELL_TRAPS enum values: POISON_DART = 16, TELEPORTER = 32, DEADFALL = 64, FRAGILE_FLOOR = 128
+- Corrected spelling of CELL_TRAPS.FLAMETHOWER
+
+### v1.9.2
+
+- Removed the hardcoded "You see...", "You smell...", etc. text in the engram constructor.
+
+### v1.9.1
+
+- Added LEFT and RIGHT (16, 32) to DIRS to support turn/facing
+- Added SNIFF, LISTEN, WAIT, FACE, and TURN to COMMANDS Enum (some may not get used)
+
 ### v1.9.0
+
 - added facing for the player object based on the existing cardinal direction ENUMs.
 
 ### v1.8.12

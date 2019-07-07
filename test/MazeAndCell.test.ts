@@ -3,8 +3,8 @@ import { Maze } from '../src/Maze';
 import { expect } from 'chai';
 import { LOG_LEVELS, Logger } from '@mazemasterjs/logger';
 import { MD5 as hash } from 'object-hash';
-import Cell from '../src/Cell';
-import Location from '../src/MazeLoc';
+import { Cell } from '../src/Cell';
+import { MazeLoc } from '../src/MazeLoc';
 import { CELL_TAGS, CELL_TRAPS, DIRS } from '../src/Enums';
 
 // test cases
@@ -20,7 +20,7 @@ describe(__filename + ' - Maze Tests', () => {
   const note2: string = 'This is another unit test.';
   let maze: Maze;
   const mazeId: string = `${height}:${width}:${challenge}:${seed}`;
-  const mazeHash: string = '4170b0dc4b1a976da83c065efb7072e2';
+  const mazeHash: string = '480acb65a1daa187270927736f57eb71';
   const expectedMazeStub: IMazeStub = {
     id: mazeId,
     height,
@@ -31,6 +31,8 @@ describe(__filename + ' - Maze Tests', () => {
     note: '',
     lastUpdated: timestamp,
   };
+
+  const tinyMaze = new Maze().generate(3, 3, 1, 'Tiny', 'Maze');
 
   it(`Maze.generate(0, 3, 3, 'unit', 'test') should return error`, () => {
     expect(() => {
@@ -140,7 +142,6 @@ describe(__filename + ' - Maze Tests', () => {
   });
 
   it(`New maze from JSON data should match maze [${mazeId}]`, () => {
-    const tinyMaze: Maze = new Maze().generate(3, 3, 1, 'Tiny', 'Maze');
     const oldJson: string = JSON.stringify(tinyMaze);
     const newMaze: Maze = new Maze(JSON.parse(oldJson));
     const newJson = JSON.stringify(newMaze);
@@ -148,29 +149,19 @@ describe(__filename + ' - Maze Tests', () => {
   });
 
   it(`Maze.getCell(-1, -1) should return error`, () => {
-    const cPos = new Location(-1, -1);
+    const cPos = new MazeLoc(-1, -1);
     expect(() => {
       maze.getCell(cPos);
     }).to.throw('Invalid cell coordinates given: [-1, -1].');
   });
 
   it(`Maze.getCell(0,0) should return cell`, () => {
-    cell = maze.getCell(new Location(0, 0));
+    cell = maze.getCell(new MazeLoc(0, 0));
     expect(cell.Location.toString()).to.equal('0, 0');
   });
 
   it(`cell.Exits for Cell(0, 0) should not include WEST.`, () => {
     expect(!!(cell.Exits & DIRS.WEST)).to.equal(false);
-  });
-
-  it(`cell.addExit(DIRS.EAST) should add an exit to the EAST.`, () => {
-    cell.addExit(DIRS.EAST, maze.Cells);
-    expect(!!(cell.Exits & DIRS.EAST)).to.equal(true);
-  });
-
-  it(`cell.removeExit(DIRS.EAST) should remove the exit to the EAST.`, () => {
-    cell.removeExit(DIRS.EAST, maze.Cells);
-    expect(!!(cell.Exits & DIRS.EAST)).to.equal(false);
   });
 
   it(`Cell.clearTags() should reset cell.Tags to CELL_TAGS.NONE.`, () => {
@@ -194,18 +185,18 @@ describe(__filename + ' - Maze Tests', () => {
     expect(cell.Traps).to.equal(CELL_TRAPS.NONE);
   });
 
-  it(`Cell.addTrap(CELL_TRAPS.BEARTRAP) should set cell.Traps to equal ${CELL_TRAPS.BEARTRAP}.`, () => {
-    cell.addTrap(CELL_TRAPS.BEARTRAP);
-    expect(cell.Traps).to.equal(CELL_TRAPS.BEARTRAP);
+  it(`Cell.addTrap(CELL_TRAPS.MOUSETRAP) should set cell.Traps to equal ${CELL_TRAPS.MOUSETRAP}.`, () => {
+    cell.addTrap(CELL_TRAPS.MOUSETRAP);
+    expect(cell.Traps).to.equal(CELL_TRAPS.MOUSETRAP);
   });
 
-  it(`Cell.addTrap(CELL_TRAPS.PIT) should set cell.Traps to equal ${CELL_TRAPS.BEARTRAP + CELL_TRAPS.PIT}.`, () => {
+  it(`Cell.addTrap(CELL_TRAPS.PIT) should set cell.Traps to equal ${CELL_TRAPS.MOUSETRAP + CELL_TRAPS.PIT}.`, () => {
     cell.addTrap(CELL_TRAPS.PIT);
-    expect(cell.Traps).to.equal(CELL_TRAPS.BEARTRAP + CELL_TRAPS.PIT);
+    expect(cell.Traps).to.equal(CELL_TRAPS.MOUSETRAP + CELL_TRAPS.PIT);
   });
 
-  it(`Cell.removeTrap(CELL_TRAPS.BEARTRAP) should set cell.Traps to equal ${CELL_TRAPS.PIT}.`, () => {
-    cell.removeTrap(CELL_TRAPS.BEARTRAP);
+  it(`Cell.removeTrap(CELL_TRAPS.MOUSETRAP) should set cell.Traps to equal ${CELL_TRAPS.PIT}.`, () => {
+    cell.removeTrap(CELL_TRAPS.MOUSETRAP);
     expect(cell.Traps).to.equal(1);
   });
 

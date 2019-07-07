@@ -1,16 +1,7 @@
 import * as Helpers from './Helpers';
 import { CELL_TAGS, CELL_TRAPS, DIRS } from './Enums';
 import { Logger } from '@mazemasterjs/logger';
-import { MazeLoc } from './MazeLoc';
 import CellBase from './CellBase';
-
-/**
- * Used to determine mode of functions modifying cell exits
- */
-enum FN_MODES {
-  ADD = 0,
-  REMOVE,
-}
 
 const log = Logger.getInstance();
 
@@ -155,113 +146,6 @@ export class Cell extends CellBase {
   public getExitCount(): number {
     return Helpers.getSelectedBitNames(DIRS, this.exits).length;
   }
-
-  /**
-   * Adds exit to a cell if exit doesn't already exist.
-   * Also adds neighboring exit to valid, adjoining cell.
-   *
-   * @param dir
-   * @param cells
-   * @returns boolean
-   */
-  public addExit(dir: DIRS, cells: Array<Array<Cell>>): boolean {
-    this.logTrace(__filename, `addExit(${DIRS[dir]})`, `Calling setExit(ADD, ${DIRS[dir]}) from [${this.pos.toString()}]. Existing exits: ${this.listExits()}`);
-    return this.setExit(FN_MODES.ADD, dir, cells);
-  }
-
-  /**
-   * Removes exit to a cell if it exists.
-   * Also removes neighboring exit from valid, adjoining cell.
-   *
-   * @param dir
-   * @param cells
-   * @returns boolean
-   */
-  public removeExit(dir: DIRS, cells: Array<Array<Cell>>): boolean {
-    this.logTrace(
-      __filename,
-      `removeExit(${DIRS[dir]})`,
-      `Calling setExit(REMOVE, ${DIRS[dir]}) from [${this.pos.toString()}]. Existing exits: ${this.listExits()}`,
-    );
-    return this.setExit(FN_MODES.REMOVE, dir, cells);
-  }
-
-  /**
-   * Adds or Removes cell exits, depending on SET_EXIT_MODES value.
-   * Also adds or removes opposite exit from valid, adjoining cell.
-   * Only trace logging - this is called frequently by recursive generation
-   * routines.
-   *
-   * @param dir
-   * @param cells
-   * @returns boolean
-   */
-  private setExit(mode: FN_MODES, dir: DIRS, cells: Array<Array<Cell>>): boolean {
-    const modeName = mode === FN_MODES.ADD ? 'ADD' : 'REMOVE';
-    const dirName = DIRS[dir];
-    let validMove = true; // only set to true if valid adjoining cell exits to open an exit to
-
-    this.logTrace(__filename, `setExit(${modeName}, ${dirName})`, `Setting exits in [${this.pos.toString()}]. Existing exits: ${this.listExits()}.`);
-
-    if (mode === FN_MODES.ADD ? !(this.exits & dir) : !!(this.exits & dir)) {
-      let nPos = new MazeLoc(-1, -1); // locate an adjoining cell - must open exit on both sides
-
-      switch (dir) {
-        case DIRS.NORTH:
-          validMove = this.pos.row > 0;
-          if (validMove) {
-            nPos = new MazeLoc(this.pos.row - 1, this.pos.col);
-          }
-          break;
-        case DIRS.SOUTH:
-          validMove = this.pos.row < cells.length;
-          if (validMove) {
-            nPos = new MazeLoc(this.pos.row + 1, this.pos.col);
-          }
-          break;
-        case DIRS.EAST:
-          validMove = this.pos.col < cells[0].length;
-          if (validMove) {
-            nPos = new MazeLoc(this.pos.row, this.pos.col + 1);
-          }
-          break;
-        case DIRS.WEST:
-          validMove = this.pos.col > 0;
-          if (validMove) {
-            nPos = new MazeLoc(this.pos.row, this.pos.col - 1);
-          }
-          break;
-      }
-
-      if (validMove) {
-        this.logTrace(__filename, 'setExit()', `Valid direction, setting exit from [${this.Location.toString()}] into [${nPos.row}, ${nPos.col}]`);
-        this.exits = mode === FN_MODES.ADD ? (this.exits += dir) : (this.exits -= dir);
-
-        const neighbor: Cell = cells[nPos.row][nPos.col];
-
-        this.logTrace(__filename, `setExit(${modeName}, ${dirName})`, `Exits set in cell [${this.pos.toString()}]. Existing exits: ${this.listExits()}.`);
-
-        neighbor.exits = mode === FN_MODES.ADD ? (neighbor.exits += Helpers.reverseDir(dir)) : (neighbor.exits -= dir);
-        this.logTrace(
-          __filename,
-          `setExit(${modeName}, ${dirName})`,
-          `Reverse exit (${dirName} -> ${
-            DIRS[Helpers.reverseDir(dir)]
-          }) set in adjoining cell [${neighbor.pos.toString()}]. Exits: ${neighbor.listExits()}, Tags: ${neighbor.listTags()}.`,
-        );
-      } else {
-        log.warn(__filename, `setExit(${modeName}, ${dirName})`, `Invalid adjoining cell location: [${nPos.toString()}]`);
-      }
-    } else {
-      log.warn(
-        __filename,
-        `setExit(${modeName}, ${dirName})`,
-        `Invalid action in cell [${this.pos.toString()}]. Exit ${mode === FN_MODES.ADD ? 'already exists' : 'not found'}. Cell exits: ${this.listExits()}`,
-      );
-    }
-
-    return validMove;
-  } // setExit
 }
 
 export default Cell;

@@ -38,57 +38,6 @@ export class Maze extends MazeBase {
   }
 
   /**
-   * Attempts to find and return the cell in the given position
-   *
-   * @param pos
-   * @throws Out Of Bounds error if given position is outside of cells array's bounds.
-   */
-  public getCell(pos: MazeLoc): Cell {
-    if (pos.row < 0 || pos.row >= this.cells.length || pos.col < 0 || pos.col > this.cells[0].length) {
-      const error = new Error(`Invalid cell coordinates given: [${pos.toString()}].`);
-      log.error(__filename, `getCell${pos.row}, ${pos.col}`, 'Cell range out of bounds, throwing error.', error);
-      throw error;
-    }
-
-    this.logTrace(__filename, `getCell(${pos.toString()}`, 'Returning cell.');
-
-    return this.cells[pos.row][pos.col];
-  }
-
-  /**
-   * Calculates and returns neighboring cell in the given direction
-   * TODO: Consider checking neighbor validity here?
-   *
-   * @param cell
-   * @param dir
-   */
-  public getNeighbor(cell: Cell, dir: DIRS): Cell {
-    const method = `getNeighbor(${cell.Location.toString()}, ${DIRS[dir]})`;
-    // move location of next cell according to random direction
-    let row = cell.Location.row;
-    let col = cell.Location.col;
-
-    this.logTrace(__filename, `getNeighbor(${cell.Location.toString()}, ${DIRS[dir]}`, 'Getting neighboring cell.');
-
-    // find coordinates of the cell in the given direction
-    if (dir < DIRS.EAST) {
-      row = dir === DIRS.NORTH ? row - 1 : row + 1;
-    }
-    if (dir > DIRS.SOUTH) {
-      col = dir === DIRS.EAST ? col + 1 : col - 1;
-    }
-
-    // let's throw a warning if an invalid neighbor is returned since we might want to change this some day
-    if (row < 0 || row >= this.cells.length || col < 0 || col >= this.cells[0].length) {
-      this.logTrace(__filename, method, `Invalid neighbor position: ${row}, ${col}`);
-    } else {
-      this.logTrace(__filename, method, `Neighbor: ${row}, ${col}`);
-    }
-
-    return this.getCell(new MazeLoc(row, col));
-  }
-
-  /**
    * Generates a new maze based on the given parameters
    * @param height - number: The height of the maze grid
    * @param width - number: The width of the maze grid
@@ -178,117 +127,6 @@ export class Maze extends MazeBase {
   }
 
   /**
-   * Returns a text rendering of the maze as a grid of 3x3
-   * character blocks.
-   */
-  // tslint:disable-next-line: no-shadowed-variable
-  public generateTextRender(forceRegen: boolean, playerPos?: MazeLoc) {
-    const H_WALL = '+---';
-    const S_DOOR = '+ S ';
-    const F_DOOR = '+ F ';
-    const V_WALL = '|';
-    const H_DOOR = '+   ';
-    const V_DOOR = ' ';
-    const CENTER = '   ';
-    const SOLUTION = ' . ';
-    const ROW_END = '+';
-    const AVATAR_TRAPPED = '>@<';
-    const AVATAR = ' @ ';
-
-    // TODO: Turn back on render caching after solver work is completed
-    if (this.textRender.length > 0 && !forceRegen) {
-      return this.textRender;
-    }
-
-    let textMaze = '';
-
-    // walk the array, one row at a time
-    for (let y = 0; y < this.height; y++) {
-      for (let subRow = 0; subRow < 3; subRow++) {
-        let row = '';
-
-        // each text-cell is actually three
-        for (let x = 0; x < this.width; x++) {
-          const cell: Cell = this.cells[y][x];
-          switch (subRow) {
-            case 0:
-              // only render north walls on first row
-              if (y === 0) {
-                if (!!(cell.Tags & CELL_TAGS.START)) {
-                  row += S_DOOR;
-                } else {
-                  row += !!(cell.Exits & DIRS.NORTH) ? H_DOOR : H_WALL;
-                }
-              }
-              break;
-            case 1:
-              // only render west walls on first column
-              if (x === 0) {
-                row += !!(cell.Exits & DIRS.WEST) ? V_DOOR : V_WALL;
-              }
-
-              // render room center - check for cell properties and render appropriately
-              let cellFill = CENTER;
-              const tags = cell.Tags;
-              const traps = cell.Traps;
-              if (!!(tags & CELL_TAGS.PATH)) {
-                cellFill = SOLUTION;
-              }
-              if (!!(traps & CELL_TRAPS.BEARTRAP)) {
-                cellFill = '>b<';
-              }
-              if (!!(traps & CELL_TRAPS.PIT)) {
-                cellFill = '>p<';
-              }
-              if (!!(traps & CELL_TRAPS.FLAMETHOWER)) {
-                cellFill = '>f<';
-              }
-              if (!!(traps & CELL_TRAPS.TARPIT)) {
-                cellFill = '>t<';
-              }
-
-              // override cell fill with avatar location when player position is given
-              if (playerPos !== undefined && this.cells[y][x].Location.equals(playerPos)) {
-                if (traps !== 0) {
-                  cellFill = AVATAR_TRAPPED;
-                } else {
-                  cellFill = AVATAR;
-                }
-              }
-
-              row += cellFill;
-
-              // always render east walls (with room center)
-              row += !!(cell.Exits & DIRS.EAST) ? V_DOOR : V_WALL;
-
-              break;
-            case 2:
-              // always render south walls
-              if (!!(cell.Tags & CELL_TAGS.FINISH)) {
-                row += F_DOOR;
-              } else {
-                row += !!(cell.Exits & DIRS.SOUTH) ? H_DOOR : H_WALL;
-              }
-              break;
-          }
-        }
-
-        if (subRow !== 1) {
-          row += ROW_END;
-        }
-
-        // end the line - only draw the top subRow if on the first line
-        if ((subRow === 0 && y === 0) || subRow > 0) {
-          textMaze += row + '\n';
-        }
-      }
-    }
-
-    this.textRender = textMaze.toString();
-    return textMaze;
-  }
-
-  /**
    * Wraps the recursive tagSolution function
    * and initializes tracking variables
    */
@@ -340,7 +178,7 @@ export class Maze extends MazeBase {
             // if (!(nextCell.getTags() & CELL_TAGS.CARVED) && !(cell.getExits() & dir)) {
             // attempt to add an exit into the next room
 
-            if (cell.addExit(dir, this.cells)) {
+            if (this.addExit(cell, dir)) {
               // this is a good move, so mark the cell as carved and enter it to continue carving
               nextCell.addTag(CELL_TAGS.CARVED);
               this.carvePassage(nextCell);
@@ -485,13 +323,13 @@ export class Maze extends MazeBase {
   // test if cell has a trap
   private hasTrap(cell: Cell): boolean {
     const traps = cell.Traps;
-    if (!!(traps & CELL_TRAPS.BEARTRAP)) {
+    if (!!(traps & CELL_TRAPS.MOUSETRAP)) {
       return true;
     }
     if (!!(traps & CELL_TRAPS.PIT)) {
       return true;
     }
-    if (!!(traps & CELL_TRAPS.FLAMETHOWER)) {
+    if (!!(traps & CELL_TRAPS.FLAMETHROWER)) {
       return true;
     }
     if (!!(traps & CELL_TRAPS.TARPIT)) {
@@ -611,18 +449,57 @@ export class Maze extends MazeBase {
             break;
           }
           case 2: {
-            cell.addTrap(CELL_TRAPS.FLAMETHOWER);
+            cell.addTrap(CELL_TRAPS.MOUSETRAP);
             trapCount++;
             break;
           }
           case 3: {
-            cell.addTrap(CELL_TRAPS.BEARTRAP);
-            trapCount++;
+            if (this.challenge >= 4) {
+              cell.addTrap(CELL_TRAPS.TARPIT);
+              trapCount++;
+            }
             break;
           }
           case 4: {
-            cell.addTrap(CELL_TRAPS.TARPIT);
-            trapCount++;
+            if (this.challenge >= 5) {
+              cell.addTrap(CELL_TRAPS.FLAMETHROWER);
+              trapCount++;
+            }
+            break;
+          }
+          case 5: {
+            if (this.challenge >= 6) {
+              cell.addTrap(CELL_TRAPS.DEADFALL);
+              trapCount++;
+            }
+            break;
+          }
+          case 6: {
+            if (this.challenge >= 7) {
+              cell.addTrap(CELL_TRAPS.POISON_DART);
+              trapCount++;
+            }
+            break;
+          }
+          case 7: {
+            if (this.challenge >= 8) {
+              cell.addTrap(CELL_TRAPS.FRAGILE_FLOOR);
+              trapCount++;
+            }
+            break;
+          }
+          case 8: {
+            if (this.challenge >= 9) {
+              cell.addTrap(CELL_TRAPS.TELEPORTER);
+              trapCount++;
+            }
+            break;
+          }
+          case 9: {
+            if (this.challenge >= 10) {
+              cell.addTrap(CELL_TRAPS.CHEESE);
+              trapCount++;
+            }
             break;
           }
           default: {

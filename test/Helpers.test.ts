@@ -31,4 +31,30 @@ describe(__filename + ' - Helpers Tests', () => {
   it(`reverseDir(DIRS.NONE) should return DIRS.NONE`, () => {
     expect(Helpers.reverseDir(DIRS.NONE)).to.equal(DIRS.NONE);
   });
+
+  it(`getNextDir(DIRS.NORTH) should return DIRS.EAST`, () => {
+    expect(Helpers.getNextDir(DIRS.NORTH)).to.equal(DIRS.EAST);
+  });
+  it(`getNextDir(DIRS.EAST) should return DIRS.SOUTH`, () => {
+    expect(Helpers.getNextDir(DIRS.EAST)).to.equal(DIRS.SOUTH);
+  });
+  it(`getNextDir(DIRS.SOUTH) should return DIRS.WEST`, () => {
+    expect(Helpers.getNextDir(DIRS.SOUTH)).to.equal(DIRS.WEST);
+  });
+  it(`getNextDir(DIRS.WEST) should return DIRS.NORTH`, () => {
+    expect(Helpers.getNextDir(DIRS.WEST)).to.equal(DIRS.NORTH);
+  });
+
+  it(`getNextDir(DIRS.NORTH, true) should return DIRS.WEST`, () => {
+    expect(Helpers.getNextDir(DIRS.NORTH, true)).to.equal(DIRS.WEST);
+  });
+  it(`getNextDir(DIRS.EAST, true) should return DIRS.NORTH`, () => {
+    expect(Helpers.getNextDir(DIRS.EAST, true)).to.equal(DIRS.NORTH);
+  });
+  it(`getNextDir(DIRS.SOUTH, true) should return DIRS.EAST`, () => {
+    expect(Helpers.getNextDir(DIRS.SOUTH, true)).to.equal(DIRS.EAST);
+  });
+  it(`getNextDir(DIRS.WEST, true) should return DIRS.SOUTH`, () => {
+    expect(Helpers.getNextDir(DIRS.WEST, true)).to.equal(DIRS.SOUTH);
+  });
 });

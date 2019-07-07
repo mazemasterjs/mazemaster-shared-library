@@ -1,32 +1,48 @@
+import { cloneDeep } from 'lodash';
+import { DIRS } from './Enums';
+import { IHere, IIntuition, ISenses } from './Interfaces/ISenses';
 import { ObjectBase } from './ObjectBase';
+
 // An engram contains a snapshot of sensory data correlating to the
-// player's position within the maze.  Each sense is a string.
-//
-// Example:
-// sight = "You are standing in a room. There are exits to the North and South."
-// sound = "You hear the sound of dripping water coming from the South."
+// player's position within the maze and representing five different directions:
+// North, South, East, West, and Here
 
 export class Engram extends ObjectBase {
-  public sight: string;
-  public sound: string;
-  public smell: string;
-  public touch: string;
-  public taste: string;
+  public north: ISenses;
+  public south: ISenses;
+  public east: ISenses;
+  public west: ISenses;
+  public here: IHere;
 
   constructor(data?: any) {
     super();
-    this.sight = 'You see...';
-    this.sound = 'You hear...';
-    this.smell = 'You smell...';
-    this.touch = 'You feel...';
-    this.taste = 'You taste...';
 
     if (data !== undefined) {
-      this.sight = this.validateDataField('sight', data.sight, 'string');
-      this.sound = this.validateDataField('sound', data.sound, 'string');
-      this.smell = this.validateDataField('smell', data.smell, 'string');
-      this.touch = this.validateDataField('touch', data.touch, 'string');
-      this.taste = this.validateDataField('taste', data.taste, 'string');
+      this.north = this.validateDataField('north', data.north, 'object');
+      this.south = this.validateDataField('south', data.south, 'object');
+      this.east = this.validateDataField('east', data.east, 'object');
+      this.west = this.validateDataField('west', data.west, 'object');
+      this.here = this.validateDataField('here', data.here, 'object');
+    } else {
+      const senses: ISenses = {
+        see: [{ sight: '', distance: -1 }],
+        hear: [{ sound: '', volume: -1 }],
+        smell: [{ scent: '', strength: -1 }],
+        taste: [{ taste: '', strength: -1 }],
+        feel: [{ feeling: '', intensity: -1 }],
+      };
+
+      // need an intuition object for here
+      const intuition: IIntuition = { message: '', confidence: 0, direction: DIRS.NONE };
+
+      // and a here to add to the base engram
+      const here = { exitNorth: false, exitSouth: false, exitEast: false, exitWest: false, items: [''], messages: [''], intuition: cloneDeep(intuition) };
+
+      this.north = cloneDeep(senses);
+      this.south = cloneDeep(senses);
+      this.east = cloneDeep(senses);
+      this.west = cloneDeep(senses);
+      this.here = cloneDeep(here);
     }
   }
 }

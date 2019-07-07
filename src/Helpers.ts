@@ -21,10 +21,10 @@ export function listSelectedBitNames(bitwiseEnum: object, selectedBits: number):
 
   log.trace(__filename, `listSelectedBitNames(${bitwiseEnum}, ${selectedBits}`, 'Listing selected bit names from enumeration.');
 
-  for (const dir in bitwiseEnum) {
+  for (const ele in bitwiseEnum) {
     // having a hard time with isNumber(0) for some reason - isNaN(parseInt()) seems more reliable
-    if (!isNaN(parseInt(dir, 10))) {
-      const bitVal: number = parseInt(dir, 10);
+    if (!isNaN(parseInt(ele, 10))) {
+      const bitVal: number = parseInt(ele, 10);
       if (!!(bitVal & selectedBits)) {
         const stringVal: string = (bitwiseEnum as any)[bitVal];
         ret += ret.length === 0 ? stringVal : ', ' + stringVal;
@@ -50,10 +50,10 @@ export function getSelectedBitNames(bitwiseEnum: object, selectedBits: number): 
   log.trace(__filename, `getSelectedBitNames(${bitwiseEnum}, ${selectedBits})`, 'Creating array of selected bit names for enumeration.');
   const ret: string[] = new Array<string>();
 
-  for (const dir in bitwiseEnum) {
+  for (const ele in bitwiseEnum) {
     // having a hard time with isNumber(0) for some reason - isNaN(parseInt()) seems more reliable
-    if (!isNaN(parseInt(dir, 10))) {
-      const bitVal: number = parseInt(dir, 10);
+    if (!isNaN(parseInt(ele, 10))) {
+      const bitVal: number = parseInt(ele, 10);
       if (!!(bitVal & selectedBits)) {
         const stringVal: string = (bitwiseEnum as any)[bitVal];
         ret.push(stringVal);
@@ -85,7 +85,7 @@ export function reverseDir(dir: DIRS): number {
     case DIRS.WEST:
       return DIRS.EAST;
     default:
-      return 0;
+      return DIRS.NONE;
   }
 }
 
@@ -133,4 +133,32 @@ export function doError(method: string, title: string, message: string): Error {
   const err = new Error(message);
   log.error(__filename, method, title + ' ->', err);
   return err;
+}
+
+/**
+ * Returns the next cardinal direction, either clockwise or counter-clockwise
+ * depending on arguments provided.
+ *
+ * @param dir Enum.DIRS starting direction
+ * @param counterClockwise If true, will return n
+ */
+export function getNextDir(dir: DIRS, counterClockwise = false): DIRS {
+  let newDir = DIRS.NONE;
+
+  switch (dir) {
+    case DIRS.NORTH:
+      newDir = DIRS.EAST;
+      break;
+    case DIRS.SOUTH:
+      newDir = DIRS.WEST;
+      break;
+    case DIRS.EAST:
+      newDir = DIRS.SOUTH;
+      break;
+    case DIRS.WEST:
+      newDir = DIRS.NORTH;
+      break;
+  }
+
+  return counterClockwise ? reverseDir(newDir) : newDir;
 }

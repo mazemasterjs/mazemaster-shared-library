@@ -2,6 +2,7 @@ import { GAME_MODES, GAME_RESULTS, TROPHY_IDS } from './Enums';
 import Logger from '@mazemasterjs/logger';
 import { ObjectBase } from './ObjectBase';
 import ITrophyStub from './Interfaces/ITrophyStub';
+import { IScore } from './Interfaces/IScore';
 
 const log = Logger.getInstance();
 
@@ -11,9 +12,9 @@ export class Score extends ObjectBase {
    *
    * @param jsonData
    */
-  public static fromJson(jsonData: any): Score {
+  public static fromJson(jsonData: IScore): Score {
     const score: Score = new Score('', '', '', GAME_MODES.NONE);
-    score.logDebug(__filename, `fromJson(${jsonData})`, 'Attempting to populate ScoreBase from jsonData...');
+    score.logDebug(__filename, `fromJson(${jsonData})`, 'Attempting to populate Score from jsonData...');
 
     if (jsonData !== undefined) {
       score.id = score.validateDataField('id', jsonData.id, 'string');
@@ -30,7 +31,7 @@ export class Score extends ObjectBase {
       score.bonusPoints = score.validateDataField('bonusPoints', jsonData.bonusPoints, 'number');
       score.lastUpdated = score.validateDataField('lastUpdated', jsonData.lastUpdated, 'number');
     } else {
-      log.warn(__filename, `loadData(${jsonData})`, 'Unable to load JSON data into MazeBase object: ' + JSON.stringify(jsonData));
+      log.warn(__filename, `loadData(${jsonData})`, 'Unable to load JSON data into Score object: ' + JSON.stringify(jsonData));
     }
     return score;
   }

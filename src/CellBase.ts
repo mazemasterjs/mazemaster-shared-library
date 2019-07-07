@@ -70,6 +70,13 @@ export class CellBase extends ObjectBase {
   }
 
   /**
+   * Sets the bitwise exits value to the provided number
+   */
+  public set Exits(exits: number) {
+    this.exits = exits;
+  }
+
+  /**
    * Returns a string listing all available exit directions
    */
   public listExits(): string {
