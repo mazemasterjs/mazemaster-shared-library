@@ -2,6 +2,8 @@ import { Action } from '../src/Action';
 import { expect } from 'chai';
 import { COMMANDS, DIRS } from '../src/Enums';
 import { Engram } from '../src/Engram';
+import Cell from '../src/Cell';
+import CellBase from '../src/CellBase';
 
 // test cases
 describe(__filename + ' - Action Tests', () => {
@@ -17,6 +19,7 @@ describe(__filename + ' - Action Tests', () => {
     moveCount: 33,
     trophies: [],
     botCohesion: [1, 1, 1, 1, 1],
+    changedCells: [new Cell()],
   };
 
   it(`act2 should populate from static .fromJson function`, () => {

@@ -1,7 +1,7 @@
 import { COMMANDS, DIRS } from '../Enums';
 import { Engram } from '../Engram';
 import ITrophyStub from './ITrophyStub';
-import Cell from '../Cell';
+import CellBase from '../CellBase';
 
 export interface IAction {
   command: COMMANDS;
@@ -13,5 +13,5 @@ export interface IAction {
   moveCount: number;
   trophies: Array<ITrophyStub>;
   botCohesion: Array<number>;
-  changedCells: Array<Cell>;
+  changedCells: Array<CellBase>;
 }

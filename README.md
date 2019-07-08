@@ -4,11 +4,19 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
-### v1.12.5
+### v1.12.7
 
 - added set Maze(), allowing a maze to be changed in a game after the game is instantiated
 - Engram constructer now defaults to {"nothing", 0} instead of {"", -1}
 - IAction and Action now has changedCells, which lists changes to a mazes cells
+
+### v1.12.6
+
+- Fixed bug in setExit(): Forgot to reverse direction when removing exits in neighboring cell.
+- To improve consistency:
+  - Signature changed from _setExit(mode: SET_EXIT_MODES, dir: DIRS, cell: Cell)_ to _setExit(mode: SET_EXIT_MODES, cell: Cell, dir: DIRS)_
+  - Signature changed from _addExit(dir: DIRS, cell: Cell)_ to _addExit(cell: Cell, dir:DIRS)_
+  - Signature changed from _removeExit(dir: DIRS, cell: Cell)_ to _addExit(cell: Cell, dir:DIRS)_
 
 ### v1.12.4
 

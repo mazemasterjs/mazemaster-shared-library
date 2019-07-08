@@ -321,13 +321,13 @@ export class MazeBase extends ObjectBase {
    * @param cells
    * @returns boolean
    */
-  public addExit(dir: DIRS, cell: Cell): boolean {
+  public addExit(cell: Cell, dir: DIRS): boolean {
     this.logTrace(
       __filename,
       `addExit(${DIRS[dir]})`,
       `Calling setExit(ADD, ${DIRS[dir]}) from [${cell.Location.toString()}]. Existing exits: ${cell.listExits()}`,
     );
-    return this.setExit(SET_EXIT_MODES.ADD, dir, cell);
+    return this.setExit(SET_EXIT_MODES.ADD, cell, dir);
   }
 
   /**
@@ -337,13 +337,13 @@ export class MazeBase extends ObjectBase {
    * @param {Cell} cell
    * @returns boolean
    */
-  public removeExit(dir: DIRS, cell: Cell): boolean {
+  public removeExit(cell: Cell, dir: DIRS): boolean {
     this.logTrace(
       __filename,
       `removeExit(${DIRS[dir]})`,
       `Calling setExit(REMOVE, ${DIRS[dir]}) from [${cell.Location.toString()}]. Existing exits: ${cell.listExits()}`,
     );
-    return this.setExit(SET_EXIT_MODES.REMOVE, dir, cell);
+    return this.setExit(SET_EXIT_MODES.REMOVE, cell, dir);
   }
 
   /**
@@ -379,14 +379,15 @@ export class MazeBase extends ObjectBase {
    * @param cells
    * @returns boolean
    */
-  private setExit(mode: SET_EXIT_MODES, dir: DIRS, cell: Cell): boolean {
+  private setExit(mode: SET_EXIT_MODES, cell: Cell, dir: DIRS): boolean {
     const modeName = mode === SET_EXIT_MODES.ADD ? 'ADD' : 'REMOVE';
     const dirName = DIRS[dir];
     let validMove = true; // only set to true if valid adjoining cell exits to open an exit to
 
     this.logTrace(__filename, `setExit(${modeName}, ${dirName})`, `Setting exits in [${cell.Location.toString()}]. Existing exits: ${cell.listExits()}.`);
 
-    if (mode === SET_EXIT_MODES.ADD ? !(cell.Exits & dir) : !!(cell.Exits & dir)) {
+    // only continue if there is some work to do
+    if ((mode === SET_EXIT_MODES.ADD && !(cell.Exits & dir)) || (mode === SET_EXIT_MODES.REMOVE && !!(cell.Exits & dir))) {
       let nPos = new MazeLoc(-1, -1); // locate an adjoining cell - must open exit on both sides
 
       switch (dir) {
@@ -422,7 +423,7 @@ export class MazeBase extends ObjectBase {
         this.logTrace(__filename, `setExit(${modeName}, ${dirName})`, `Exits set in cell [${cell.Location.toString()}]. Existing exits: ${cell.listExits()}.`);
 
         const neighbor: Cell = this.getNeighbor(cell, dir);
-        neighbor.Exits = mode === SET_EXIT_MODES.ADD ? (neighbor.Exits += reverseDir(dir)) : (neighbor.Exits -= dir);
+        neighbor.Exits = mode === SET_EXIT_MODES.ADD ? (neighbor.Exits += reverseDir(dir)) : (neighbor.Exits -= reverseDir(dir));
         this.logTrace(
           __filename,
           `setExit(${modeName}, ${dirName})`,

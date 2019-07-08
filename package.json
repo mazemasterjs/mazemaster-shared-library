@@ -1,6 +1,6 @@
 {
   "name": "@mazemasterjs/shared-library",
-  "version": "1.12.5",
+  "version": "1.12.7",
   "description": "Shared library for MazeMasterJS",
   "scripts": {
     "build": "tsc",
@@ -9,7 +9,7 @@
     "scan": "sonar-scanner.bat",
     "test": "mocha -r dotenv/config",
     "test-watch": "mocha -r dotenv/config --watch",
-    "test-dbg": "mocha --debug-brk --inspect -r dotenv/config"
+    "test-dbg": "mocha --inspect-brk -r dotenv/config"
   },
   "repository": {
     "type": "git",
@@ -42,8 +42,8 @@
     "@types/lodash": "^4.14.135",
     "@types/mocha": "^5.2.7",
     "@types/mongodb": "^3.1.28",
-    "@types/node": "^10.14.10",
-    "@types/uuid": "^3.4.4",
+    "@types/node": "^10.14.12",
+    "@types/uuid": "^3.4.5",
     "chai": "^4.2.0",
     "dotenv": "^6.2.0",
     "mocha": "^5.2.0",

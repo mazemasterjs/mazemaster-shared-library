@@ -3,7 +3,7 @@ import { Engram } from './Engram';
 import { ObjectBase } from './ObjectBase';
 import { IAction } from './Interfaces/IAction';
 import ITrophyStub from './Interfaces/ITrophyStub';
-import Cell from './Cell';
+import CellBase from './CellBase';
 
 export class Action extends ObjectBase {
   /**
@@ -33,7 +33,7 @@ export class Action extends ObjectBase {
   public moveCount: number;
   public trophies: Array<ITrophyStub>;
   public botCohesion: Array<number>;
-  public changedCells: Array<Cell>;
+  public changedCells: Array<CellBase>;
 
   constructor(command: COMMANDS, direction: DIRS, message: string) {
     super();
@@ -46,7 +46,7 @@ export class Action extends ObjectBase {
     this.moveCount = 0;
     this.trophies = new Array<ITrophyStub>();
     this.botCohesion = new Array<number>();
-    this.changedCells = new Array<Cell>();
+    this.changedCells = new Array<CellBase>();
   }
 
   /**
