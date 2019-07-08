@@ -25,11 +25,11 @@ export class Engram extends ObjectBase {
       this.here = this.validateDataField('here', data.here, 'object');
     } else {
       const senses: ISenses = {
-        see: [{ sight: '', distance: -1 }],
-        hear: [{ sound: '', volume: -1 }],
-        smell: [{ scent: '', strength: -1 }],
-        taste: [{ taste: '', strength: -1 }],
-        feel: [{ feeling: '', intensity: -1 }],
+        see: [{ sight: 'nothing', distance: 0 }],
+        hear: [{ sound: 'nothing', volume: 0 }],
+        smell: [{ scent: 'nothing', strength: 0 }],
+        taste: [{ taste: 'nothing', strength: 0 }],
+        feel: [{ feeling: 'nothing', intensity: 0 }],
       };
 
       // need an intuition object for here

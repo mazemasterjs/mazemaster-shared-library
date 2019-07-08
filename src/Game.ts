@@ -209,6 +209,11 @@ export class Game extends ObjectBase {
     return this.maze;
   }
 
+  public set Maze(maze: MazeBase) {
+    this.lastAccessed = Date.now();
+    this.maze = maze;
+  }
+
   public get TeamId(): string {
     this.lastAccessed = Date.now();
     return this.teamId;

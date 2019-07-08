@@ -4,6 +4,12 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.12.5
+
+- added set Maze(), allowing a maze to be changed in a game after the game is instantiated
+- Engram constructer now defaults to {"nothing", 0} instead of {"", -1}
+- IAction and Action now has changedCells, which lists changes to a mazes cells
+
 ### v1.12.4
 
 - added Life to the player

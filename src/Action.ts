@@ -3,6 +3,7 @@ import { Engram } from './Engram';
 import { ObjectBase } from './ObjectBase';
 import { IAction } from './Interfaces/IAction';
 import ITrophyStub from './Interfaces/ITrophyStub';
+import Cell from './Cell';
 
 export class Action extends ObjectBase {
   /**
@@ -19,6 +20,7 @@ export class Action extends ObjectBase {
     action.score = action.validateDataField('score', jsonData.score, 'number');
     action.moveCount = action.validateDataField('moveCount', jsonData.score, 'number');
     action.botCohesion = action.validateDataField('botCohesion', jsonData.botCohesion, 'array');
+    action.changedCells = action.validateDataField('changedCells', jsonData.changedCells, 'array');
     return action;
   }
 
@@ -31,6 +33,7 @@ export class Action extends ObjectBase {
   public moveCount: number;
   public trophies: Array<ITrophyStub>;
   public botCohesion: Array<number>;
+  public changedCells: Array<Cell>;
 
   constructor(command: COMMANDS, direction: DIRS, message: string) {
     super();
@@ -43,6 +46,7 @@ export class Action extends ObjectBase {
     this.moveCount = 0;
     this.trophies = new Array<ITrophyStub>();
     this.botCohesion = new Array<number>();
+    this.changedCells = new Array<Cell>();
   }
 
   /**
@@ -59,6 +63,7 @@ export class Action extends ObjectBase {
       moveCount: this.moveCount,
       trophies: this.trophies,
       botCohesion: this.botCohesion,
+      changedCells: this.changedCells,
     };
 
     return stub;
