@@ -3,7 +3,6 @@ import { expect } from 'chai';
 import { COMMANDS, DIRS } from '../src/Enums';
 import { Engram } from '../src/Engram';
 import Cell from '../src/Cell';
-import CellBase from '../src/CellBase';
 
 // test cases
 describe(__filename + ' - Action Tests', () => {

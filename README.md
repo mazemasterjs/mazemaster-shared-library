@@ -4,6 +4,10 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.12.8
+
+- (derald) added changedCells: Array<CellBase> to
+
 ### v1.12.7
 
 - added set Maze(), allowing a maze to be changed in a game after the game is instantiated
