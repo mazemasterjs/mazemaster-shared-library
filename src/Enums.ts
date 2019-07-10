@@ -65,6 +65,7 @@ export enum CELL_TAGS {
   PATH = 4,
   CARVED = 8,
   LAVA = 16,
+  MONSTER = 32,
 }
 
 // Various Trap IDs
@@ -153,4 +154,25 @@ export enum USER_ROLES {
 export enum SET_EXIT_MODES {
   ADD = 0,
   REMOVE,
+}
+
+export enum MONSTER_STATES {
+  NONE = 0,
+  STANDING = 1,
+  SITTING = 2,
+  LYING = 4,
+  STUNNED = 8,
+  BLIND = 16,
+  BURNING = 32,
+  LAMED = 64,
+  BEARTRAPPED = 128,
+  SLOWED = 256,
+  DEAD = 512,
+  POISONED = 1024,
+}
+
+export enum MONSTER_TAGS {
+  NONE,
+  LAVA,
+  CAT,
 }

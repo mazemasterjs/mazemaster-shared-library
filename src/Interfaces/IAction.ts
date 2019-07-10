@@ -14,4 +14,5 @@ export interface IAction {
   trophies: Array<ITrophyStub>;
   botCohesion: Array<number>;
   changedCells: Array<CellBase>;
+  playerLife: number;
 }

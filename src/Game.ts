@@ -1,4 +1,4 @@
-import { DIRS, GAME_MODES, GAME_RESULTS, GAME_STATES, PLAYER_STATES } from './Enums';
+import { DIRS, GAME_MODES, GAME_RESULTS, GAME_STATES, PLAYER_STATES, MONSTER_STATES, MONSTER_TAGS } from './Enums';
 import { Score } from './Score';
 import { Logger } from '@mazemasterjs/logger';
 import { IGameStub } from './Interfaces/IGameStub';
@@ -7,6 +7,7 @@ import { IAction } from './Interfaces/IAction';
 import MazeBase from './MazeBase';
 import { ObjectBase } from './ObjectBase';
 import MazeLoc from './MazeLoc';
+import Monster from './Monster';
 
 const log = Logger.getInstance();
 
@@ -22,6 +23,7 @@ export class Game extends ObjectBase {
   private teamId: string;
   private botId: string;
   private lastAccessed: number;
+  private monsters: Array<Monster>;
 
   constructor(maze: MazeBase, teamId: string, botId?: string) {
     super();
@@ -37,6 +39,7 @@ export class Game extends ObjectBase {
     this.teamId = teamId.trim();
     this.botId = botId ? botId : '';
     this.score = new Score(this.id, maze.Id, this.teamId, this.mode, this.botId);
+    this.monsters = [];
 
     // teamId is always required
     if (teamId === '') {
@@ -231,5 +234,25 @@ export class Game extends ObjectBase {
 
   public set Player(player: Player) {
     this.player = player;
+  }
+
+  public get Monsters() {
+    return this.monsters;
+  }
+
+  public addMonster(monster: Monster) {
+    this.monsters.push(monster);
+  }
+
+  public removeMonster(monster: Monster) {
+    let ind = -1;
+    this.monsters.find(item => {
+      if (monster.equals(item)) {
+        ind = this.monsters.indexOf(item);
+      }
+    });
+    if (ind >= 0) {
+      this.monsters.splice(ind, 1);
+    }
   }
 }

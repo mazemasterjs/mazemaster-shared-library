@@ -4,6 +4,15 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.13.0
+
+- added monster class
+- added MONSTER_STATES, and MONSTER_TAGS in enums
+- added MONSTER to CELL_TAGS
+- monsters have location,facing, MONSTER_STATES, MONSTER_TAGS, life
+- MONSTER_TAGS are used to determine what kind of monster it is
+- the list of monsters is located in the Game objected
+
 ### v1.12.7
 
 - added set Maze(), allowing a maze to be changed in a game after the game is instantiated
