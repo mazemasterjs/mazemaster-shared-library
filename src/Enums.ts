@@ -172,7 +172,7 @@ export enum MONSTER_STATES {
 }
 
 export enum MONSTER_TAGS {
-  NONE,
-  LAVA,
-  CAT,
+  NONE = 0,
+  LAVA = 1,
+  CAT = 2,
 }
