@@ -90,6 +90,9 @@ export default class Monster {
     }
   }
 
+  public getTag() {
+    return this.tags;
+  }
   /**
    * Adds to a monsters tags
    */
