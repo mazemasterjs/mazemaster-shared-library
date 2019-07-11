@@ -29,6 +29,7 @@ export class Score extends ObjectBase {
       score.backtrackCount = score.validateDataField('backtrackCount', jsonData.backtrackCount, 'number');
       score.trophyStubs = score.validateDataField('trophyStubs', jsonData.trophyStubs, 'array');
       score.bonusPoints = score.validateDataField('bonusPoints', jsonData.bonusPoints, 'number');
+      score.totalScore = score.validateDataField('totalScore', jsonData.totalScore, 'number');
       score.lastUpdated = score.validateDataField('lastUpdated', jsonData.lastUpdated, 'number');
     } else {
       log.warn(__filename, `loadData(${jsonData})`, 'Unable to load JSON data into Score object: ' + JSON.stringify(jsonData));
@@ -48,6 +49,7 @@ export class Score extends ObjectBase {
   protected backtrackCount: number;
   protected trophyStubs: Array<ITrophyStub>;
   protected bonusPoints: number;
+  protected totalScore: number;
   protected lastUpdated: number;
 
   constructor(gameId: string, mazeId: string, teamId: string, gameMode: GAME_MODES, botId?: string) {
@@ -64,6 +66,7 @@ export class Score extends ObjectBase {
     this.backtrackCount = 0;
     this.trophyStubs = new Array<ITrophyStub>();
     this.bonusPoints = 0;
+    this.totalScore = 0;
     this.lastUpdated = Date.now();
   }
 
@@ -73,6 +76,7 @@ export class Score extends ObjectBase {
   public addMove() {
     this.lastUpdated = Date.now();
     this.moveCount++;
+    this.calcTotalScore();
   }
 
   /**
@@ -85,6 +89,7 @@ export class Score extends ObjectBase {
   public addMoves(moves: number) {
     this.lastUpdated = Date.now();
     this.moveCount = this.moveCount + moves;
+    this.calcTotalScore();
   }
 
   /**
@@ -92,41 +97,14 @@ export class Score extends ObjectBase {
    */
   public addBacktrack() {
     this.backtrackCount++;
+    this.calcTotalScore();
   }
 
   /**
-   * Calculate and return the total game score.  All games start with 1000
-   * points.  Then:
-   *
-   * Add bonusPoints (awarded during gameplay, usually via trophies)
-   * Subtract (moveCount - backtrackCount)
-   * Subtract (backtrackCount * 2)
-   *
-   * gameResults generally reflected via trophies, but special cases:
-   * - ABANDONED: Score reset to zero
-   * - OUT_OF_TIME: Score reset to zero
-   *
-   *
-   * @returns number - the total score for the game
+   * Returns the total score
    */
   public getTotalScore(): number {
-    // read the base-score modifier from environment config
-    let BASE_SCORE = 1000;
-    if (process.env.BASE_SCORE !== undefined) {
-      BASE_SCORE = parseInt(process.env.BASE_SCORE, 10);
-    } else {
-      log.warn(__dirname, 'getTotalScore()', 'WARNING: BASE_SCORE ENV-VAR IS NOT DEFINED. Defaulting to 1000.');
-    }
-
-    if (this.gameResult === GAME_RESULTS.ABANDONED || this.gameResult === GAME_RESULTS.OUT_OF_TIME) {
-      return 0;
-    } else {
-      // all games start with 1000 points
-      const btMod = this.backtrackCount * 2;
-      const mcMod = this.moveCount - this.backtrackCount;
-
-      return BASE_SCORE + this.bonusPoints - mcMod - btMod;
-    }
+    return this.totalScore;
   }
 
   /**
@@ -153,6 +131,9 @@ export class Score extends ObjectBase {
       tStub = { id: trophyName, count: 1 };
       this.trophyStubs.push(tStub);
     }
+
+    // recalc score
+    this.calcTotalScore();
 
     // return the array
     return tStub.count;
@@ -189,6 +170,7 @@ export class Score extends ObjectBase {
    */
   public addBonusPoints(value: number) {
     this.bonusPoints += value;
+    this.calcTotalScore();
   }
 
   /**
@@ -326,6 +308,41 @@ export class Score extends ObjectBase {
 
   public get Id(): string {
     return this.id;
+  }
+
+  /**
+   * Calculate and return the total game score.  All games start with 1000
+   * points.  Then:
+   *
+   * Add bonusPoints (awarded during gameplay, usually via trophies)
+   * Subtract (moveCount - backtrackCount)
+   * Subtract (backtrackCount * 2)
+   *
+   * gameResults generally reflected via trophies, but special cases:
+   * - ABANDONED: Score reset to zero
+   * - OUT_OF_TIME: Score reset to zero
+   *
+   *
+   * @returns number - the total score for the game
+   */
+  private calcTotalScore() {
+    // read the base-score modifier from environment config
+    let BASE_SCORE = 1000;
+    if (process.env.BASE_SCORE !== undefined) {
+      BASE_SCORE = parseInt(process.env.BASE_SCORE, 10);
+    } else {
+      log.warn(__dirname, 'calcTotalScore()', 'WARNING: BASE_SCORE ENV-VAR IS NOT DEFINED. Defaulting to 1000.');
+    }
+
+    if (this.gameResult === GAME_RESULTS.ABANDONED || this.gameResult === GAME_RESULTS.OUT_OF_TIME) {
+      this.totalScore = 0;
+    } else {
+      // all games start with 1000 points
+      const btMod = this.backtrackCount * 2;
+      const mcMod = this.moveCount - this.backtrackCount;
+
+      this.totalScore = BASE_SCORE + this.bonusPoints - mcMod - btMod;
+    }
   }
 }
 

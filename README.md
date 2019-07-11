@@ -4,6 +4,12 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.13.2
+
+- Added totalScore() field to IScore and Score
+- getTotalScore still returns number, but value is now calculated by calcTotalScore which is called whenever
+  - a scoring event happens.
+
 ### v1.13.1
 
 - Removed optional life parameter in action

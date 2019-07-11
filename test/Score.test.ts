@@ -34,6 +34,7 @@ describe(__filename + ' - Score Tests', () => {
     backtrackCount: 4,
     trophyStubs: new Array<ITrophyStub>(),
     bonusPoints: 100,
+    totalScore: 982,
     lastUpdated: Date.now(),
   };
 
