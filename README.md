@@ -4,6 +4,13 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.13.1
+
+- Removed optional life parameter in action
+- Fixed up broken tests for Action and Game
+- Removed unused imports
+- Changed monster.find to use monster.findIndex() and correct a type error (_no tests on this - not sure if it works_)
+
 ### v1.13.0
 
 - added monster class
