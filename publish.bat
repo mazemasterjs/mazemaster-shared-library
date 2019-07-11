@@ -18,7 +18,6 @@ tsc|rem
 echo "Copying files in bin\ to dist\"
 copy bin\*.* dist\
 copy bin\Interfaces\*.* dist\Interfaces\
-copy bin\types\*.* dist\
 
 echo "Copying package files to dist\"
 copy LICENSE dist\
