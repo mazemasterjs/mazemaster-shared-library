@@ -128,6 +128,7 @@ export class MazeBase extends ObjectBase {
     const ROW_END = '+';
     const AVATAR_TRAPPED = '>@<';
     const AVATAR = ' @ ';
+    const MONSTER = ' & ';
 
     // TODO: Turn back on render caching after solver work is completed
     if (this.textRender.length > 0 && !forceRegen) {
@@ -172,6 +173,9 @@ export class MazeBase extends ObjectBase {
               // add a trap icon if one is in this cell
               if (traps > 0) {
                 cellFill = this.getCellTrapIcon(traps);
+              }
+              if (!!(cell.Tags & CELL_TAGS.MONSTER)) {
+                cellFill = MONSTER;
               }
 
               // override cell fill with avatar location when player position is given
