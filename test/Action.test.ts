@@ -19,6 +19,7 @@ describe(__filename + ' - Action Tests', () => {
     trophies: [],
     botCohesion: [1, 1, 1, 1, 1],
     changedCells: [new Cell()],
+    playerLife: 44,
   };
 
   it(`act2 should populate from static .fromJson function`, () => {
@@ -31,12 +32,21 @@ describe(__filename + ' - Action Tests', () => {
     expect(stub.score).to.equal(11);
   });
 
+  it(`act2 getStub.playerLife should be 4`, () => {
+    const stub: any = act2.getStub();
+    expect(stub.playerLife).to.equal(44);
+  });
+
   it(`act2 BotCohesion should be array of five 1s`, () => {
     let tot = 0;
     for (const val of act2.botCohesion) {
       tot += val;
     }
     expect(tot).to.equal(5);
+  });
+
+  it(`action.playerLife is 0`, () => {
+    expect(act.playerLife).to.equal(0);
   });
 
   it(`action.Command is COMMANDS.LOOK`, () => {

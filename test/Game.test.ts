@@ -10,8 +10,6 @@ import { COMMANDS, DIRS, GAME_MODES, GAME_RESULTS, GAME_STATES, PLAYER_STATES, T
 import { Engram } from '../src/Engram';
 import ITrophyStub from '../src/Interfaces/ITrophyStub';
 import { IGameStub } from '../src/Interfaces/IGameStub';
-import Monster from '../src/Monster';
-import MazeLoc from '../src/MazeLoc';
 
 Logger.getInstance().LogLevel = 4;
 
@@ -73,6 +71,10 @@ describe(__filename + ' - Game Tests', () => {
 
   it(`Player should start a new game in state PLAYER_STATES.SITTING`, () => {
     expect(spGame.Player.State).to.equal(PLAYER_STATES.SITTING);
+  });
+
+  it(`spGame.Player.Life should be 100`, () => {
+    return expect(spGame.Player.Life).to.equal(100);
   });
 
   it(`spGame.Player.addState(PLAYER_STATES.STANDING) should set player state to STANDING`, () => {

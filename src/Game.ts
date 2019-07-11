@@ -1,4 +1,4 @@
-import { DIRS, GAME_MODES, GAME_RESULTS, GAME_STATES, PLAYER_STATES, MONSTER_STATES, MONSTER_TAGS } from './Enums';
+import { DIRS, GAME_MODES, GAME_RESULTS, GAME_STATES, PLAYER_STATES } from './Enums';
 import { Score } from './Score';
 import { Logger } from '@mazemasterjs/logger';
 import { IGameStub } from './Interfaces/IGameStub';
@@ -31,7 +31,7 @@ export class Game extends ObjectBase {
     this.id = this.generateId();
     this.state = GAME_STATES.NEW;
     this.maze = maze;
-    this.player = new Player(new MazeLoc(maze.StartCell.row, maze.StartCell.col), PLAYER_STATES.SITTING, DIRS.SOUTH);
+    this.player = new Player(new MazeLoc(maze.StartCell.row, maze.StartCell.col), PLAYER_STATES.SITTING, DIRS.SOUTH, 100);
     this.actions = new Array<IAction>();
     this.lastAccessed = Date.now();
     this.round = 1;
@@ -245,12 +245,10 @@ export class Game extends ObjectBase {
   }
 
   public removeMonster(monster: Monster) {
-    let ind = -1;
-    this.monsters.find(item => {
-      if (monster.equals(item)) {
-        ind = this.monsters.indexOf(item);
-      }
+    const ind = this.monsters.findIndex(deadMonster => {
+      return monster === deadMonster;
     });
+
     if (ind >= 0) {
       this.monsters.splice(ind, 1);
     }
