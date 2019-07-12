@@ -4,6 +4,11 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.13.3
+
+- add GAME_RESULT.MONSTER_DEATH
+- add monster trophies: KITTY_HAS_CLAWS, ONE_HUNDRED_SNEAK, THE_WAITING_GAME,
+
 ### v1.13.2
 
 - Added totalScore() field to IScore and Score

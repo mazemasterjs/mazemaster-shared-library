@@ -27,6 +27,9 @@ export enum TROPHY_IDS {
   WISHFUL_THINKING,
   YOU_FELL_FOR_IT,
   YOU_FOUGHT_THE_WALL,
+  KITTY_HAS_CLAWS,
+  ONE_HUNDRED_SNEAK,
+  THE_WAITING_GAME,
 }
 
 // Player States (bitwise)
@@ -112,6 +115,7 @@ export enum GAME_RESULTS {
   WIN,
   WIN_FLAWLESS,
   ABANDONED,
+  DEATH_MONSTER,
 }
 
 // enumeration of possible game states
