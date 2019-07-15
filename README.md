@@ -4,6 +4,11 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.13.5
+
+- objectBase.validateDataField will now attempt to recast strings as integers if the incoming data is a string.
+- This should help with some type loss during ajax calls from the browser.
+
 ### v1.13.4
 
 - added trophies enums: THE_INEVITABLE, WHERE_AM_I, STOP_RIGHT_THERE, THE_PITS, TOO_GOOD_TO_BE_TRUE,
