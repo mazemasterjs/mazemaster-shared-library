@@ -4,6 +4,10 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.13.6
+
+- fixed maze generation creating unpassable traps and unbeatable mazes
+
 ### v1.13.5
 
 - objectBase.validateDataField will now attempt to recast strings as integers if the incoming data is a string.

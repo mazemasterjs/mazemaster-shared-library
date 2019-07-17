@@ -322,20 +322,7 @@ export class Maze extends MazeBase {
 
   // test if cell has a trap
   private hasTrap(cell: Cell): boolean {
-    const traps = cell.Traps;
-    if (!!(traps & CELL_TRAPS.MOUSETRAP)) {
-      return true;
-    }
-    if (!!(traps & CELL_TRAPS.PIT)) {
-      return true;
-    }
-    if (!!(traps & CELL_TRAPS.FLAMETHROWER)) {
-      return true;
-    }
-    if (!!(traps & CELL_TRAPS.TARPIT)) {
-      return true;
-    }
-    return false;
+    return cell.Traps > 0;
   }
 
   /**
@@ -386,7 +373,12 @@ export class Maze extends MazeBase {
 
         // traps may only occur in locations where the player can jump over them
         // TODO: Rule may change if other ways to avoid traps (potions, items, secret doors, etc.) are added
-        if (!((!!(exits & DIRS.NORTH) && !!(exits & DIRS.SOUTH)) || (!!(exits & DIRS.EAST) && !!(exits & DIRS.WEST)))) {
+        if (
+          !(
+            (!!(exits & DIRS.NORTH) && !!(exits & DIRS.SOUTH) && !(!!(exits & DIRS.WEST) || !!(exits & DIRS.EAST))) ||
+            (!!(exits & DIRS.EAST) && !!(exits & DIRS.WEST) && !(!!(exits & DIRS.NORTH) || !!(exits & DIRS.SOUTH)))
+          )
+        ) {
           this.logTrace(__filename, fnName, `Invalid trap location (Unavoidable): ${cell.Location.toString()}`);
           continue;
         }
