@@ -36,7 +36,7 @@ describe(__filename + ' - Game Tests', () => {
   });
 
   it(`spGame.Mode should be MULTI_PLAYER`, () => {
-    return expect(spGame.Mode).to.equal(GAME_MODES.MULTI_PLAYER);
+    return expect(spGame.Mode).to.equal(GAME_MODES.SINGLE_PLAYER);
   });
 
   it(`spGame.GetRound should be 1`, () => {
