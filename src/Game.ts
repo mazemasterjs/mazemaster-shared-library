@@ -7,6 +7,7 @@ import { IAction } from './Interfaces/IAction';
 import MazeBase from './MazeBase';
 import { ObjectBase } from './ObjectBase';
 import MazeLoc from './MazeLoc';
+import Monster from './Monster';
 
 const log = Logger.getInstance();
 
@@ -22,6 +23,7 @@ export class Game extends ObjectBase {
   private teamId: string;
   private botId: string;
   private lastAccessed: number;
+  private monsters: Array<Monster>;
 
   constructor(maze: MazeBase, teamId: string, botId?: string) {
     super();
@@ -29,7 +31,7 @@ export class Game extends ObjectBase {
     this.id = this.generateId();
     this.state = GAME_STATES.NEW;
     this.maze = maze;
-    this.player = new Player(new MazeLoc(maze.StartCell.row, maze.StartCell.col), PLAYER_STATES.SITTING, DIRS.SOUTH);
+    this.player = new Player(new MazeLoc(maze.StartCell.row, maze.StartCell.col), PLAYER_STATES.SITTING, DIRS.SOUTH, 100);
     this.actions = new Array<IAction>();
     this.lastAccessed = Date.now();
     this.round = 1;
@@ -37,6 +39,7 @@ export class Game extends ObjectBase {
     this.teamId = teamId.trim();
     this.botId = botId ? botId : '';
     this.score = new Score(this.id, maze.Id, this.teamId, this.mode, this.botId);
+    this.monsters = [];
 
     // teamId is always required
     if (teamId === '') {
@@ -209,6 +212,11 @@ export class Game extends ObjectBase {
     return this.maze;
   }
 
+  public set Maze(maze: MazeBase) {
+    this.lastAccessed = Date.now();
+    this.maze = maze;
+  }
+
   public get TeamId(): string {
     this.lastAccessed = Date.now();
     return this.teamId;
@@ -226,5 +234,23 @@ export class Game extends ObjectBase {
 
   public set Player(player: Player) {
     this.player = player;
+  }
+
+  public get Monsters() {
+    return this.monsters;
+  }
+
+  public addMonster(monster: Monster) {
+    this.monsters.push(monster);
+  }
+
+  public removeMonster(monster: Monster) {
+    const ind = this.monsters.findIndex(deadMonster => {
+      return monster === deadMonster;
+    });
+
+    if (ind >= 0) {
+      this.monsters.splice(ind, 1);
+    }
   }
 }

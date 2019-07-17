@@ -33,6 +33,15 @@ export abstract class ObjectBase {
       valType = typeof val;
     }
 
+    // convert string to number if possible
+    if (valType === 'string' && type === 'number') {
+      if (!isNaN(parseInt(val.toString(), 10))) {
+        val = parseInt(val.toString(), 10);
+        valType = typeof val;
+        log.warn(__filename, method, 'Expected number, got string. String is numeric - forcing type conversion to number (integer).');
+      }
+    }
+
     // trim string values (unless noTrim flag is set)
     if (valType === 'string' && !noTrim) {
       val = val.trim();

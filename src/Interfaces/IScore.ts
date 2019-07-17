@@ -14,5 +14,6 @@ export interface IScore {
   backtrackCount: number;
   trophyStubs: Array<ITrophyStub>;
   bonusPoints: number;
+  totalScore: number;
   lastUpdated: number;
 }

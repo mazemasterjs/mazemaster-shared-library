@@ -4,6 +4,52 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.13.6
+
+- fixed maze generation creating unpassable traps and unbeatable mazes
+
+### v1.13.5
+
+- objectBase.validateDataField will now attempt to recast strings as integers if the incoming data is a string.
+- This should help with some type loss during ajax calls from the browser.
+
+### v1.13.4
+
+- added trophies enums: THE_INEVITABLE, WHERE_AM_I, STOP_RIGHT_THERE, THE_PITS, TOO_GOOD_TO_BE_TRUE,
+
+### v1.13.3
+
+- add GAME_RESULT.MONSTER_DEATH
+- add monster trophies: KITTY_HAS_CLAWS, ONE_HUNDRED_SNEAK, THE_WAITING_GAME,
+
+### v1.13.2
+
+- Added totalScore() field to IScore and Score
+- getTotalScore still returns number, but value is now calculated by calcTotalScore which is called whenever
+  - a scoring event happens.
+
+### v1.13.1
+
+- Removed optional life parameter in action
+- Fixed up broken tests for Action and Game
+- Removed unused imports
+- Changed monster.find to use monster.findIndex() and correct a type error (_no tests on this - not sure if it works_)
+
+### v1.13.0
+
+- added monster class
+- added MONSTER_STATES, and MONSTER_TAGS in enums
+- added MONSTER to CELL_TAGS
+- monsters have location,facing, MONSTER_STATES, MONSTER_TAGS, life
+- MONSTER_TAGS are used to determine what kind of monster it is
+- the list of monsters is located in the Game objected
+
+### v1.12.7
+
+- added set Maze(), allowing a maze to be changed in a game after the game is instantiated
+- Engram constructer now defaults to {"nothing", 0} instead of {"", -1}
+- IAction and Action now has changedCells, which lists changes to a mazes cells
+
 ### v1.12.6
 
 - Fixed bug in setExit(): Forgot to reverse direction when removing exits in neighboring cell.

@@ -1,5 +1,5 @@
 import { Bot } from '../src/Bot';
-import { IBot } from '../src/Interfaces/IBot';
+// import { IBot } from '../src/Interfaces/IBot';
 import { expect } from 'chai';
 import Logger from '@mazemasterjs/logger';
 
@@ -14,10 +14,9 @@ describe(`${__filename} - Bot Tests`, () => {
     id: 'fake-bot-id',
     name: 'Name',
     coder: 'Coder',
-    weight: '33',
   });
 
-  const botData: IBot = {
+  const botData: any = {
     id: 'fake-bot-id',
     name: 'Name',
     coder: 'Coder',

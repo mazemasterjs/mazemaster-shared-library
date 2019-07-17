@@ -103,11 +103,19 @@ export class Cell extends CellBase {
         `Tag ${tagName} added to cell [${this.pos.row}, ${this.pos.col}]. Current tags: ${this.listTags()}.`,
       );
     } else {
-      log.warn(
-        __filename,
-        'addTag(' + tagName + ')',
-        `Tag ${tagName} already exists in cell [${this.pos.row}, ${this.pos.col}]. Current tags: ${this.listTags()}.`,
-      );
+      if (!!(tag & CELL_TAGS.MONSTER)) {
+        log.debug(
+          __filename,
+          'addTag(' + tagName + ')',
+          `Tag ${tagName} already exists in cell [${this.pos.row}, ${this.pos.col}]. Current tags: ${this.listTags()}.`,
+        );
+      } else {
+        log.warn(
+          __filename,
+          'addTag(' + tagName + ')',
+          `Tag ${tagName} already exists in cell [${this.pos.row}, ${this.pos.col}]. Current tags: ${this.listTags()}.`,
+        );
+      }
     }
   }
 

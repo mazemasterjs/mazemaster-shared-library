@@ -8,7 +8,7 @@ export class Player {
   private facing: DIRS;
   private life: number;
 
-  constructor(location: MazeLoc, state: PLAYER_STATES, facing: DIRS, life: number = 100) {
+  constructor(location: MazeLoc, state: PLAYER_STATES, facing: DIRS, life: number) {
     this.location = location;
     this.state = state;
     this.facing = facing;
