@@ -52,8 +52,9 @@ export class Game extends ObjectBase {
     this.botId = this.botId.trim();
     if (botId !== '') {
       log.debug(__filename, 'constructor()', 'botId provided - game is singleplayer.');
-      this.mode = GAME_MODES.MULTI_PLAYER;
+      this.mode = GAME_MODES.SINGLE_PLAYER;
     } else {
+      this.mode = GAME_MODES.MULTI_PLAYER;
       log.debug(__filename, 'constructor()', 'No botId was provided - game is multiplayer.');
     }
   }

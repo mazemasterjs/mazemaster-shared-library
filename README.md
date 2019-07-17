@@ -4,6 +4,10 @@ Shared Library for MazeMaster. This is published to npm at @mazemasterjs/shared-
 
 ## Change Log
 
+### v1.13.7
+
+- corrected issue with single vs. multiplayer game mode detection
+
 ### v1.13.6
 
 - fixed maze generation creating unpassable traps and unbeatable mazes
